@@ -3,6 +3,7 @@
  */
 package com.jetdrone.vertx.yoke.middleware;
 
+import com.jetdrone.vertx.yoke.AbstractMiddleware;
 import com.jetdrone.vertx.yoke.Middleware;
 import org.jetbrains.annotations.NotNull;
 import org.vertx.java.core.Handler;
@@ -19,7 +20,7 @@ import java.util.UUID;
  *
  * This middleware requires session support, thus should be added somewhere below Session.
  */
-public class Csrf extends Middleware {
+public class Csrf extends AbstractMiddleware {
 
     /**
      * Handler that validates the CRSF token

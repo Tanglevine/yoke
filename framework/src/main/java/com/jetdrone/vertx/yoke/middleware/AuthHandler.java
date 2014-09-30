@@ -11,6 +11,7 @@ import org.vertx.java.core.json.JsonObject;
  *
  * AuthHandler interface that needs to be implemented in order to validate usernames/passwords.
  */
+@FunctionalInterface
 public interface AuthHandler {
     /** Handles a challenge authentication request and asynchronously returns the user object on success, null for error.
      *

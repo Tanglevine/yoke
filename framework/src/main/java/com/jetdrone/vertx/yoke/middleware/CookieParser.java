@@ -3,6 +3,7 @@
  */
 package com.jetdrone.vertx.yoke.middleware;
 
+import com.jetdrone.vertx.yoke.AbstractMiddleware;
 import com.jetdrone.vertx.yoke.Middleware;
 import com.jetdrone.vertx.yoke.core.YokeCookie;
 import io.netty.handler.codec.http.Cookie;
@@ -24,7 +25,7 @@ import java.util.TreeSet;
  *
  * When the Cookie parser is initialized with a secret then that value is used to verify if a cookie is valid.
  */
-public class CookieParser extends Middleware {
+public class CookieParser extends AbstractMiddleware {
 
     /**
      * Message Signer

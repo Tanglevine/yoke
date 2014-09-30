@@ -3,6 +3,7 @@
  */
 package com.jetdrone.vertx.yoke.middleware;
 
+import com.jetdrone.vertx.yoke.AbstractMiddleware;
 import com.jetdrone.vertx.yoke.Middleware;
 import org.jetbrains.annotations.NotNull;
 import org.vertx.java.core.Handler;
@@ -17,7 +18,7 @@ import org.vertx.java.core.json.JsonObject;
  * *note:* If the method override is sent in a *POST* then the [BodyParser](BodyParser.html) middleware must be used and
  * installed prior this one.
  */
-public class MethodOverride extends Middleware {
+public class MethodOverride extends AbstractMiddleware {
 
     private final String key;
 

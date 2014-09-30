@@ -3,6 +3,7 @@
  */
 package com.jetdrone.vertx.yoke.middleware;
 
+import com.jetdrone.vertx.yoke.AbstractMiddleware;
 import com.jetdrone.vertx.yoke.Middleware;
 import org.jetbrains.annotations.NotNull;
 import org.vertx.java.core.Handler;
@@ -15,7 +16,7 @@ import java.util.regex.Pattern;
  *
  * Setup vhost for the given *hostname* and *server*.
  */
-public class Vhost extends Middleware {
+public class Vhost extends AbstractMiddleware {
 
     private final Handler<HttpServerRequest> handler;
     private final Pattern regex;

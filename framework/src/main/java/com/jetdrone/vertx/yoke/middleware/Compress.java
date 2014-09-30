@@ -3,6 +3,7 @@
  */
 package com.jetdrone.vertx.yoke.middleware;
 
+import com.jetdrone.vertx.yoke.AbstractMiddleware;
 import com.jetdrone.vertx.yoke.Middleware;
 import com.jetdrone.vertx.yoke.middleware.filters.DeflateWriterFilter;
 import com.jetdrone.vertx.yoke.middleware.filters.GZipWriterFilter;
@@ -22,7 +23,7 @@ import java.util.regex.Pattern;
  * You can specify which content types are compressable and by default json/text/javascript
  * are enabled.
  */
-public class Compress extends Middleware {
+public class Compress extends AbstractMiddleware {
 
     /**
      * Regular expression to identify resources that are subject to compression

@@ -5,6 +5,7 @@ package com.jetdrone.vertx.yoke.middleware;
 
 import javax.crypto.Mac;
 
+import com.jetdrone.vertx.yoke.AbstractMiddleware;
 import org.jetbrains.annotations.NotNull;
 import org.vertx.java.core.Handler;
 
@@ -15,7 +16,7 @@ import com.jetdrone.vertx.yoke.store.json.SessionObject;
 /**
  * # Session
  */
-public class Session extends Middleware {
+public class Session extends AbstractMiddleware {
 
     private final Mac hmacSHA256;
 

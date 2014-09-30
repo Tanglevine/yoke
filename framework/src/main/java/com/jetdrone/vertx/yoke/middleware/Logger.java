@@ -3,6 +3,7 @@
  */
 package com.jetdrone.vertx.yoke.middleware;
 
+import com.jetdrone.vertx.yoke.AbstractMiddleware;
 import com.jetdrone.vertx.yoke.Middleware;
 import com.jetdrone.vertx.yoke.core.impl.ThreadLocalUTCDateFormat;
 import org.jetbrains.annotations.NotNull;
@@ -25,7 +26,7 @@ import java.util.Date;
  * equal to 500 the fatal severity is used, for status greater or equal to 400 the error severity is used, for status
  * greater or equal to 300 warn is used and for status above 100 info is used.
  */
-public class Logger extends Middleware {
+public class Logger extends AbstractMiddleware {
 
     private final org.vertx.java.core.logging.Logger logger = LoggerFactory.getLogger(this.getClass());
 

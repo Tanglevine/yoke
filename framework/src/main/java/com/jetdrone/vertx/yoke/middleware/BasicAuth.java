@@ -3,6 +3,7 @@
  */
 package com.jetdrone.vertx.yoke.middleware;
 
+import com.jetdrone.vertx.yoke.AbstractMiddleware;
 import com.jetdrone.vertx.yoke.Middleware;
 import org.jetbrains.annotations.NotNull;
 import org.vertx.java.core.Handler;
@@ -16,7 +17,7 @@ import javax.xml.bind.DatatypeConverter;
  * Enfore basic authentication by providing a AuthHandler.handler(user, pass), which must return true in order to gain
  * access. Populates request.user. The final alternative is simply passing username / password strings.
  */
-public class BasicAuth extends Middleware {
+public class BasicAuth extends AbstractMiddleware {
 
     /**
      * Realm name for the application
