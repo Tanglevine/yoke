@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import com.jetdrone.vertx.yoke.AbstractMiddleware;
 import org.vertx.java.core.Handler;
 
 import com.jetdrone.vertx.yoke.Middleware;
@@ -29,7 +30,7 @@ import com.jetdrone.vertx.yoke.middleware.YokeResponse;
  * }
  * </pre>
  */
-public class ResponseHeaders extends Middleware
+public class ResponseHeaders extends AbstractMiddleware
 {
     private final Map<CharSequence, CharSequence[]> headers;
 

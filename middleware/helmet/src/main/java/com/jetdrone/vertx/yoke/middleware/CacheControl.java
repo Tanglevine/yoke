@@ -1,10 +1,11 @@
 package com.jetdrone.vertx.yoke.middleware;
 
+import com.jetdrone.vertx.yoke.AbstractMiddleware;
 import com.jetdrone.vertx.yoke.Middleware;
 import org.jetbrains.annotations.NotNull;
 import org.vertx.java.core.Handler;
 
-public final class CacheControl extends Middleware {
+public final class CacheControl extends AbstractMiddleware {
 
     @Override
     public void handle(@NotNull YokeRequest request, @NotNull Handler<Object> next) {

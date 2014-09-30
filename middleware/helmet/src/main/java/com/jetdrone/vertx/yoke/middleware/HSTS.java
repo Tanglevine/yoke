@@ -1,5 +1,6 @@
 package com.jetdrone.vertx.yoke.middleware;
 
+import com.jetdrone.vertx.yoke.AbstractMiddleware;
 import com.jetdrone.vertx.yoke.Middleware;
 import org.jetbrains.annotations.NotNull;
 import org.vertx.java.core.Handler;
@@ -8,7 +9,7 @@ import org.vertx.java.core.Handler;
  * HTTP Strict Transport Security (HSTS)
  * http://tools.ietf.org/html/rfc6797
  */
-public final class HSTS extends Middleware {
+public final class HSTS extends AbstractMiddleware {
 
     private final String header;
 

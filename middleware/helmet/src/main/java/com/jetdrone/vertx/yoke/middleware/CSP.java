@@ -1,5 +1,6 @@
 package com.jetdrone.vertx.yoke.middleware;
 
+import com.jetdrone.vertx.yoke.AbstractMiddleware;
 import com.jetdrone.vertx.yoke.Middleware;
 import com.jetdrone.vertx.yoke.middleware.impl.WebClient;
 import org.jetbrains.annotations.NotNull;
@@ -9,7 +10,7 @@ import org.vertx.java.core.json.JsonObject;
 
 import java.util.*;
 
-public class CSP extends Middleware {
+public class CSP extends AbstractMiddleware {
 
     private final List<String> ALL_HEADERS = Arrays.asList(
             "X-Content-Security-Policy",

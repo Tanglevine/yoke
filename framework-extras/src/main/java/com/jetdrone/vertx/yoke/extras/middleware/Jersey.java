@@ -19,6 +19,7 @@ import javax.inject.Inject;
 import javax.inject.Provider;
 import javax.ws.rs.core.SecurityContext;
 
+import com.jetdrone.vertx.yoke.AbstractMiddleware;
 import org.glassfish.hk2.api.ServiceLocator;
 import org.glassfish.hk2.api.TypeLiteral;
 import org.glassfish.hk2.utilities.binding.AbstractBinder;
@@ -102,7 +103,7 @@ import com.jetdrone.vertx.yoke.middleware.YokeResponse;
  * >Englishtown's Jersey Mod</a>.
  * </p>
  */
-public class Jersey extends Middleware implements Container
+public class Jersey extends AbstractMiddleware implements Container
 {
     private static final Logger LOGGER = LoggerFactory.getLogger(Jersey.class);
 

@@ -1,5 +1,6 @@
 package com.jetdrone.vertx.yoke.middleware;
 
+import com.jetdrone.vertx.yoke.AbstractMiddleware;
 import com.jetdrone.vertx.yoke.Middleware;
 import org.jetbrains.annotations.NotNull;
 import org.vertx.java.core.Handler;
@@ -13,7 +14,7 @@ import org.vertx.java.core.Handler;
  * For more, see this MSDN blog post:
  * http://blogs.msdn.com/b/ie/archive/2008/07/02/ie8-security-part-v-comprehensive-protection.aspx
  */
-public final class IENoOpen extends Middleware {
+public final class IENoOpen extends AbstractMiddleware {
 
     @Override
     public void handle(@NotNull YokeRequest request, @NotNull Handler<Object> next) {

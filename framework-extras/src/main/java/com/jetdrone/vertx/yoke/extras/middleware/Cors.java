@@ -15,6 +15,7 @@ import java.util.Collection;
 import java.util.Set;
 import java.util.regex.Pattern;
 
+import com.jetdrone.vertx.yoke.AbstractMiddleware;
 import org.vertx.java.core.Handler;
 import org.vertx.java.core.http.HttpServerResponse;
 
@@ -25,7 +26,7 @@ import com.jetdrone.vertx.yoke.middleware.YokeResponse;
 /**
  * Basic CORS support.
  */
-public class Cors extends Middleware
+public class Cors extends AbstractMiddleware
 {
     private final Pattern allowedOriginPattern;
     private final Set<String> allowedMethods;

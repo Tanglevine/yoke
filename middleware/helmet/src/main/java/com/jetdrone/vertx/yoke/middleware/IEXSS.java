@@ -1,11 +1,12 @@
 package com.jetdrone.vertx.yoke.middleware;
 
+import com.jetdrone.vertx.yoke.AbstractMiddleware;
 import com.jetdrone.vertx.yoke.Middleware;
 import com.jetdrone.vertx.yoke.middleware.impl.WebClient;
 import org.jetbrains.annotations.NotNull;
 import org.vertx.java.core.Handler;
 
-public final class IEXSS extends Middleware {
+public final class IEXSS extends AbstractMiddleware {
 
     private final boolean setOnOldIE;
 
