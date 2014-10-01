@@ -438,14 +438,11 @@ public class Yoke {
      * @return {Yoke}
      */
     public Yoke listen(final @NotNull HttpServer server) {
-        // is this server HTTPS?
-        final boolean secure = server.isSSL();
-
         server.requestHandler(new Handler<HttpServerRequest>() {
             @Override
             public void handle(HttpServerRequest req) {
                 // the context map is shared with all middlewares
-                final YokeRequest request = requestWrapper.wrap(req, secure, new Context(defaultContext), engineMap, store);
+                final YokeRequest request = requestWrapper.wrap(req, new Context(defaultContext), engineMap, store);
 
                 // add x-powered-by header is enabled
                 Boolean poweredBy = request.get("x-powered-by");
@@ -480,7 +477,7 @@ public class Yoke {
                                 response.setStatusCode(404);
                                 response.setStatusMessage(HttpResponseStatus.valueOf(404).reasonPhrase());
                                 if (errorHandler != null) {
-                                    errorHandler.handle(request, null);
+                                    errorHandler.handle(request);
                                 } else {
                                     response.end(HttpResponseStatus.valueOf(404).reasonPhrase());
                                 }
@@ -488,7 +485,7 @@ public class Yoke {
                         } else {
                             request.put("error", error);
                             if (errorHandler != null) {
-                                errorHandler.handle(request, null);
+                                errorHandler.handle(request);
                             } else {
                                 HttpServerResponse response = request.response();
 
