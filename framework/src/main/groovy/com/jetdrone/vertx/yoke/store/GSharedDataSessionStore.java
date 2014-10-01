@@ -16,12 +16,7 @@ import java.util.Map;
 public class GSharedDataSessionStore extends SharedDataSessionStore {
 
     private static <T> Handler<T> wrapClosure(final Closure<T> closure) {
-        return new Handler<T>() {
-            @Override
-            public void handle(T value) {
-                    closure.call(value);
-            }
-        };
+        return closure::call;
     }
 
     public GSharedDataSessionStore(Vertx vertx, String name) {
@@ -30,12 +25,7 @@ public class GSharedDataSessionStore extends SharedDataSessionStore {
 
     // Attempt to fetch session by the given `sid`.
     public void get(String sid, final Closure<Map> callback) {
-        get(sid, new Handler<JsonObject>() {
-            @Override
-            public void handle(JsonObject sess) {
-                callback.call(sess == null ? null : sess.toMap());
-            }
-        });
+        get(sid, sess -> callback.call(sess == null ? null : sess.toMap()));
     }
 
     // Commit the given `sess` object associated with the given `sid`.
@@ -50,21 +40,18 @@ public class GSharedDataSessionStore extends SharedDataSessionStore {
 
     // Invoke the given callback `fn` with all active sessions.
     public void all(final Closure<List> callback) {
-        all(new Handler<JsonArray>() {
-            @Override
-            public void handle(JsonArray sessions) {
-                if (sessions == null) {
-                    callback.call((List) null);
-                    return;
-                }
-                List<Map<String, ?>> gSessions = new ArrayList<>();
-                for (Object sess : sessions) {
-                    JsonObject jsonSess = (JsonObject) sess;
-                    gSessions.add(jsonSess.toMap());
-                }
-
-                callback.call(gSessions);
+        all(sessions -> {
+            if (sessions == null) {
+                callback.call((List) null);
+                return;
             }
+            List<Map<String, ?>> gSessions = new ArrayList<>();
+            for (Object sess : sessions) {
+                JsonObject jsonSess = (JsonObject) sess;
+                gSessions.add(jsonSess.toMap());
+            }
+
+            callback.call(gSessions);
         });
     }
 

@@ -19,12 +19,9 @@ public class ResponseTime extends AbstractMiddleware {
         final long start = System.currentTimeMillis();
         final YokeResponse response = request.response();
 
-        response.headersHandler(new Handler<Void>() {
-            @Override
-            public void handle(Void event) {
-                long duration = System.currentTimeMillis() - start;
-                response.putHeader("x-response-time", duration + "ms");
-            }
+        response.headersHandler(event -> {
+            long duration = System.currentTimeMillis() - start;
+            response.putHeader("x-response-time", duration + "ms");
         });
 
         next.handle(null);

@@ -1,5 +1,6 @@
 package com.jetdrone.vertx.extras;
 
+import com.jetdrone.vertx.yoke.Middleware;
 import com.jetdrone.vertx.yoke.Yoke;
 import com.jetdrone.vertx.yoke.engine.HandlebarsEngine;
 import com.jetdrone.vertx.yoke.middleware.*;
@@ -44,37 +45,34 @@ public class ExtrasExample extends Verticle {
 
         yoke.use(router);
 
-        yoke.use(new Handler<YokeRequest>() {
-            @Override
-            public void handle(YokeRequest request) {
+        yoke.use((request, next) -> {
 
-                List<Map> users = new ArrayList<>();
-                Map<String, String> user;
+            List<Map> users = new ArrayList<>();
+            Map<String, String> user;
 
-                user = new HashMap<>();
-                user.put("username", "alan");
-                user.put("firstName", "Alan");
-                user.put("lastName", "Johnson");
-                user.put("email", "alan@test.com");
-                users.add(user);
+            user = new HashMap<>();
+            user.put("username", "alan");
+            user.put("firstName", "Alan");
+            user.put("lastName", "Johnson");
+            user.put("email", "alan@test.com");
+            users.add(user);
 
-                user = new HashMap<>();
-                user.put("username", "allison");
-                user.put("firstName", "Allison");
-                user.put("lastName", "House");
-                user.put("email", "allison@test.com");
-                users.add(user);
+            user = new HashMap<>();
+            user.put("username", "allison");
+            user.put("firstName", "Allison");
+            user.put("lastName", "House");
+            user.put("email", "allison@test.com");
+            users.add(user);
 
-                user = new HashMap<>();
-                user.put("username", "ryan");
-                user.put("firstName", "Ryan");
-                user.put("lastName", "Carson");
-                user.put("email", "ryan@test.com");
-                users.add(user);
+            user = new HashMap<>();
+            user.put("username", "ryan");
+            user.put("firstName", "Ryan");
+            user.put("lastName", "Carson");
+            user.put("email", "ryan@test.com");
+            users.add(user);
 
-                request.put("users", users);
-                request.response().render("handlebars.hbs");
-            }
+            request.put("users", users);
+            request.response().render("handlebars.hbs");
         });
 
         yoke.listen(8080);

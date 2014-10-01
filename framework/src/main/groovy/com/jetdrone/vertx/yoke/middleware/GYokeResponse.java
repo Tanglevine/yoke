@@ -9,8 +9,6 @@ import com.jetdrone.vertx.yoke.core.GMultiMap;
 import com.jetdrone.vertx.yoke.core.JSON;
 import groovy.lang.Closure;
 import org.jetbrains.annotations.NotNull;
-import org.vertx.java.core.AsyncResult;
-import org.vertx.java.core.Handler;
 import org.vertx.java.core.http.HttpServerResponse;
 import org.vertx.groovy.core.buffer.Buffer;
 
@@ -27,12 +25,7 @@ public class GYokeResponse extends YokeResponse implements org.vertx.groovy.core
     }
 
     public void closeHandler(final Closure closure) {
-        this.closeHandler(new Handler<Void>() {
-            @Override
-            public void handle(Void v) {
-                closure.call();
-            }
-        });
+        this.closeHandler(v -> closure.call());
     }
 
     public GYokeResponse write(@NotNull Buffer buffer) {
@@ -105,12 +98,7 @@ public class GYokeResponse extends YokeResponse implements org.vertx.groovy.core
     }
 
     public GYokeResponse drainHandler(final Closure closure) {
-        this.drainHandler(new Handler<Void>() {
-            @Override
-            public void handle(Void v) {
-                closure.call();
-            }
-        });
+        this.drainHandler(v -> closure.call());
         return this;
     }
 
@@ -128,12 +116,7 @@ public class GYokeResponse extends YokeResponse implements org.vertx.groovy.core
     }
 
     public GYokeResponse exceptionHandler(final Closure closure) {
-        this.exceptionHandler(new Handler<Throwable>() {
-            @Override
-            public void handle(Throwable exception) {
-                closure.call();
-            }
-        });
+        this.exceptionHandler(exception -> closure.call());
 
         return this;
     }
@@ -209,32 +192,17 @@ public class GYokeResponse extends YokeResponse implements org.vertx.groovy.core
     }
 
     public GYokeResponse sendFile(String filename, final Closure resultHandler) {
-        sendFile(filename, new Handler<AsyncResult<Void>>() {
-            @Override
-            public void handle(AsyncResult<Void> event) {
-                resultHandler.call(event);
-            }
-        });
+        sendFile(filename, resultHandler::call);
         return this;
     }
 
     public GYokeResponse sendFile(String filename, String notFoundFile, final Closure resultHandler) {
-        sendFile(filename, notFoundFile, new Handler<AsyncResult<Void>>() {
-            @Override
-            public void handle(AsyncResult<Void> event) {
-                resultHandler.call(event);
-            }
-        });
+        sendFile(filename, notFoundFile, resultHandler::call);
         return this;
     }
 
     public void render(final String template, final Closure<Object> next) {
-        render(template, new Handler<Object>() {
-            @Override
-            public void handle(Object event) {
-                next.call(event);
-            }
-        });
+        render(template, next::call);
     }
     
     @Override

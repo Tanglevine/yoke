@@ -9,22 +9,10 @@ import org.vertx.java.core.json.JsonObject;
 
 public class GBasicAuth extends BasicAuth {		
 		public GBasicAuth(final Closure handler) {				
-				super(new AuthHandler() {
-					@Override
-					public void handle(String username, String password, Handler<JsonObject> result) {
-                        // TODO: Groovy works with Map not JsonObject
-						handler.call(username, password, result);
-					}
-				});
+				super(handler::call);
     }
 		
 		public GBasicAuth(String realm, final Closure handler) {				
-				super(realm, new AuthHandler() {
-					@Override
-					public void handle(String username, String password, Handler<JsonObject> result) {
-                        // TODO: Groovy works with Map not JsonObject
-						handler.call(username, password, result);
-					}
-				});
+				super(realm, handler::call);
     }
 }

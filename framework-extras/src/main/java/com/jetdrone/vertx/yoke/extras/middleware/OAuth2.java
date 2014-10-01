@@ -25,8 +25,8 @@ public abstract class OAuth2 {
     private final YokeSecurity security = null; //new YokeSecurity();
 
     private final Key cryptoKey = security.getKey("AES");
-    private final Cipher encCipher = security.getCipher(cryptoKey, Cipher.ENCRYPT_MODE);
-    private final Cipher decCipher = security.getCipher(cryptoKey, Cipher.DECRYPT_MODE);
+    private final Cipher encCipher = YokeSecurity.getCipher(cryptoKey, Cipher.ENCRYPT_MODE);
+    private final Cipher decCipher = YokeSecurity.getCipher(cryptoKey, Cipher.DECRYPT_MODE);
     private final Mac signMac = security.getMac("HmacSHA256");
 
     public OAuth2() {

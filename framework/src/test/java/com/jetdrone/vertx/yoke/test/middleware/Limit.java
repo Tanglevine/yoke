@@ -29,12 +29,9 @@ public class Limit extends TestVerticle {
             body.appendByte((byte) 'A');
         }
 
-        new YokeTester(yoke).request("GET", "/", headers, body, new Handler<Response>() {
-            @Override
-            public void handle(Response resp) {
-                assertEquals(413, resp.getStatusCode());
-                testComplete();
-            }
+        new YokeTester(yoke).request("GET", "/", headers, body, resp -> {
+            assertEquals(413, resp.getStatusCode());
+            testComplete();
         });
     }
 }

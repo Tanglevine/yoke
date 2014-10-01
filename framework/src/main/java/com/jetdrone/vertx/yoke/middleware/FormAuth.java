@@ -66,7 +66,7 @@ public class FormAuth extends AbstractMiddleware {
                     // render internal login
                     request.response().setContentType("text/html");
                     request.response().end(
-                            loginTemplate.replace("{title}", (String) request.get("title"))
+                            loginTemplate.replace("{title}", request.get("title"))
                                     .replace("{action}", loginURI + "?redirect_url=" + Utils.encodeURIComponent(request.getParameter("redirect_url", "/")))
                                     .replace("{message}", ""));
                 } else {
@@ -83,28 +83,25 @@ public class FormAuth extends AbstractMiddleware {
                     return;
                 }
 
-                authHandler.handle(request.getFormParameter("username"), request.getFormParameter("password"), new Handler<JsonObject>() {
-                    @Override
-                    public void handle(JsonObject user) {
-                        if (user != null) {
-                            JsonObject session = request.createSession();
-                            session.putString("user", request.getFormParameter("username"));
+                authHandler.handle(request.getFormParameter("username"), request.getFormParameter("password"), user -> {
+                    if (user != null) {
+                        JsonObject session = request.createSession();
+                        session.putString("user", request.getFormParameter("username"));
 
-                            // get the redirect_url parameter
-                            String redirect = request.getParameter("redirect_url", "/");
-                            request.response().redirect(Utils.decodeURIComponent(redirect));
+                        // get the redirect_url parameter
+                        String redirect = request.getParameter("redirect_url", "/");
+                        request.response().redirect(Utils.decodeURIComponent(redirect));
+                    } else {
+                        if (loginTemplate != null) {
+                            // render internal login
+                            request.response().setContentType("text/html");
+                            request.response().setStatusCode(401);
+                            request.response().end(
+                                    loginTemplate.replace("{title}", request.get("title"))
+                                            .replace("{action}", loginURI + "?redirect_url=" + Utils.encodeURIComponent(request.getParameter("redirect_url", "/")))
+                                            .replace("{message}", "Invalid username and/or password, please try again."));
                         } else {
-                            if (loginTemplate != null) {
-                                // render internal login
-                                request.response().setContentType("text/html");
-                                request.response().setStatusCode(401);
-                                request.response().end(
-                                        loginTemplate.replace("{title}", (String) request.get("title"))
-                                                .replace("{action}", loginURI + "?redirect_url=" + Utils.encodeURIComponent(request.getParameter("redirect_url", "/")))
-                                                .replace("{message}", "Invalid username and/or password, please try again."));
-                            } else {
-                                next.handle(401);
-                            }
+                            next.handle(401);
                         }
                     }
                 });

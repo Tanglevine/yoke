@@ -3,12 +3,9 @@ package com.jetdrone.vertx.yoke.test.middleware;
 import com.jetdrone.vertx.yoke.Yoke;
 import com.jetdrone.vertx.yoke.middleware.CookieParser;
 import com.jetdrone.vertx.yoke.middleware.Router;
-import com.jetdrone.vertx.yoke.middleware.YokeRequest;
-import com.jetdrone.vertx.yoke.test.Response;
 import com.jetdrone.vertx.yoke.test.YokeTester;
 import org.junit.Test;
 import org.vertx.java.core.http.CaseInsensitiveMultiMap;
-import org.vertx.java.core.Handler;
 import org.vertx.java.core.MultiMap;
 import org.vertx.testtools.TestVerticle;
 
@@ -27,80 +24,57 @@ public class Session extends TestVerticle {
         yoke.use(new CookieParser(hmac));
         yoke.use(new com.jetdrone.vertx.yoke.middleware.Session(hmac));
         yoke.use(new Router() {{
-            get("/", new Handler<YokeRequest>() {
-                @Override
-                public void handle(YokeRequest request) {
-                    request.response().end();
-                }
+            get("/", (request, next) -> request.response().end());
+            get("/new", (request, next) -> {
+                request.createSession();
+                request.response().end();
             });
-            get("/new", new Handler<YokeRequest>() {
-                @Override
-                public void handle(YokeRequest request) {
-                    request.createSession();
-                    request.response().end();
-                }
-            });
-            get("/delete", new Handler<YokeRequest>() {
-                @Override
-                public void handle(YokeRequest request) {
-                    request.destroySession();
-                    request.response().end();
-                }
+            get("/delete", (request, next) -> {
+                request.destroySession();
+                request.response().end();
             });
         }});
 
         final YokeTester yokeAssert = new YokeTester(yoke);
 
-        yokeAssert.request("GET", "/", new Handler<Response>() {
-            @Override
-            public void handle(Response resp) {
-                // start: there is no cookie
-                assertEquals(200, resp.getStatusCode());
-                String nocookie = resp.headers.get("set-cookie");
-                assertNull(nocookie);
+        yokeAssert.request("GET", "/", resp -> {
+            // start: there is no cookie
+            assertEquals(200, resp.getStatusCode());
+            String nocookie = resp.headers.get("set-cookie");
+            assertNull(nocookie);
 
-                // create session
-                yokeAssert.request("GET", "/new", new Handler<Response>() {
-                    @Override
-                    public void handle(Response resp) {
-                        // start: there is a cookie
-                        assertEquals(200, resp.getStatusCode());
-                        final String cookie = resp.headers.get("set-cookie");
-                        assertNotNull(cookie);
+            // create session
+            yokeAssert.request("GET", "/new", resp1 -> {
+                // start: there is a cookie
+                assertEquals(200, resp1.getStatusCode());
+                final String cookie = resp1.headers.get("set-cookie");
+                assertNotNull(cookie);
 
-                        // make a new request to / with cookie should return again the same cookie
-                        MultiMap headers = new CaseInsensitiveMultiMap();
-                        headers.add("cookie", cookie);
+                // make a new request to / with cookie should return again the same cookie
+                MultiMap headers = new CaseInsensitiveMultiMap();
+                headers.add("cookie", cookie);
 
-                        yokeAssert.request("GET", "/", headers, new Handler<Response>() {
-                            @Override
-                            public void handle(Response resp) {
-                                // the session should be the same, so no set-cookie
-                                assertEquals(200, resp.getStatusCode());
-                                String nocookie = resp.headers.get("set-cookie");
-                                assertNull(nocookie);
+                yokeAssert.request("GET", "/", headers, resp2 -> {
+                    // the session should be the same, so no set-cookie
+                    assertEquals(200, resp2.getStatusCode());
+                    String nocookie1 = resp2.headers.get("set-cookie");
+                    assertNull(nocookie1);
 
-                                // end the session
-                                MultiMap headers = new CaseInsensitiveMultiMap();
-                                headers.add("cookie", cookie);
+                    // end the session
+                    MultiMap headers1 = new CaseInsensitiveMultiMap();
+                    headers1.add("cookie", cookie);
 
-                                yokeAssert.request("GET", "/delete", headers, new Handler<Response>() {
-                                    @Override
-                                    public void handle(Response resp) {
-                                        // there should be a set-cookie with maxAge 0
-                                        assertEquals(200, resp.getStatusCode());
-                                        String cookie = resp.headers.get("set-cookie");
-                                        assertNotNull(cookie);
+                    yokeAssert.request("GET", "/delete", headers1, resp3 -> {
+                        // there should be a set-cookie with maxAge 0
+                        assertEquals(200, resp3.getStatusCode());
+                        String cookie1 = resp3.headers.get("set-cookie");
+                        assertNotNull(cookie1);
 
-                                        assertTrue(cookie.startsWith("yoke.sess=;"));
-                                        testComplete();
-                                    }
-                                });
-                            }
-                        });
-                    }
+                        assertTrue(cookie1.startsWith("yoke.sess=;"));
+                        testComplete();
+                    });
                 });
-            }
+            });
         });
     }
 }

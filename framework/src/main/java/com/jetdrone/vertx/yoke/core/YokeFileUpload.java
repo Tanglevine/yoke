@@ -130,10 +130,8 @@ public class YokeFileUpload {
     }
 
     public void delete() {
-        this.delete(new Handler<Throwable>() {
-            @Override
-            public void handle(Throwable result) {
-            }
+        this.delete(result -> {
+            // TODO: some logging?
         });
     }
 }

@@ -8,8 +8,6 @@ import com.jetdrone.vertx.yoke.store.SessionStore;
 import groovy.lang.Closure;
 import org.jetbrains.annotations.NotNull;
 import org.vertx.groovy.core.http.HttpServerFileUpload;
-import org.vertx.java.core.Handler;
-import org.vertx.java.core.buffer.Buffer;
 import org.vertx.java.core.http.HttpServerRequest;
 import org.vertx.java.core.http.HttpVersion;
 import org.vertx.java.core.json.JsonArray;
@@ -116,12 +114,7 @@ public class GYokeRequest extends YokeRequest implements org.vertx.groovy.core.h
 
             @Override
             public HttpServerFileUpload dataHandler(final Closure closure) {
-                jHttpServerFileUpload.dataHandler(new Handler<Buffer>() {
-                    @Override
-                    public void handle(Buffer buffer) {
-                        closure.call(buffer);
-                    }
-                });
+                jHttpServerFileUpload.dataHandler(closure::call);
                 return this;
             }
 
@@ -139,23 +132,13 @@ public class GYokeRequest extends YokeRequest implements org.vertx.groovy.core.h
 
             @Override
             public HttpServerFileUpload endHandler(final Closure closure) {
-                jHttpServerFileUpload.endHandler(new Handler<Void>() {
-                    @Override
-                    public void handle(Void v) {
-                        closure.call(v);
-                    }
-                });
+                jHttpServerFileUpload.endHandler(closure::call);
                 return this;
             }
 
             @Override
             public HttpServerFileUpload exceptionHandler(final Closure closure) {
-                jHttpServerFileUpload.exceptionHandler(new Handler<Throwable>() {
-                    @Override
-                    public void handle(Throwable t) {
-                        closure.call(t);
-                    }
-                });
+                jHttpServerFileUpload.exceptionHandler(closure::call);
                 return this;
             }
         };
@@ -181,52 +164,27 @@ public class GYokeRequest extends YokeRequest implements org.vertx.groovy.core.h
     }
 
     public GYokeRequest uploadHandler(final Closure closure) {
-        uploadHandler(new Handler<org.vertx.java.core.http.HttpServerFileUpload>() {
-            @Override
-            public void handle(org.vertx.java.core.http.HttpServerFileUpload event) {
-                closure.call(wrap(event));
-            }
-        });
+        uploadHandler(event -> closure.call(wrap(event)));
         return this;
     }
 
     public GYokeRequest bodyHandler(final Closure closure) {
-        bodyHandler(new Handler<Buffer>() {
-            @Override
-            public void handle(Buffer event) {
-                closure.call(event);
-            }
-        });
+        bodyHandler(closure::call);
         return this;
     }
 
     public GYokeRequest dataHandler(final Closure closure) {
-        dataHandler(new Handler<Buffer>() {
-            @Override
-            public void handle(Buffer event) {
-                closure.call(event);
-            }
-        });
+        dataHandler(closure::call);
         return this;
     }
 
     public GYokeRequest endHandler(final Closure closure) {
-        endHandler(new Handler<Void>() {
-            @Override
-            public void handle(Void event) {
-                closure.call(event);
-            }
-        });
+        endHandler(closure::call);
         return this;
     }
 
     public GYokeRequest exceptionHandler(final Closure closure) {
-        exceptionHandler(new Handler<Throwable>() {
-            @Override
-            public void handle(Throwable event) {
-                closure.call(event);
-            }
-        });
+        exceptionHandler(closure::call);
         return this;
     }
 
@@ -349,12 +307,7 @@ public class GYokeRequest extends YokeRequest implements org.vertx.groovy.core.h
     }
 
     public void loadSession(String sessionId, final Closure handler) {
-        loadSession(sessionId, new Handler<Object>() {
-            @Override
-            public void handle(Object event) {
-                handler.call(event);
-            }
-        });
+        loadSession(sessionId, handler::call);
     }
 
     /**

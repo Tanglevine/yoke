@@ -5,9 +5,7 @@ package com.jetdrone.vertx.yoke.test;
 
 import com.jetdrone.vertx.yoke.GYoke;
 import groovy.lang.Closure;
-import org.vertx.java.core.Handler;
 import org.vertx.java.core.MultiMap;
-import org.vertx.java.core.Vertx;
 import org.vertx.java.core.buffer.Buffer;
 import org.vertx.java.core.http.CaseInsensitiveMultiMap;
 
@@ -26,30 +24,15 @@ public class GYokeTester extends YokeTester {
     }
 
     public void request(final String method, final String url, final Closure<Response> handler) {
-        request(method, url, new Handler<Response>() {
-            @Override
-            public void handle(Response event) {
-                handler.call(event);
-            }
-        });
+        request(method, url, handler::call);
     }
 
     public void request(final String method, final String url, final Map<String, Object> headers, final Closure<Response> handler) {
-        request(method, url, toMultiMap(headers), new Handler<Response>() {
-            @Override
-            public void handle(Response event) {
-                handler.call(event);
-            }
-        });
+        request(method, url, toMultiMap(headers), handler::call);
     }
 
     public void request(final String method, final String url, final Map<String, Object> headers, final Buffer body, final Closure<Response> handler) {
-        request(method, url, toMultiMap(headers), body, new Handler<Response>() {
-            @Override
-            public void handle(Response event) {
-                handler.call(event);
-            }
-        });
+        request(method, url, toMultiMap(headers), body, handler::call);
     }
 
     private static MultiMap toMultiMap(Map<String, Object> headers) {

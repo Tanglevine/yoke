@@ -16,11 +16,6 @@ public class GJWT extends JWT {
     }
 
     public GJWT(final @Nullable String skip, final Closure closure) {
-        super(skip, new JWTHandler() {
-            @Override
-            public void handle(JsonObject token, Handler<Object> result) {
-                closure.call(token.toMap(), result);
-            }
-        });
+        super(skip, (token, result) -> closure.call(token.toMap(), result));
     }
 }

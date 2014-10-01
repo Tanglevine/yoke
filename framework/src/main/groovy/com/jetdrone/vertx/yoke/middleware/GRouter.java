@@ -24,22 +24,19 @@ public class GRouter extends AbstractMiddleware {
     }
 
     @Override
-    public void handle(YokeRequest request, Handler<Object> next) {
+    public void handle(@NotNull YokeRequest request, @NotNull Handler<Object> next) {
         jRouter.handle(request, next);
     }
 
     private static Middleware wrapClosure(final Closure closure) {
         final int params = closure.getMaximumNumberOfParameters();
-        return new Middleware() {
-            @Override
-            public void handle(YokeRequest request, Handler<Object> next) {
-                if (params == 1) {
-                    closure.call(request);
-                } else if (params == 2) {
-                    closure.call(request, next);
-                } else {
-                    throw new RuntimeException("Cannot infer the closure signature, should be: request [, next]");
-                }
+        return (request, next) -> {
+            if (params == 1) {
+                closure.call(request);
+            } else if (params == 2) {
+                closure.call(request, next);
+            } else {
+                throw new RuntimeException("Cannot infer the closure signature, should be: request [, next]");
             }
         };
     }

@@ -29,19 +29,9 @@ public class Timeout extends AbstractMiddleware {
     public void handle(@NotNull final YokeRequest request, @NotNull final Handler<Object> next) {
         final YokeResponse response = request.response();
 
-        final long timerId = vertx().setTimer(timeout, new Handler<Long>() {
-            @Override
-            public void handle(Long event) {
-                next.handle(408);
-            }
-        });
+        final long timerId = vertx().setTimer(timeout, event -> next.handle(408));
 
-        response.endHandler(new Handler<Void>() {
-            @Override
-            public void handle(Void event) {
-                vertx().cancelTimer(timerId);
-            }
-        });
+        response.endHandler(event -> vertx().cancelTimer(timerId));
 
         next.handle(null);
     }

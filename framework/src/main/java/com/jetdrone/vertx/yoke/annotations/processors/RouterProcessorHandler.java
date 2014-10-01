@@ -70,14 +70,11 @@ public class RouterProcessorHandler extends AbstractAnnotationHandler<Router> {
     }
 
     private static Middleware wrap(final Object instance, final MethodHandle m) {
-        return new Middleware() {
-            @Override
-            public void handle(YokeRequest request, Handler<Object> next) {
-                try {
-                    m.invoke(instance, request, next);
-                } catch (Throwable e) {
-                    next.handle(e);
-                }
+        return (request, next) -> {
+            try {
+                m.invoke(instance, request, next);
+            } catch (Throwable e) {
+                next.handle(e);
             }
         };
     }

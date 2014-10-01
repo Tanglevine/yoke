@@ -65,11 +65,6 @@ public class GYokeFileUpload extends YokeFileUpload {
     }
 
     public void delete(final Closure closure) {
-        fileSystem.delete(path(), new Handler<AsyncResult<Void>>() {
-            @Override
-            public void handle(AsyncResult<Void> result) {
-                closure.call(result.cause());
-            }
-        });
+        fileSystem.delete(path(), result -> closure.call(result.cause()));
     }
 }

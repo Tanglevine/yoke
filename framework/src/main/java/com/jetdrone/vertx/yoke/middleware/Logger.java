@@ -161,12 +161,7 @@ public class Logger extends AbstractMiddleware {
         if (immediate) {
             log(request, timestamp, remoteClient, version, method, uri);
         } else {
-            request.response().endHandler(new Handler<Void>() {
-                @Override
-                public void handle(Void event) {
-                    log(request, timestamp, remoteClient, version, method, uri);
-                }
-            });
+            request.response().endHandler(event -> log(request, timestamp, remoteClient, version, method, uri));
         }
 
         next.handle(null);

@@ -51,19 +51,16 @@ public class BridgeSecureHandler extends AbstractMiddleware {
                     return;
                 }
 
-                sessionStore.get(sessionID, new Handler<JsonObject>() {
-                    @Override
-                    public void handle(JsonObject session) {
-                        if (session == null) {
-                            json.putString("status", "denied");
-                            message.reply(json);
-                            return;
-                        }
-
-                        json.putString("status", "ok");
-                        json.putString("username", session.getString("username"));
+                sessionStore.get(sessionID, session -> {
+                    if (session == null) {
+                        json.putString("status", "denied");
                         message.reply(json);
+                        return;
                     }
+
+                    json.putString("status", "ok");
+                    json.putString("username", session.getString("username"));
+                    message.reply(json);
                 });
             }
         });

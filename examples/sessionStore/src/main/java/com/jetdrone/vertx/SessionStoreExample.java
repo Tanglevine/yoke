@@ -1,5 +1,6 @@
 package com.jetdrone.vertx;
 
+import com.jetdrone.vertx.yoke.Middleware;
 import com.jetdrone.vertx.yoke.Yoke;
 import com.jetdrone.vertx.yoke.middleware.*;
 import com.jetdrone.vertx.yoke.store.MongoDBSessionStore;
@@ -43,36 +44,27 @@ public class SessionStoreExample extends Verticle {
 
 
                 app.use(new Router() {{
-                    get("/", new Handler<YokeRequest>() {
-                        @Override
-                        public void handle(YokeRequest request) {
-                            JsonObject session = request.get("session");
-                            if (session == null) {
-                                request.response().setStatusCode(404);
-                                request.response().end();
-                            } else {
-                                request.response().end(session);
-                            }
+                    get("/", (request, next) -> {
+                        JsonObject session = request.get("session");
+                        if (session == null) {
+                            request.response().setStatusCode(404);
+                            request.response().end();
+                        } else {
+                            request.response().end(session);
                         }
                     });
 
-                    get("/new", new Handler<YokeRequest>() {
-                        @Override
-                        public void handle(YokeRequest request) {
-                            JsonObject session = request.createSession();
+                    get("/new", (request, next) -> {
+                        JsonObject session = request.createSession();
 
-                            session.putString("key", "value");
+                        session.putString("key", "value");
 
-                            request.response().end();
-                        }
+                        request.response().end();
                     });
 
-                    get("/delete", new Handler<YokeRequest>() {
-                        @Override
-                        public void handle(YokeRequest request) {
-                            request.destroySession();
-                            request.response().end();
-                        }
+                    get("/delete", (request, next) -> {
+                        request.destroySession();
+                        request.response().end();
                     });
                 }});
 

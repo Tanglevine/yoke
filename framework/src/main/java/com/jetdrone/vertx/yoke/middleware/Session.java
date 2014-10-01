@@ -83,32 +83,29 @@ public class Session extends AbstractMiddleware {
         final int originalHash = hash;
 
         // call us when headers are being set for the response
-        response.headersHandler(new Handler<Void>() {
-            @Override
-            public void handle(Void done) {
-            	SessionObject session = request.get("session");
-                String sessionId = session == null ? null : session.getString("id");
+        response.headersHandler(done -> {
+            SessionObject session = request.get("session");
+            String sessionId = session == null ? null : session.getString("id");
 
-                // removed
-                if (sessionId == null) {
-                    if (sessionCookie != null) {
-                        cookie.setValue("");
-                        cookie.setMaxAge(0);
-                        response.addCookie(cookie);
-                    }
-                } else {
-                    // only send secure cookies over https
-                    if (cookie.isSecure() && !request.isSecure()) {
-                        return;
-                    }
+            // removed
+            if (sessionId == null) {
+                if (sessionCookie != null) {
+                    cookie.setValue("");
+                    cookie.setMaxAge(0);
+                    response.addCookie(cookie);
+                }
+            } else {
+                // only send secure cookies over https
+                if (cookie.isSecure() && !request.isSecure()) {
+                    return;
+                }
 
-                    // compare hashes, no need to set-cookie if unchanged
-                    if (originalHash != crc16(sessionId)) {
-                        // modified session
-                        cookie.setValue(sessionId);
-                        cookie.sign();
-                        response.addCookie(cookie);
-                    }
+                // compare hashes, no need to set-cookie if unchanged
+                if (originalHash != crc16(sessionId)) {
+                    // modified session
+                    cookie.setValue(sessionId);
+                    cookie.sign();
+                    response.addCookie(cookie);
                 }
             }
         });

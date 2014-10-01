@@ -4,7 +4,6 @@
 package com.jetdrone.vertx.yoke.middleware;
 
 import com.jetdrone.vertx.yoke.AbstractMiddleware;
-import com.jetdrone.vertx.yoke.Middleware;
 import org.jetbrains.annotations.NotNull;
 import org.vertx.java.core.Handler;
 import org.vertx.java.core.json.JsonObject;
@@ -43,15 +42,12 @@ public class BasicAuth extends AbstractMiddleware {
      */
     public BasicAuth(@NotNull final String username, @NotNull final String password, @NotNull String realm) {
         this.realm = realm;
-        authHandler = new AuthHandler() {
-            @Override
-            public void handle(String _username, String _password, Handler<JsonObject> result) {
-                boolean success = username.equals(_username) && password.equals(_password);
-                if (success) {
-                    result.handle(new JsonObject().putString("username", _username));
-                } else {
-                    result.handle(null);
-                }
+        authHandler = (_username, _password, result) -> {
+            boolean success = username.equals(_username) && password.equals(_password);
+            if (success) {
+                result.handle(new JsonObject().putString("username", _username));
+            } else {
+                result.handle(null);
             }
         };
     }
@@ -163,15 +159,12 @@ public class BasicAuth extends AbstractMiddleware {
             if (!"Basic".equals(scheme)) {
                 next.handle(400);
             } else {
-                authHandler.handle(user, pass, new Handler<JsonObject>() {
-                    @Override
-                    public void handle(JsonObject json) {
-                        if (json != null) {
-                            request.put("user", user);
-                            next.handle(null);
-                        } else {
-                            handle401(request, next);
-                        }
+                authHandler.handle(user, pass, json -> {
+                    if (json != null) {
+                        request.put("user", user);
+                        next.handle(null);
+                    } else {
+                        handle401(request, next);
                     }
                 });
             }

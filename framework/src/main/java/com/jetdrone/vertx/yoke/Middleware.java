@@ -14,7 +14,11 @@ import org.vertx.java.core.file.FileSystem;
  * # Middleware
  */
 @FunctionalInterface
-public interface Middleware {
+public interface Middleware extends Handler<YokeRequest> {
+
+    default public void handle(@NotNull final YokeRequest request) {
+        handle(request, null);
+    }
 
     /**
      * Handles a request that is inside the chain.

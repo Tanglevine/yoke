@@ -12,7 +12,7 @@ public final class JsonSchema {
         }
 
         if (schema.containsKey("$ref")) {
-            return conformsSchema(instance, JsonSchemaResolver.resolveSchema((String) schema.get("$ref"), schema.getParent()));
+            return conformsSchema(instance, JsonSchemaResolver.resolveSchema(schema.get("$ref"), schema.getParent()));
         }
 
         final String type = schema.get("type");

@@ -1,5 +1,6 @@
 package com.jetdrone.vertx.yoke.test.middleware;
 
+import com.jetdrone.vertx.yoke.Middleware;
 import com.jetdrone.vertx.yoke.Yoke;
 import com.jetdrone.vertx.yoke.middleware.YokeRequest;
 import com.jetdrone.vertx.yoke.test.Response;
@@ -16,20 +17,12 @@ public class ResponseTime extends TestVerticle {
     public void testResponseTime() {
         Yoke yoke = new Yoke(this);
         yoke.use(new com.jetdrone.vertx.yoke.middleware.ResponseTime());
-        yoke.use(new Handler<YokeRequest>() {
-            @Override
-            public void handle(YokeRequest request) {
-                request.response().end();
-            }
-        });
+        yoke.use((request, next) -> request.response().end());
 
-        new YokeTester(yoke).request("GET", "/", new Handler<Response>() {
-            @Override
-            public void handle(Response resp) {
-                assertEquals(200, resp.getStatusCode());
-                assertNotNull(resp.headers().get("x-response-time"));
-                testComplete();
-            }
+        new YokeTester(yoke).request("GET", "/", resp -> {
+            assertEquals(200, resp.getStatusCode());
+            assertNotNull(resp.headers().get("x-response-time"));
+            testComplete();
         });
     }
 }

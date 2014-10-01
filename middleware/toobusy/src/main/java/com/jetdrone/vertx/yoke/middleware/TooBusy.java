@@ -36,13 +36,10 @@ public final class TooBusy extends AbstractMiddleware {
         t0 = System.nanoTime();
         dt = 500 * 1000000; // nano time
 
-        timerID = yoke.vertx().setPeriodic(500, new Handler<Long>() {
-            @Override
-            public void handle(Long timerID) {
-                final long t1 = System.nanoTime();
-                dt = t1 - t0;
-                t0 = t1;
-            }
+        timerID = yoke.vertx().setPeriodic(500, timerID1 -> {
+            final long t1 = System.nanoTime();
+            dt = t1 - t0;
+            t0 = t1;
         });
 
         return this;

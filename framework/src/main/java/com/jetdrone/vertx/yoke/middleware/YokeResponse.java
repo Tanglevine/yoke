@@ -108,30 +108,27 @@ public class YokeResponse implements HttpServerResponse {
     }
 
     public void render(final String template) {
-        render(template, new Handler<Object>() {
-            @Override
-            public void handle(Object error) {
-                if (error != null) {
-                    int errorCode;
-                    // if the error was set on the response use it
-                    if (getStatusCode() >= 400) {
-                        errorCode = getStatusCode();
+        render(template, error -> {
+            if (error != null) {
+                int errorCode;
+                // if the error was set on the response use it
+                if (getStatusCode() >= 400) {
+                    errorCode = getStatusCode();
+                } else {
+                    // if it was set as the error object use it
+                    if (error instanceof Number) {
+                        errorCode = ((Number) error).intValue();
+                    } else if (error instanceof YokeException) {
+                        errorCode = ((YokeException) error).getErrorCode().intValue();
                     } else {
-                        // if it was set as the error object use it
-                        if (error instanceof Number) {
-                            errorCode = ((Number) error).intValue();
-                        } else if (error instanceof YokeException) {
-                            errorCode = ((YokeException) error).getErrorCode().intValue();
-                        } else {
-                            // default error code
-                            errorCode = 500;
-                        }
+                        // default error code
+                        errorCode = 500;
                     }
-
-                    setStatusCode(errorCode);
-                    setStatusMessage(HttpResponseStatus.valueOf(errorCode).reasonPhrase());
-                    end(HttpResponseStatus.valueOf(errorCode).reasonPhrase());
                 }
+
+                setStatusCode(errorCode);
+                setStatusMessage(HttpResponseStatus.valueOf(errorCode).reasonPhrase());
+                end(HttpResponseStatus.valueOf(errorCode).reasonPhrase());
             }
         });
     }
@@ -246,12 +243,9 @@ public class YokeResponse implements HttpServerResponse {
         filter = null;
         triggerHeadersHandlers();
         Pump.createPump(stream, response).start();
-        stream.endHandler(new Handler<Void>() {
-            @Override
-            public void handle(Void event) {
-                response.end();
-                triggerEndHandlers();
-            }
+        stream.endHandler(event -> {
+            response.end();
+            triggerEndHandlers();
         });
     }
 

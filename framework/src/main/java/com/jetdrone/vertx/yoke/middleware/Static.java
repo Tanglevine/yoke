@@ -4,7 +4,6 @@
 package com.jetdrone.vertx.yoke.middleware;
 
 import com.jetdrone.vertx.yoke.AbstractMiddleware;
-import com.jetdrone.vertx.yoke.Middleware;
 import com.jetdrone.vertx.yoke.MimeType;
 import com.jetdrone.vertx.yoke.util.Utils;
 import org.jetbrains.annotations.NotNull;
@@ -232,7 +231,7 @@ public class Static extends AbstractMiddleware {
 
                         request.response().setContentType("text/html");
                         request.response().end(
-                                directoryTemplate.replace("{title}", (String) request.get("title")).replace("{directory}", normalizedDir)
+                                directoryTemplate.replace("{title}", request.get("title")).replace("{directory}", normalizedDir)
                                         .replace("{linked-path}", directory.toString())
                                         .replace("{files}", files.toString()));
                     } else if (accept.contains("json")) {

@@ -89,7 +89,7 @@ public abstract class AbstractEngineSync<T> implements Engine {
             // load from the file system
             Buffer content = fileSystem.readFileSync(filename);
             // cache the result
-            cache.put(filename, new LRUCache.CacheEntry<String, T>(lastModified, content.toString(contentEncoding())));
+            cache.put(filename, new LRUCache.CacheEntry<>(lastModified, content.toString(contentEncoding())));
         }
     }
 

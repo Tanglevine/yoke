@@ -4,7 +4,6 @@ import com.jetdrone.vertx.yoke.Middleware;
 import com.jetdrone.vertx.yoke.Yoke;
 import com.jetdrone.vertx.yoke.middleware.*;
 import com.jetdrone.vertx.yoke.middleware.Router;
-import com.jetdrone.vertx.yoke.test.Response;
 import com.jetdrone.vertx.yoke.test.YokeTester;
 import com.jetdrone.vertx.yoke.util.validation.Type;
 import org.junit.Test;
@@ -42,19 +41,13 @@ public class Validator extends TestVerticle {
             }
         }));
 
-        new YokeTester(yoke).request("GET", "/search/2012-07-14T00:00:00Z/2013-07-14T00:00:00Z", new Handler<Response>() {
-            @Override
-            public void handle(Response resp) {
-                assertEquals(200, resp.getStatusCode());
+        new YokeTester(yoke).request("GET", "/search/2012-07-14T00:00:00Z/2013-07-14T00:00:00Z", resp -> {
+            assertEquals(200, resp.getStatusCode());
 
-                new YokeTester(yoke).request("GET", "/search/from/to", new Handler<Response>() {
-                    @Override
-                    public void handle(Response resp) {
-                        assertEquals(400, resp.getStatusCode());
-                        testComplete();
-                    }
-                });
-            }
+            new YokeTester(yoke).request("GET", "/search/from/to", resp1 -> {
+                assertEquals(400, resp1.getStatusCode());
+                testComplete();
+            });
         });
     }
 
@@ -92,12 +85,9 @@ public class Validator extends TestVerticle {
         headers.add("content-type", "application/json");
         headers.add("content-length", Integer.toString(body.length()));
 
-        new YokeTester(yoke).request("POST", "/search/2012-07-14T00:00:00Z/2013-07-14T00:00:00Z", headers, body, new Handler<Response>() {
-            @Override
-            public void handle(Response resp) {
-                assertEquals(200, resp.getStatusCode());
-                testComplete();
-            }
+        new YokeTester(yoke).request("POST", "/search/2012-07-14T00:00:00Z/2013-07-14T00:00:00Z", headers, body, resp -> {
+            assertEquals(200, resp.getStatusCode());
+            testComplete();
         });
     }
 
@@ -131,12 +121,9 @@ public class Validator extends TestVerticle {
         headers.add("content-type", "application/json");
         headers.add("content-length", Integer.toString(body.length()));
 
-        new YokeTester(yoke).request("POST", "/", headers, body, new Handler<Response>() {
-            @Override
-            public void handle(Response resp) {
-                assertEquals(200, resp.getStatusCode());
-                testComplete();
-            }
+        new YokeTester(yoke).request("POST", "/", headers, body, resp -> {
+            assertEquals(200, resp.getStatusCode());
+            testComplete();
         });
     }
 
@@ -169,12 +156,9 @@ public class Validator extends TestVerticle {
         headers.add("content-type", "application/json");
         headers.add("content-length", Integer.toString(body.length()));
 
-        new YokeTester(yoke).request("POST", "/", headers, body, new Handler<Response>() {
-            @Override
-            public void handle(Response resp) {
-                assertEquals(200, resp.getStatusCode());
-                testComplete();
-            }
+        new YokeTester(yoke).request("POST", "/", headers, body, resp -> {
+            assertEquals(200, resp.getStatusCode());
+            testComplete();
         });
     }
 }

@@ -4,7 +4,6 @@
 package com.jetdrone.vertx.yoke.middleware;
 
 import com.jetdrone.vertx.yoke.AbstractMiddleware;
-import com.jetdrone.vertx.yoke.Middleware;
 import com.jetdrone.vertx.yoke.util.Utils;
 import com.jetdrone.vertx.yoke.core.YokeException;
 import io.netty.handler.codec.http.HttpResponseStatus;
@@ -147,7 +146,7 @@ public class ErrorHandler extends AbstractMiddleware {
 
             response.setContentType("text/html");
             response.end(
-                    errorTemplate.replace("{title}", (String) request.get("title"))
+                    errorTemplate.replace("{title}", request.get("title"))
                             .replace("{errorCode}", Integer.toString(errorCode))
                             .replace("{errorMessage}", errorMessage)
                             .replace("{stackTrace}", stack.toString())

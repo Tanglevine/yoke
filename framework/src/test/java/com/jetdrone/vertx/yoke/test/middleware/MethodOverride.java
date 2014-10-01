@@ -1,5 +1,6 @@
 package com.jetdrone.vertx.yoke.test.middleware;
 
+import com.jetdrone.vertx.yoke.Middleware;
 import com.jetdrone.vertx.yoke.Yoke;
 import com.jetdrone.vertx.yoke.middleware.YokeRequest;
 import com.jetdrone.vertx.yoke.test.Response;
@@ -22,23 +23,17 @@ public class MethodOverride extends TestVerticle {
 
         Yoke yoke = new Yoke(this);
         yoke.use(new com.jetdrone.vertx.yoke.middleware.MethodOverride());
-        yoke.use(new Handler<YokeRequest>() {
-            @Override
-            public void handle(YokeRequest request) {
-                assertEquals("DELETE", request.method());
-                request.response().end();
-            }
+        yoke.use((request, next) -> {
+            assertEquals("DELETE", request.method());
+            request.response().end();
         });
 
         MultiMap headers = new CaseInsensitiveMultiMap();
         headers.add("x-http-setMethod-override", "DELETE");
 
-        new YokeTester(yoke).request("GET", "/upload", headers, new Handler<Response>() {
-            @Override
-            public void handle(Response resp) {
-                assertEquals(200, resp.getStatusCode());
-                testComplete();
-            }
+        new YokeTester(yoke).request("GET", "/upload", headers, resp -> {
+            assertEquals(200, resp.getStatusCode());
+            testComplete();
         });
     }
 
@@ -48,12 +43,9 @@ public class MethodOverride extends TestVerticle {
         Yoke yoke = new Yoke(this);
         yoke.use(new com.jetdrone.vertx.yoke.middleware.BodyParser());
         yoke.use(new com.jetdrone.vertx.yoke.middleware.MethodOverride());
-        yoke.use(new Handler<YokeRequest>() {
-            @Override
-            public void handle(YokeRequest request) {
-                assertEquals("DELETE", request.method());
-                request.response().end();
-            }
+        yoke.use((request, next) -> {
+            assertEquals("DELETE", request.method());
+            request.response().end();
         });
 
         Buffer body = new Buffer("_method=delete");
@@ -62,12 +54,9 @@ public class MethodOverride extends TestVerticle {
         headers.add("content-type", "application/x-www-form-urlencoded");
         headers.add("content-length", Integer.toString(body.length()));
 
-        new YokeTester(yoke).request("POST", "/upload", headers, body, new Handler<Response>() {
-            @Override
-            public void handle(Response resp) {
-                assertEquals(200, resp.getStatusCode());
-                testComplete();
-            }
+        new YokeTester(yoke).request("POST", "/upload", headers, body, resp -> {
+            assertEquals(200, resp.getStatusCode());
+            testComplete();
         });
     }
 
@@ -79,12 +68,9 @@ public class MethodOverride extends TestVerticle {
         Yoke yoke = new Yoke(this);
         yoke.use(new com.jetdrone.vertx.yoke.middleware.BodyParser());
         yoke.use(new com.jetdrone.vertx.yoke.middleware.MethodOverride());
-        yoke.use(new Handler<YokeRequest>() {
-            @Override
-            public void handle(YokeRequest request) {
-                assertEquals("DELETE", request.method());
-                request.response().end();
-            }
+        yoke.use((request, next) -> {
+            assertEquals("DELETE", request.method());
+            request.response().end();
         });
 
         Buffer body = new Buffer(json.encode());
@@ -93,12 +79,9 @@ public class MethodOverride extends TestVerticle {
         headers.add("content-type", "application/json");
         headers.add("content-length", Integer.toString(body.length()));
 
-        new YokeTester(yoke).request("POST", "/upload", headers, body, new Handler<Response>() {
-            @Override
-            public void handle(Response resp) {
-                assertEquals(200, resp.getStatusCode());
-                testComplete();
-            }
+        new YokeTester(yoke).request("POST", "/upload", headers, body, resp -> {
+            assertEquals(200, resp.getStatusCode());
+            testComplete();
         });
     }
 }

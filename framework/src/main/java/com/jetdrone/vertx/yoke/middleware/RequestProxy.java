@@ -4,14 +4,10 @@
 package com.jetdrone.vertx.yoke.middleware;
 
 import com.jetdrone.vertx.yoke.AbstractMiddleware;
-import com.jetdrone.vertx.yoke.Middleware;
 import org.jetbrains.annotations.NotNull;
 import org.vertx.java.core.Handler;
 import org.vertx.java.core.http.HttpClient;
-import org.vertx.java.core.VoidHandler;
-import org.vertx.java.core.buffer.Buffer;
 import org.vertx.java.core.http.HttpClientRequest;
-import org.vertx.java.core.http.HttpClientResponse;
 
 /** # RequestProxy
  *
@@ -52,39 +48,17 @@ public class RequestProxy extends AbstractMiddleware {
             client.setSSL(true);
         }
         
-        final HttpClientRequest cReq = client.request(req.method(), newUri, new Handler<HttpClientResponse>() {
-          public void handle(HttpClientResponse cRes) {
-            req.response().setStatusCode(cRes.statusCode());
-            req.response().headers().set(cRes.headers());
-            req.response().setChunked(true);
-            cRes.dataHandler(new Handler<Buffer>() {
-              public void handle(Buffer data) {
-                req.response().write(data);
-              }
-            });
-            cRes.endHandler(new VoidHandler() {
-              public void handle() {
-                req.response().end();
-              }
-            });
-            cRes.exceptionHandler(new Handler<Throwable>() {
-              public void handle(Throwable t) {
-                next.handle(t);
-              }
-            });
-          }
+        final HttpClientRequest cReq = client.request(req.method(), newUri, cRes -> {
+          req.response().setStatusCode(cRes.statusCode());
+          req.response().headers().set(cRes.headers());
+          req.response().setChunked(true);
+          cRes.dataHandler(data -> req.response().write(data));
+          cRes.endHandler(v -> req.response().end());
+          cRes.exceptionHandler(next::handle);
         });
         cReq.headers().set(req.headers());
         cReq.setChunked(true);
-        req.dataHandler(new Handler<Buffer>() {
-          public void handle(Buffer data) {
-            cReq.write(data);
-          }
-        });
-        req.endHandler(new VoidHandler() {
-          public void handle() {
-            cReq.end();
-          }
-        });
+        req.dataHandler(cReq::write);
+        req.endHandler(v -> cReq.end());
     }
 }
