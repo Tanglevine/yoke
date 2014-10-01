@@ -4,6 +4,7 @@ package com.jetdrone.vertx.yoke.extras.middleware;
 import com.jetdrone.vertx.yoke.AbstractMiddleware;
 import com.jetdrone.vertx.yoke.middleware.YokeRequest;
 import com.jetdrone.vertx.yoke.middleware.YokeResponse;
+import org.jetbrains.annotations.NotNull;
 import org.vertx.java.core.Handler;
 import org.vertx.java.core.http.HttpServerResponse;
 
@@ -17,8 +18,7 @@ import static io.netty.handler.codec.http.HttpMethod.OPTIONS;
 /**
  * Basic CORS support.
  */
-public class Cors extends AbstractMiddleware
-{
+public class Cors extends AbstractMiddleware {
     private final Pattern allowedOriginPattern;
     private final Set<String> allowedMethods;
     private final Set<String> allowedHeaders;
@@ -28,14 +28,8 @@ public class Cors extends AbstractMiddleware
     /**
      * @param allowedOriginPattern if null, '*' will be used.
      */
-    public Cors(final Pattern allowedOriginPattern,
-                final Set<String> allowedMethods,
-                final Set<String> allowedHeaders,
-                final Set<String> exposedHeaders,
-                final boolean allowCredentials)
-    {
-        if (allowCredentials && allowedOriginPattern == null)
-        {
+    public Cors(final Pattern allowedOriginPattern, final Set<String> allowedMethods, final Set<String> allowedHeaders, final Set<String> exposedHeaders, final boolean allowCredentials) {
+        if (allowCredentials && allowedOriginPattern == null) {
             throw new IllegalArgumentException("Resource that supports credentials can't accept all origins.");
         }
 
@@ -47,67 +41,52 @@ public class Cors extends AbstractMiddleware
     }
 
     @Override
-    public void handle(final YokeRequest request, final Handler<Object> next)
-    {
-        if (isPreflightRequest(request))
-        {
+    public void handle(@NotNull final YokeRequest request, @NotNull final Handler<Object> next) {
+        if (isPreflightRequest(request)) {
             handlePreflightRequest(request);
-        }
-        else
-        {
+        } else {
             addCorsResponseHeaders(request, request.response());
             next.handle(null);
         }
     }
 
-    private boolean isPreflightRequest(final YokeRequest request)
-    {
+    private boolean isPreflightRequest(final YokeRequest request) {
         return OPTIONS.name().equals(request.method())
-               && (request.getHeader(ACCESS_CONTROL_REQUEST_HEADERS) != null || request.getHeader(ACCESS_CONTROL_REQUEST_METHOD) != null);
+                && (request.getHeader(ACCESS_CONTROL_REQUEST_HEADERS) != null
+                || request.getHeader(ACCESS_CONTROL_REQUEST_METHOD) != null);
     }
 
-    private void handlePreflightRequest(final YokeRequest request)
-    {
-        if (isValidOrigin(request.getHeader(ORIGIN)))
-        {
+    private void handlePreflightRequest(final YokeRequest request) {
+        if (isValidOrigin(request.getHeader(ORIGIN))) {
             addCorsResponseHeaders(request.getHeader(ORIGIN),
-                request.response().setStatusCode(204).setStatusMessage("No Content")).end();
-        }
-        else
-        {
+                    request.response().setStatusCode(204).setStatusMessage("No Content")).end();
+        } else {
             request.response().setStatusCode(403).setStatusMessage("CORS Rejected").end();
         }
     }
 
-    private HttpServerResponse addCorsResponseHeaders(final YokeRequest request, final YokeResponse response)
-    {
+    private HttpServerResponse addCorsResponseHeaders(final YokeRequest request, final YokeResponse response) {
         final String origin = request.getHeader(ORIGIN);
         return addCorsResponseHeaders(origin, response);
     }
 
-    private HttpServerResponse addCorsResponseHeaders(final String origin, final YokeResponse response)
-    {
-        if (isValidOrigin(origin))
-        {
+    private HttpServerResponse addCorsResponseHeaders(final String origin, final YokeResponse response) {
+        if (isValidOrigin(origin)) {
             response.putHeader(ACCESS_CONTROL_ALLOW_ORIGIN, getAllowedOrigin(origin));
 
-            if (!isEmpty(allowedMethods))
-            {
-                response.putHeader(ACCESS_CONTROL_ALLOW_METHODS, join(allowedMethods, ","));
+            if (!isEmpty(allowedMethods)) {
+                response.putHeader(ACCESS_CONTROL_ALLOW_METHODS, String.join(",", allowedMethods));
             }
 
-            if (!isEmpty(allowedHeaders))
-            {
-                response.putHeader(ACCESS_CONTROL_ALLOW_HEADERS, join(allowedHeaders, ","));
+            if (!isEmpty(allowedHeaders)) {
+                response.putHeader(ACCESS_CONTROL_ALLOW_HEADERS, String.join(",", allowedHeaders));
             }
 
-            if (!isEmpty(exposedHeaders))
-            {
-                response.putHeader(ACCESS_CONTROL_EXPOSE_HEADERS, join(exposedHeaders, ","));
+            if (!isEmpty(exposedHeaders)) {
+                response.putHeader(ACCESS_CONTROL_EXPOSE_HEADERS, String.join(",", exposedHeaders));
             }
 
-            if (allowCredentials)
-            {
+            if (allowCredentials) {
                 response.putHeader(ACCESS_CONTROL_ALLOW_CREDENTIALS, "true");
             }
         }
@@ -115,45 +94,20 @@ public class Cors extends AbstractMiddleware
         return response;
     }
 
-    private boolean isValidOrigin(final String origin)
-    {
+    private boolean isValidOrigin(final String origin) {
         return allowedOriginPattern == null
-               || (isNotBlank(origin) && allowedOriginPattern.matcher(origin).matches());
+                || (isNotBlank(origin) && allowedOriginPattern.matcher(origin).matches());
     }
 
-    private String getAllowedOrigin(final String origin)
-    {
+    private String getAllowedOrigin(final String origin) {
         return allowedOriginPattern == null ? "*" : origin;
     }
 
-    private static boolean isEmpty(final Collection<?> c)
-    {
-        return c == null ? true : c.isEmpty();
+    private static boolean isEmpty(final Collection<?> c) {
+        return c == null || c.isEmpty();
     }
 
-    private static boolean isNotBlank(final String s)
-    {
-        return s == null ? false : !s.trim().isEmpty();
-    }
-
-    private static String join(final Collection<String> ss, final String j)
-    {
-        if (ss == null || ss.isEmpty())
-        {
-            return "";
-        }
-
-        final StringBuffer sb = new StringBuffer();
-        boolean first = true;
-        for (final String s : ss)
-        {
-            if (!first)
-            {
-                sb.append(j);
-            }
-            sb.append(s);
-            first = false;
-        }
-        return sb.toString();
+    private static boolean isNotBlank(final String s) {
+        return s != null && !s.trim().isEmpty();
     }
 }

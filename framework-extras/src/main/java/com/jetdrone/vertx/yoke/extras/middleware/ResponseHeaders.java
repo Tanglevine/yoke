@@ -5,6 +5,7 @@ import com.jetdrone.vertx.yoke.AbstractMiddleware;
 import com.jetdrone.vertx.yoke.Middleware;
 import com.jetdrone.vertx.yoke.middleware.YokeRequest;
 import com.jetdrone.vertx.yoke.middleware.YokeResponse;
+import org.jetbrains.annotations.NotNull;
 import org.vertx.java.core.Handler;
 
 import java.util.Arrays;
@@ -45,7 +46,7 @@ public class ResponseHeaders extends AbstractMiddleware
     }
 
     @Override
-    public void handle(final YokeRequest request, final Handler<Object> next)
+    public void handle(@NotNull final YokeRequest request, @NotNull final Handler<Object> next)
     {
         for (final Entry<CharSequence, CharSequence[]> header : headers.entrySet())
         {
