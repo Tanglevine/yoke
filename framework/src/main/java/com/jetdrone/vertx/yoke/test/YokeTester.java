@@ -5,7 +5,10 @@ package com.jetdrone.vertx.yoke.test;
 
 import com.jetdrone.vertx.yoke.Yoke;
 import io.netty.handler.codec.http.QueryStringDecoder;
-import org.vertx.java.core.*;
+import org.vertx.java.core.AsyncResult;
+import org.vertx.java.core.Handler;
+import org.vertx.java.core.MultiMap;
+import org.vertx.java.core.Vertx;
 import org.vertx.java.core.buffer.Buffer;
 import org.vertx.java.core.http.*;
 import org.vertx.java.core.net.NetSocket;
@@ -16,7 +19,9 @@ import javax.security.cert.X509Certificate;
 import java.net.InetSocketAddress;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.*;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * # YokeTester

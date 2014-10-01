@@ -1,12 +1,13 @@
 package com.jetdrone.vertx;
 
-import com.jetdrone.vertx.yoke.Middleware;
 import com.jetdrone.vertx.yoke.Yoke;
-import com.jetdrone.vertx.yoke.middleware.*;
+import com.jetdrone.vertx.yoke.middleware.BodyParser;
+import com.jetdrone.vertx.yoke.middleware.CookieParser;
+import com.jetdrone.vertx.yoke.middleware.Router;
+import com.jetdrone.vertx.yoke.middleware.Session;
 import com.jetdrone.vertx.yoke.store.MongoDBSessionStore;
 import org.vertx.java.core.AsyncResult;
 import org.vertx.java.core.AsyncResultHandler;
-import org.vertx.java.core.Handler;
 import org.vertx.java.core.json.JsonObject;
 import org.vertx.java.platform.Verticle;
 

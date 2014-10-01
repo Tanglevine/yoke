@@ -3,7 +3,8 @@ package test.json
 import com.jetdrone.vertx.yoke.json.JsonSchemaResolver
 import org.junit.Test
 
-import static org.junit.Assert.*
+import static org.junit.Assert.assertEquals
+import static org.junit.Assert.assertNotNull
 
 class Resolver {
 

@@ -5,8 +5,8 @@ import com.jetdrone.vertx.yoke.middleware.CookieParser;
 import com.jetdrone.vertx.yoke.middleware.Router;
 import com.jetdrone.vertx.yoke.test.YokeTester;
 import org.junit.Test;
-import org.vertx.java.core.http.CaseInsensitiveMultiMap;
 import org.vertx.java.core.MultiMap;
+import org.vertx.java.core.http.CaseInsensitiveMultiMap;
 import org.vertx.testtools.TestVerticle;
 
 import javax.crypto.Mac;

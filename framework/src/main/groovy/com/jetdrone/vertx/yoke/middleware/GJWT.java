@@ -1,10 +1,7 @@
 package com.jetdrone.vertx.yoke.middleware;
 
 import groovy.lang.Closure;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.vertx.java.core.Handler;
-import org.vertx.java.core.json.JsonObject;
 
 public class GJWT extends JWT {
     public GJWT() {

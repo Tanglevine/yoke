@@ -9,8 +9,8 @@ import com.jetdrone.vertx.yoke.core.GMultiMap;
 import com.jetdrone.vertx.yoke.core.JSON;
 import groovy.lang.Closure;
 import org.jetbrains.annotations.NotNull;
-import org.vertx.java.core.http.HttpServerResponse;
 import org.vertx.groovy.core.buffer.Buffer;
+import org.vertx.java.core.http.HttpServerResponse;
 
 import java.util.List;
 import java.util.Map;

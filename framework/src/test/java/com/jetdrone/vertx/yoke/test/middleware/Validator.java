@@ -2,8 +2,8 @@ package com.jetdrone.vertx.yoke.test.middleware;
 
 import com.jetdrone.vertx.yoke.Middleware;
 import com.jetdrone.vertx.yoke.Yoke;
-import com.jetdrone.vertx.yoke.middleware.*;
 import com.jetdrone.vertx.yoke.middleware.Router;
+import com.jetdrone.vertx.yoke.middleware.YokeRequest;
 import com.jetdrone.vertx.yoke.test.YokeTester;
 import com.jetdrone.vertx.yoke.util.validation.Type;
 import org.junit.Test;

@@ -1,11 +1,8 @@
-import org.vertx.java.platform.Verticle;
-import org.vertx.java.core.Handler;
-
 import com.jetdrone.vertx.yoke.Yoke;
+import com.jetdrone.vertx.yoke.engine.StringPlaceholderEngine;
 import com.jetdrone.vertx.yoke.middleware.*;
-import com.jetdrone.vertx.yoke.engine.*;
-
-import java.lang.Override;
+import org.vertx.java.core.Handler;
+import org.vertx.java.platform.Verticle;
 
 public class App extends Verticle {
 

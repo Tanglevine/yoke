@@ -8,7 +8,7 @@ import org.vertx.java.core.json.JsonArray;
 import org.vertx.java.core.json.JsonObject;
 import org.vertx.testtools.TestVerticle;
 
-import static org.vertx.testtools.VertxAssert.*;
+import static org.vertx.testtools.VertxAssert.testComplete;
 
 public class RestTest extends TestVerticle {
 

@@ -3,13 +3,14 @@ package com.jetdrone.vertx.yoke.test.middleware;
 import com.jetdrone.vertx.yoke.Yoke;
 import com.jetdrone.vertx.yoke.test.YokeTester;
 import org.junit.Test;
-import org.vertx.java.core.http.CaseInsensitiveMultiMap;
 import org.vertx.java.core.MultiMap;
+import org.vertx.java.core.http.CaseInsensitiveMultiMap;
 import org.vertx.testtools.TestVerticle;
 
 import java.util.Locale;
 
-import static org.vertx.testtools.VertxAssert.*;
+import static org.vertx.testtools.VertxAssert.assertEquals;
+import static org.vertx.testtools.VertxAssert.testComplete;
 
 public class RequestFunctions extends TestVerticle {
 

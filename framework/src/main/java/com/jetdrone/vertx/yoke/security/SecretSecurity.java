@@ -3,10 +3,11 @@ package com.jetdrone.vertx.yoke.security;
 import com.jetdrone.vertx.yoke.YokeSecurity;
 import org.jetbrains.annotations.NotNull;
 
-import javax.crypto.*;
+import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 import java.security.*;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
 
 public final class SecretSecurity extends YokeSecurity {
 

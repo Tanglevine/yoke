@@ -3,8 +3,8 @@ package com.jetdrone.vertx.yoke.test.middleware;
 import com.jetdrone.vertx.yoke.Yoke;
 import com.jetdrone.vertx.yoke.test.YokeTester;
 import org.junit.Test;
-import org.vertx.java.core.http.CaseInsensitiveMultiMap;
 import org.vertx.java.core.MultiMap;
+import org.vertx.java.core.http.CaseInsensitiveMultiMap;
 import org.vertx.java.core.json.JsonObject;
 import org.vertx.testtools.TestVerticle;
 

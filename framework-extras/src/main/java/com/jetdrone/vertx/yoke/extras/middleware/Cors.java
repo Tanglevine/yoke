@@ -1,27 +1,18 @@
 
 package com.jetdrone.vertx.yoke.extras.middleware;
 
-import static io.netty.handler.codec.http.HttpHeaders.Names.ACCESS_CONTROL_ALLOW_CREDENTIALS;
-import static io.netty.handler.codec.http.HttpHeaders.Names.ACCESS_CONTROL_ALLOW_HEADERS;
-import static io.netty.handler.codec.http.HttpHeaders.Names.ACCESS_CONTROL_ALLOW_METHODS;
-import static io.netty.handler.codec.http.HttpHeaders.Names.ACCESS_CONTROL_ALLOW_ORIGIN;
-import static io.netty.handler.codec.http.HttpHeaders.Names.ACCESS_CONTROL_EXPOSE_HEADERS;
-import static io.netty.handler.codec.http.HttpHeaders.Names.ACCESS_CONTROL_REQUEST_HEADERS;
-import static io.netty.handler.codec.http.HttpHeaders.Names.ACCESS_CONTROL_REQUEST_METHOD;
-import static io.netty.handler.codec.http.HttpHeaders.Names.ORIGIN;
-import static io.netty.handler.codec.http.HttpMethod.OPTIONS;
+import com.jetdrone.vertx.yoke.AbstractMiddleware;
+import com.jetdrone.vertx.yoke.middleware.YokeRequest;
+import com.jetdrone.vertx.yoke.middleware.YokeResponse;
+import org.vertx.java.core.Handler;
+import org.vertx.java.core.http.HttpServerResponse;
 
 import java.util.Collection;
 import java.util.Set;
 import java.util.regex.Pattern;
 
-import com.jetdrone.vertx.yoke.AbstractMiddleware;
-import org.vertx.java.core.Handler;
-import org.vertx.java.core.http.HttpServerResponse;
-
-import com.jetdrone.vertx.yoke.Middleware;
-import com.jetdrone.vertx.yoke.middleware.YokeRequest;
-import com.jetdrone.vertx.yoke.middleware.YokeResponse;
+import static io.netty.handler.codec.http.HttpHeaders.Names.*;
+import static io.netty.handler.codec.http.HttpMethod.OPTIONS;
 
 /**
  * Basic CORS support.

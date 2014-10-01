@@ -4,8 +4,8 @@
 package com.jetdrone.vertx.yoke.middleware;
 
 import com.jetdrone.vertx.yoke.AbstractMiddleware;
-import com.jetdrone.vertx.yoke.util.Utils;
 import com.jetdrone.vertx.yoke.core.YokeException;
+import com.jetdrone.vertx.yoke.util.Utils;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import org.jetbrains.annotations.NotNull;
 import org.vertx.java.core.Handler;

@@ -1,12 +1,11 @@
 package com.jetdrone.vertx.extras;
 
-import com.jetdrone.vertx.yoke.Middleware;
 import com.jetdrone.vertx.yoke.Yoke;
 import com.jetdrone.vertx.yoke.engine.HandlebarsEngine;
-import com.jetdrone.vertx.yoke.middleware.*;
 import com.jetdrone.vertx.yoke.middleware.BodyParser;
+import com.jetdrone.vertx.yoke.middleware.ErrorHandler;
+import com.jetdrone.vertx.yoke.middleware.JsonRestRouter;
 import com.jetdrone.vertx.yoke.middleware.rest.MongoDbStore;
-import org.vertx.java.core.Handler;
 import org.vertx.java.core.eventbus.EventBus;
 import org.vertx.java.core.json.JsonObject;
 import org.vertx.java.platform.Verticle;

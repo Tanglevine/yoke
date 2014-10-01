@@ -3,23 +3,11 @@
  */
 package com.jetdrone.vertx.yoke.middleware;
 
-import java.net.InetSocketAddress;
-import java.net.URI;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Deque;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
-
-import javax.net.ssl.SSLPeerUnverifiedException;
-import javax.security.cert.X509Certificate;
-
+import com.jetdrone.vertx.yoke.core.Context;
+import com.jetdrone.vertx.yoke.core.YokeCookie;
+import com.jetdrone.vertx.yoke.core.YokeFileUpload;
+import com.jetdrone.vertx.yoke.store.SessionStore;
+import com.jetdrone.vertx.yoke.store.json.SessionObject;
 import com.jetdrone.vertx.yoke.util.Utils;
 import org.jetbrains.annotations.NotNull;
 import org.vertx.java.core.Handler;
@@ -32,11 +20,11 @@ import org.vertx.java.core.json.JsonArray;
 import org.vertx.java.core.json.JsonObject;
 import org.vertx.java.core.net.NetSocket;
 
-import com.jetdrone.vertx.yoke.core.Context;
-import com.jetdrone.vertx.yoke.core.YokeCookie;
-import com.jetdrone.vertx.yoke.core.YokeFileUpload;
-import com.jetdrone.vertx.yoke.store.SessionStore;
-import com.jetdrone.vertx.yoke.store.json.SessionObject;
+import javax.net.ssl.SSLPeerUnverifiedException;
+import javax.security.cert.X509Certificate;
+import java.net.InetSocketAddress;
+import java.net.URI;
+import java.util.*;
 
 /** YokeRequest is an extension to Vert.x *HttpServerRequest* with some helper methods to make it easier to perform common
  * tasks related to web application development.

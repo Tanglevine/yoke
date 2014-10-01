@@ -5,7 +5,8 @@ import com.jetdrone.vertx.yoke.test.YokeTester;
 import org.junit.Test;
 import org.vertx.testtools.TestVerticle;
 
-import static org.vertx.testtools.VertxAssert.*;
+import static org.vertx.testtools.VertxAssert.assertEquals;
+import static org.vertx.testtools.VertxAssert.testComplete;
 
 public class Timeout extends TestVerticle {
 

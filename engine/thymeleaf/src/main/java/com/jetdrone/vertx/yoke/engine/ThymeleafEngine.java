@@ -17,13 +17,10 @@ package com.jetdrone.vertx.yoke.engine;
 
 import com.jetdrone.vertx.yoke.Engine;
 import com.jetdrone.vertx.yoke.core.YokeAsyncResult;
-import org.thymeleaf.Arguments;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.TemplateProcessingParameters;
 import org.thymeleaf.context.IContext;
 import org.thymeleaf.context.VariablesMap;
-import org.thymeleaf.messageresolver.IMessageResolver;
-import org.thymeleaf.messageresolver.MessageResolution;
 import org.thymeleaf.resourceresolver.IResourceResolver;
 import org.thymeleaf.templateresolver.TemplateResolver;
 import org.vertx.java.core.AsyncResult;

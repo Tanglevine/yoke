@@ -1,8 +1,7 @@
-import org.vertx.groovy.platform.Verticle
-
-import com.jetdrone.vertx.yoke.middleware.*
 import com.jetdrone.vertx.yoke.GYoke
 import com.jetdrone.vertx.yoke.engine.GroovyTemplateEngine
+import com.jetdrone.vertx.yoke.middleware.*
+import org.vertx.groovy.platform.Verticle
 
 class App extends Verticle {
 

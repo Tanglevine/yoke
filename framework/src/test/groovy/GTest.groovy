@@ -15,7 +15,8 @@ import org.vertx.testtools.TestVerticle
 
 import java.util.regex.Pattern
 
-import static org.vertx.testtools.VertxAssert.*
+import static org.vertx.testtools.VertxAssert.assertEquals
+import static org.vertx.testtools.VertxAssert.testComplete
 
 class GTest extends TestVerticle {
 

@@ -1,17 +1,16 @@
 
 package com.jetdrone.vertx.yoke.extras.middleware;
 
+import com.jetdrone.vertx.yoke.AbstractMiddleware;
+import com.jetdrone.vertx.yoke.Middleware;
+import com.jetdrone.vertx.yoke.middleware.YokeRequest;
+import com.jetdrone.vertx.yoke.middleware.YokeResponse;
+import org.vertx.java.core.Handler;
+
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
-
-import com.jetdrone.vertx.yoke.AbstractMiddleware;
-import org.vertx.java.core.Handler;
-
-import com.jetdrone.vertx.yoke.Middleware;
-import com.jetdrone.vertx.yoke.middleware.YokeRequest;
-import com.jetdrone.vertx.yoke.middleware.YokeResponse;
 
 /**
  * <p>

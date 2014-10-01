@@ -1,11 +1,9 @@
 package com.jetdrone.vertx.yoke.test.middleware;
 
 import com.jetdrone.vertx.yoke.Yoke;
-import com.jetdrone.vertx.yoke.util.Utils;
-import com.jetdrone.vertx.yoke.test.Response;
 import com.jetdrone.vertx.yoke.test.YokeTester;
+import com.jetdrone.vertx.yoke.util.Utils;
 import org.junit.Test;
-import org.vertx.java.core.Handler;
 import org.vertx.java.core.buffer.Buffer;
 import org.vertx.testtools.TestVerticle;
 

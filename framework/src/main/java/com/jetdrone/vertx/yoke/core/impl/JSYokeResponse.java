@@ -1,29 +1,19 @@
 package com.jetdrone.vertx.yoke.core.impl;
 
-import static com.jetdrone.vertx.yoke.core.impl.JSUtil.EMPTY_OBJECT_ARRAY;
-import static com.jetdrone.vertx.yoke.core.impl.JSUtil.is;
-import static com.jetdrone.vertx.yoke.core.impl.JSUtil.javaToJS;
+import com.jetdrone.vertx.yoke.Engine;
+import com.jetdrone.vertx.yoke.core.Context;
+import com.jetdrone.vertx.yoke.middleware.YokeResponse;
 import io.netty.handler.codec.http.Cookie;
-
-import java.util.Map;
-
-import org.mozilla.javascript.Callable;
-import org.mozilla.javascript.NativeArray;
-import org.mozilla.javascript.NativeJSON;
-import org.mozilla.javascript.NativeObject;
-import org.mozilla.javascript.Scriptable;
-import org.mozilla.javascript.Undefined;
-import org.mozilla.javascript.WrappedException;
-import org.vertx.java.core.AsyncResult;
+import org.mozilla.javascript.*;
 import org.vertx.java.core.Handler;
 import org.vertx.java.core.buffer.Buffer;
 import org.vertx.java.core.http.HttpServerResponse;
 import org.vertx.java.core.json.JsonElement;
 import org.vertx.java.core.streams.ReadStream;
 
-import com.jetdrone.vertx.yoke.Engine;
-import com.jetdrone.vertx.yoke.core.Context;
-import com.jetdrone.vertx.yoke.middleware.YokeResponse;
+import java.util.Map;
+
+import static com.jetdrone.vertx.yoke.core.impl.JSUtil.*;
 
 final class JSYokeResponse  extends YokeResponse implements Scriptable {
 

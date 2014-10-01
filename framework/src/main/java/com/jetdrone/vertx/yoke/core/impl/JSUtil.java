@@ -1,22 +1,17 @@
 package com.jetdrone.vertx.yoke.core.impl;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import org.mozilla.javascript.Context;
-import org.mozilla.javascript.NativeArray;
-import org.mozilla.javascript.NativeJSON;
-import org.mozilla.javascript.NativeObject;
-import org.mozilla.javascript.Scriptable;
+import com.jetdrone.vertx.yoke.store.json.ChangeAwareJsonArray;
+import com.jetdrone.vertx.yoke.store.json.ChangeAwareJsonElement;
+import org.mozilla.javascript.*;
 import org.vertx.java.core.MultiMap;
 import org.vertx.java.core.json.JsonArray;
 import org.vertx.java.core.json.JsonElement;
 import org.vertx.java.core.json.JsonObject;
 import org.vertx.java.core.json.impl.Json;
 
-import com.jetdrone.vertx.yoke.store.json.ChangeAwareJsonArray;
-import com.jetdrone.vertx.yoke.store.json.ChangeAwareJsonElement;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 class JSUtil {
 

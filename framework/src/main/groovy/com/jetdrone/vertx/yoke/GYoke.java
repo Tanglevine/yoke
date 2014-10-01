@@ -8,12 +8,11 @@ import com.jetdrone.vertx.yoke.middleware.YokeRequest;
 import com.jetdrone.vertx.yoke.store.SessionStore;
 import groovy.lang.Closure;
 import org.jetbrains.annotations.NotNull;
+import org.vertx.groovy.core.Vertx;
+import org.vertx.groovy.core.http.HttpServer;
 import org.vertx.groovy.platform.Container;
 import org.vertx.groovy.platform.Verticle;
 import org.vertx.java.core.Handler;
-
-import org.vertx.groovy.core.Vertx;
-import org.vertx.groovy.core.http.HttpServer;
 import org.vertx.java.core.json.JsonObject;
 
 import java.util.Collections;

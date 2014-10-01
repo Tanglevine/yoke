@@ -3,7 +3,6 @@ package test
 import com.jetdrone.vertx.yoke.json.JsonSchema
 import com.jetdrone.vertx.yoke.json.StringValidator
 import org.junit.Test
-import org.vertx.java.core.json.JsonObject
 
 import java.util.regex.Pattern
 

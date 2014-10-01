@@ -15,13 +15,13 @@
  */
 package org.pac4j.vertx;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import com.jetdrone.vertx.yoke.middleware.YokeRequest;
 import com.jetdrone.vertx.yoke.middleware.YokeResponse;
 import org.pac4j.core.context.WebContext;
 import org.vertx.java.core.json.JsonObject;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * WebContext implementation for Vert.x.

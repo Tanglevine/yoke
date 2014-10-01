@@ -3,15 +3,13 @@
  */
 package com.jetdrone.vertx.yoke.middleware;
 
-import javax.crypto.Mac;
-
 import com.jetdrone.vertx.yoke.AbstractMiddleware;
+import com.jetdrone.vertx.yoke.core.YokeCookie;
+import com.jetdrone.vertx.yoke.store.json.SessionObject;
 import org.jetbrains.annotations.NotNull;
 import org.vertx.java.core.Handler;
 
-import com.jetdrone.vertx.yoke.Middleware;
-import com.jetdrone.vertx.yoke.core.YokeCookie;
-import com.jetdrone.vertx.yoke.store.json.SessionObject;
+import javax.crypto.Mac;
 
 /**
  * # Session

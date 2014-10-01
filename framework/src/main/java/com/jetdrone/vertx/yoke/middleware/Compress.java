@@ -4,7 +4,6 @@
 package com.jetdrone.vertx.yoke.middleware;
 
 import com.jetdrone.vertx.yoke.AbstractMiddleware;
-import com.jetdrone.vertx.yoke.Middleware;
 import com.jetdrone.vertx.yoke.middleware.filters.DeflateWriterFilter;
 import com.jetdrone.vertx.yoke.middleware.filters.GZipWriterFilter;
 import org.jetbrains.annotations.NotNull;

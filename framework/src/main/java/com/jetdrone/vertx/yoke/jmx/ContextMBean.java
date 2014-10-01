@@ -1,7 +1,8 @@
 package com.jetdrone.vertx.yoke.jmx;
 
 import javax.management.*;
-import java.util.*;
+import java.util.Iterator;
+import java.util.Map;
 
 public final class ContextMBean implements DynamicMBean {
 

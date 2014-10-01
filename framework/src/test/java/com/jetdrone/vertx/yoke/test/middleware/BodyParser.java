@@ -5,9 +5,9 @@ import com.jetdrone.vertx.yoke.middleware.Limit;
 import com.jetdrone.vertx.yoke.test.YokeTester;
 import io.netty.handler.codec.http.HttpHeaders;
 import org.junit.Test;
-import org.vertx.java.core.http.CaseInsensitiveMultiMap;
 import org.vertx.java.core.MultiMap;
 import org.vertx.java.core.buffer.Buffer;
+import org.vertx.java.core.http.CaseInsensitiveMultiMap;
 import org.vertx.java.core.json.JsonObject;
 import org.vertx.testtools.TestVerticle;
 

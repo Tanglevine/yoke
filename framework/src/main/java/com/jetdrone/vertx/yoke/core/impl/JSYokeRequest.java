@@ -1,11 +1,8 @@
 package com.jetdrone.vertx.yoke.core.impl;
 
-import static com.jetdrone.vertx.yoke.core.impl.JSUtil.EMPTY_OBJECT_ARRAY;
-import static com.jetdrone.vertx.yoke.core.impl.JSUtil.isVararg;
-import static com.jetdrone.vertx.yoke.core.impl.JSUtil.javaToJS;
-
-import javax.net.ssl.SSLPeerUnverifiedException;
-
+import com.jetdrone.vertx.yoke.core.Context;
+import com.jetdrone.vertx.yoke.middleware.YokeRequest;
+import com.jetdrone.vertx.yoke.store.SessionStore;
 import org.mozilla.javascript.Callable;
 import org.mozilla.javascript.Scriptable;
 import org.mozilla.javascript.Undefined;
@@ -14,9 +11,9 @@ import org.vertx.java.core.Handler;
 import org.vertx.java.core.buffer.Buffer;
 import org.vertx.java.core.http.HttpServerRequest;
 
-import com.jetdrone.vertx.yoke.core.Context;
-import com.jetdrone.vertx.yoke.middleware.YokeRequest;
-import com.jetdrone.vertx.yoke.store.SessionStore;
+import javax.net.ssl.SSLPeerUnverifiedException;
+
+import static com.jetdrone.vertx.yoke.core.impl.JSUtil.*;
 
 final class JSYokeRequest  extends YokeRequest implements Scriptable {
 

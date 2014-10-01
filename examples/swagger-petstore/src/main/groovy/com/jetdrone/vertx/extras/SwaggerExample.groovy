@@ -1,12 +1,8 @@
 package com.jetdrone.vertx.extras
 
-import com.jetdrone.vertx.yoke.middleware.GSwagger
-import com.jetdrone.vertx.yoke.middleware.BodyParser
-import com.jetdrone.vertx.yoke.middleware.ErrorHandler
-import com.jetdrone.vertx.yoke.middleware.GRouter
-import com.jetdrone.vertx.yoke.middleware.Static
-import org.vertx.groovy.platform.Verticle
 import com.jetdrone.vertx.yoke.GYoke
+import com.jetdrone.vertx.yoke.middleware.*
+import org.vertx.groovy.platform.Verticle
 
 public class SwaggerExample extends Verticle {
 

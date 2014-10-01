@@ -3,7 +3,6 @@ package com.jetdrone.vertx.oauth2;
 import com.jetdrone.vertx.yoke.Middleware;
 import com.jetdrone.vertx.yoke.Yoke;
 import com.jetdrone.vertx.yoke.extras.middleware.OAuth2Provider;
-import com.jetdrone.vertx.yoke.middleware.*;
 import com.jetdrone.vertx.yoke.util.Utils;
 import org.vertx.java.core.Handler;
 import org.vertx.java.core.json.JsonObject;

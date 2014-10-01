@@ -1,11 +1,11 @@
 package com.jetdrone.vertx.yoke.store.json;
 
-import java.util.Map;
-import java.util.Set;
-
 import org.vertx.java.core.json.JsonArray;
 import org.vertx.java.core.json.JsonElement;
 import org.vertx.java.core.json.JsonObject;
+
+import java.util.Map;
+import java.util.Set;
 
 public class ChangeAwareJsonObject extends ChangeAwareJsonElement {
 

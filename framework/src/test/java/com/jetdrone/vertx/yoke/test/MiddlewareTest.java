@@ -1,7 +1,6 @@
 package com.jetdrone.vertx.yoke.test;
 
 import com.jetdrone.vertx.yoke.AbstractMiddleware;
-import com.jetdrone.vertx.yoke.Middleware;
 import com.jetdrone.vertx.yoke.Yoke;
 import com.jetdrone.vertx.yoke.middleware.YokeRequest;
 import com.jetdrone.vertx.yoke.util.Utils;
@@ -13,7 +12,8 @@ import org.vertx.testtools.TestVerticle;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.transform.TransformerException;
 
-import static org.vertx.testtools.VertxAssert.*;
+import static org.vertx.testtools.VertxAssert.assertNotNull;
+import static org.vertx.testtools.VertxAssert.testComplete;
 
 public class MiddlewareTest extends TestVerticle {
 

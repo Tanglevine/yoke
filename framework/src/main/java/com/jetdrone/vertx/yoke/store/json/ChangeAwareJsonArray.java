@@ -1,12 +1,12 @@
 package com.jetdrone.vertx.yoke.store.json;
 
-import java.util.Iterator;
-import java.util.List;
-
 import org.vertx.java.core.json.EncodeException;
 import org.vertx.java.core.json.JsonArray;
 import org.vertx.java.core.json.JsonElement;
 import org.vertx.java.core.json.JsonObject;
+
+import java.util.Iterator;
+import java.util.List;
 
 public class ChangeAwareJsonArray extends ChangeAwareJsonElement {
 

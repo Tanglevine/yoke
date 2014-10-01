@@ -4,8 +4,6 @@
 package com.jetdrone.vertx.yoke.middleware;
 
 import groovy.lang.Closure;
-import org.vertx.java.core.Handler;
-import org.vertx.java.core.json.JsonObject;
 
 public class GFormAuth extends FormAuth {
 

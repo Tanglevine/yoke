@@ -1,7 +1,7 @@
 package com.jetdrone.vertx.yoke.annotations.processors;
 
-import com.jetdrone.vertx.yoke.json.JsonSchemaResolver;
 import com.jetdrone.vertx.yoke.annotations.*;
+import com.jetdrone.vertx.yoke.json.JsonSchemaResolver;
 import com.jetdrone.vertx.yoke.middleware.Swagger;
 import com.jetdrone.vertx.yoke.middleware.YokeRequest;
 import org.vertx.java.core.Handler;

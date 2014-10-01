@@ -1,8 +1,10 @@
-import com.jetdrone.vertx.yoke.middleware.*
 import com.jetdrone.vertx.yoke.GYoke
 import com.jetdrone.vertx.yoke.engine.GroovyTemplateEngine
 import com.jetdrone.vertx.yoke.engine.HandlebarsEngine
 import com.jetdrone.vertx.yoke.engine.Jade4JEngine
+import com.jetdrone.vertx.yoke.middleware.ErrorHandler
+import com.jetdrone.vertx.yoke.middleware.GRouter
+import com.jetdrone.vertx.yoke.middleware.Static
 
 def webServerHost = '192.168.1.6';
 

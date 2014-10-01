@@ -4,7 +4,6 @@ import com.jetdrone.vertx.yoke.Middleware;
 import com.jetdrone.vertx.yoke.Yoke;
 import com.jetdrone.vertx.yoke.middleware.TooBusy;
 import com.jetdrone.vertx.yoke.middleware.YokeRequest;
-import com.jetdrone.vertx.yoke.test.Response;
 import com.jetdrone.vertx.yoke.test.YokeTester;
 import org.jetbrains.annotations.NotNull;
 import org.junit.Test;
@@ -13,7 +12,8 @@ import org.vertx.testtools.TestVerticle;
 
 import java.security.SecureRandom;
 
-import static org.vertx.testtools.VertxAssert.*;
+import static org.vertx.testtools.VertxAssert.assertTrue;
+import static org.vertx.testtools.VertxAssert.testComplete;
 
 public class TooBusyTest extends TestVerticle {
 

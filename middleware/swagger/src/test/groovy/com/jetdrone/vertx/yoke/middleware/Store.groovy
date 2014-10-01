@@ -1,7 +1,7 @@
-package com.jetdrone.vertx.yoke.middleware;
+package com.jetdrone.vertx.yoke.middleware
 
-import com.jetdrone.vertx.yoke.annotations.*;
-import org.vertx.java.core.Handler;
+import com.jetdrone.vertx.yoke.annotations.*
+import org.vertx.java.core.Handler
 
 @SwaggerResource(
         path = "/store",

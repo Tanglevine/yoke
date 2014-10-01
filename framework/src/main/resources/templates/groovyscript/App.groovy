@@ -1,10 +1,8 @@
 package templates.groovyscript
 
-import com.jetdrone.vertx.yoke.middleware.*
 import com.jetdrone.vertx.yoke.GYoke
 import com.jetdrone.vertx.yoke.engine.GroovyTemplateEngine
-
-
+import com.jetdrone.vertx.yoke.middleware.*
 
 // Create a new Yoke Application
 GYoke app = new GYoke(vertx, container)

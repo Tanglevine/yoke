@@ -1,11 +1,7 @@
 package com.jetdrone.vertx;
 
-import com.jetdrone.vertx.yoke.Middleware;
 import com.jetdrone.vertx.yoke.Yoke;
-import com.jetdrone.vertx.yoke.middleware.AuthHandler;
-import com.jetdrone.vertx.yoke.middleware.FormAuth;
 import com.jetdrone.vertx.yoke.middleware.*;
-import org.vertx.java.core.Handler;
 import org.vertx.java.core.json.JsonObject;
 import org.vertx.java.platform.Verticle;
 

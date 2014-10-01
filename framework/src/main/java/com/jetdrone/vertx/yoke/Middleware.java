@@ -6,9 +6,6 @@ package com.jetdrone.vertx.yoke;
 import com.jetdrone.vertx.yoke.middleware.YokeRequest;
 import org.jetbrains.annotations.NotNull;
 import org.vertx.java.core.Handler;
-import org.vertx.java.core.Vertx;
-import org.vertx.java.core.eventbus.EventBus;
-import org.vertx.java.core.file.FileSystem;
 
 /**
  * # Middleware
@@ -16,7 +13,7 @@ import org.vertx.java.core.file.FileSystem;
 @FunctionalInterface
 public interface Middleware extends Handler<YokeRequest> {
 
-    default public void handle(@NotNull final YokeRequest request) {
+    default void handle(@NotNull final YokeRequest request) {
         handle(request, null);
     }
 
@@ -58,5 +55,5 @@ public interface Middleware extends Handler<YokeRequest> {
      * @param next    The callback to inform that the next middleware in the chain should be used. A value different from
      *                null represents an error and in that case the error handler middleware will be executed.
      */
-    public abstract void handle(@NotNull final YokeRequest request, @NotNull final Handler<Object> next);
+    void handle(@NotNull final YokeRequest request, @NotNull final Handler<Object> next);
 }

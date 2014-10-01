@@ -1,23 +1,20 @@
 package com.jetdrone.vertx.yoke.engine;
 
-import static org.vertx.testtools.VertxAssert.assertEquals;
-import static org.vertx.testtools.VertxAssert.fail;
-import static org.vertx.testtools.VertxAssert.testComplete;
+import com.jetdrone.vertx.yoke.Middleware;
+import com.jetdrone.vertx.yoke.Yoke;
+import com.jetdrone.vertx.yoke.middleware.YokeRequest;
+import com.jetdrone.vertx.yoke.test.Response;
+import com.jetdrone.vertx.yoke.test.YokeTester;
+import org.junit.Test;
+import org.vertx.java.core.Handler;
+import org.vertx.testtools.TestVerticle;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.junit.Test;
-import org.vertx.java.core.Handler;
-import org.vertx.testtools.TestVerticle;
-
-import com.jetdrone.vertx.yoke.Middleware;
-import com.jetdrone.vertx.yoke.Yoke;
-import com.jetdrone.vertx.yoke.middleware.YokeRequest;
-import com.jetdrone.vertx.yoke.test.Response;
-import com.jetdrone.vertx.yoke.test.YokeTester;
+import static org.vertx.testtools.VertxAssert.*;
 
 public class HandlebarsEngineTest extends TestVerticle {
 	
