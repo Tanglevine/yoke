@@ -68,8 +68,17 @@
     <modules>
         <module>framework</module>
         <module>framework-extras</module>
-        <module>middleware</module>
-        <module>engine</module>
+
+        <module>middleware/helmet</module>
+        <module>middleware/pac4j</module>
+        <module>middleware/reststore</module>
+        <module>middleware/swagger</module>
+        <module>middleware/toobusy</module>
+
+        <module>engine/handlebars</module>
+        <module>engine/jade</module>
+        <module>engine/mvel</module>
+        <module>engine/thymeleaf</module>
     </modules>
 
     <build>
