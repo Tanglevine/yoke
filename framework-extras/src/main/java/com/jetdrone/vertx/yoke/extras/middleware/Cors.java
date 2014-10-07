@@ -15,6 +15,7 @@ import java.util.Collection;
 import java.util.Set;
 import java.util.regex.Pattern;
 
+import org.jetbrains.annotations.NotNull;
 import org.vertx.java.core.Handler;
 import org.vertx.java.core.http.HttpServerResponse;
 
@@ -53,7 +54,7 @@ public class Cors implements Middleware {
     }
 
     @Override
-    public void handle(final YokeRequest request, final Handler<Object> next) {
+    public void handle(@NotNull final YokeRequest request, @NotNull final Handler<Object> next) {
         if (isPreflightRequest(request)) {
             handlePreflightRequest(request);
         } else {

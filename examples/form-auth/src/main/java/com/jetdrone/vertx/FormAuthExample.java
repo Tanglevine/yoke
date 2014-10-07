@@ -5,6 +5,7 @@ import com.jetdrone.vertx.yoke.Yoke;
 import com.jetdrone.vertx.yoke.middleware.AuthHandler;
 import com.jetdrone.vertx.yoke.middleware.FormAuth;
 import com.jetdrone.vertx.yoke.middleware.*;
+import org.jetbrains.annotations.NotNull;
 import org.vertx.java.core.Handler;
 import org.vertx.java.core.json.JsonObject;
 import org.vertx.java.platform.Verticle;
@@ -55,7 +56,7 @@ public class FormAuthExample extends Verticle {
 
             get("/profile", formAuth.RequiredAuth, new Middleware() {
                 @Override
-                public void handle(YokeRequest request, Handler<Object> next) {
+                public void handle(@NotNull YokeRequest request, @NotNull Handler<Object> next) {
                     JsonObject session = request.get("session");
                     request.response().setContentType("text/html");
                     request.response().end("Profile page of " + session.getString("user") + "<br>" + " click to <a href='/logout'>logout</a>");

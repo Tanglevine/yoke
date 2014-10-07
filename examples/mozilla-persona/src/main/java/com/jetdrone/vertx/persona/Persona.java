@@ -4,6 +4,7 @@ import com.jetdrone.vertx.yoke.Middleware;
 import com.jetdrone.vertx.yoke.Yoke;
 import com.jetdrone.vertx.yoke.engine.StringPlaceholderEngine;
 import com.jetdrone.vertx.yoke.middleware.*;
+import org.jetbrains.annotations.NotNull;
 import org.vertx.java.core.Handler;
 import org.vertx.java.core.buffer.Buffer;
 import org.vertx.java.core.http.HttpClient;
@@ -39,7 +40,7 @@ public class Persona extends Verticle {
         yoke.use(new Router()
                 .get("/", new Middleware() {
                     @Override
-                    public void handle(final YokeRequest request, final Handler<Object> next) {
+                    public void handle(@NotNull final YokeRequest request, @NotNull final Handler<Object> next) {
                         JsonObject sessionData = request.get("session");
 
                         if (sessionData == null) {
@@ -60,7 +61,7 @@ public class Persona extends Verticle {
                 })
                 .post("/auth/logout", new Middleware() {
                     @Override
-                    public void handle(YokeRequest request, Handler<Object> next) {
+                    public void handle(@NotNull YokeRequest request, @NotNull Handler<Object> next) {
                         // destroy session
                         request.destroySession();
                         // send OK
@@ -69,7 +70,7 @@ public class Persona extends Verticle {
                 })
                 .post("/auth/login", new Middleware() {
                     @Override
-                    public void handle(final YokeRequest request, final Handler<Object> next) {
+                    public void handle(@NotNull final YokeRequest request, @NotNull final Handler<Object> next) {
                         String data;
 
                         try {

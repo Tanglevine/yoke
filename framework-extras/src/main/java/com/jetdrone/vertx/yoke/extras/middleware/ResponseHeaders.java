@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.jetbrains.annotations.NotNull;
 import org.vertx.java.core.Handler;
 
 import com.jetdrone.vertx.yoke.Middleware;
@@ -42,7 +43,7 @@ public class ResponseHeaders implements Middleware {
     }
 
     @Override
-    public void handle(final YokeRequest request, final Handler<Object> next) {
+    public void handle(@NotNull final YokeRequest request, @NotNull final Handler<Object> next) {
         for (final Entry<CharSequence, CharSequence[]> header : headers.entrySet()) {
             request.response().headers().add(header.getKey(), Arrays.asList(header.getValue()));
         }

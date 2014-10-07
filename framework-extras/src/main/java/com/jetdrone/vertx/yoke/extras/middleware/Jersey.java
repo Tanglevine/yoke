@@ -37,6 +37,7 @@ import org.glassfish.jersey.server.spi.Container;
 import org.glassfish.jersey.server.spi.ContainerLifecycleListener;
 import org.glassfish.jersey.server.spi.ContainerResponseWriter;
 import org.glassfish.jersey.server.spi.RequestScopedInitializer;
+import org.jetbrains.annotations.NotNull;
 import org.vertx.java.core.Handler;
 import org.vertx.java.core.Vertx;
 import org.vertx.java.core.buffer.Buffer;
@@ -538,7 +539,7 @@ public class Jersey extends AbstractMiddleware implements Container {
     }
 
     @Override
-    public void handle(final YokeRequest request, final Handler<Object> next) {
+    public void handle(@NotNull final YokeRequest request, @NotNull final Handler<Object> next) {
         final YokeResponse response = request.response();
         final YokeResponseWriter responseWriter = new YokeResponseWriter(response, vertx());
         final URI baseUri = getBaseUri(request);

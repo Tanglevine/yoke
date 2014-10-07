@@ -6,9 +6,6 @@ package com.jetdrone.vertx.yoke;
 import com.jetdrone.vertx.yoke.middleware.YokeRequest;
 import org.jetbrains.annotations.NotNull;
 import org.vertx.java.core.Handler;
-import org.vertx.java.core.Vertx;
-import org.vertx.java.core.eventbus.EventBus;
-import org.vertx.java.core.file.FileSystem;
 
 /**
  * # Middleware

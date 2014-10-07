@@ -5,6 +5,7 @@ import com.jetdrone.vertx.yoke.Yoke;
 import com.jetdrone.vertx.yoke.middleware.BodyParser;
 import com.jetdrone.vertx.yoke.middleware.Router;
 import com.jetdrone.vertx.yoke.middleware.YokeRequest;
+import org.jetbrains.annotations.NotNull;
 import org.vertx.java.core.json.JsonObject;
 import org.vertx.java.core.Handler;
 import org.vertx.java.platform.Verticle;
@@ -16,7 +17,7 @@ public class YokeBench extends Verticle {
 
         final Middleware foo = new Middleware() {
             @Override
-            public void handle(YokeRequest request, Handler<Object> next) {
+            public void handle(@NotNull YokeRequest request, @NotNull Handler<Object> next) {
                 next.handle(null);
             }
         };

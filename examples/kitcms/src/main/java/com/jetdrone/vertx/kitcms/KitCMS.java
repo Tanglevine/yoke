@@ -8,6 +8,7 @@ import com.jetdrone.vertx.yoke.engine.StringPlaceholderEngine;
 import com.jetdrone.vertx.yoke.middleware.*;
 import com.jetdrone.vertx.yoke.util.AsyncIterator;
 import io.vertx.java.redis.RedisClient;
+import org.jetbrains.annotations.NotNull;
 import org.vertx.java.core.MultiMap;
 import org.vertx.java.core.AsyncResult;
 import org.vertx.java.core.AsyncResultHandler;
@@ -55,7 +56,7 @@ public class KitCMS extends Verticle {
         yoke.use(new Router()
             .get("/admin", new Middleware() {
                 @Override
-                public void handle(final YokeRequest request, final Handler<Object> next) {
+                public void handle(@NotNull final YokeRequest request, @NotNull final Handler<Object> next) {
                     final Config.Domain domain = request.get("domain");
 
                     db.keys(domain.namespace + "&*", new Handler<Message<JsonObject>>() {
@@ -84,7 +85,7 @@ public class KitCMS extends Verticle {
             })
             .get("/admin/keys", new Middleware() {
                 @Override
-                public void handle(final YokeRequest request, final Handler<Object> next) {
+                public void handle(@NotNull final YokeRequest request, @NotNull final Handler<Object> next) {
                     final Config.Domain domain = request.get("domain");
 
                     db.keys(domain.namespace + "&*", new Handler<Message<JsonObject>>() {
@@ -101,7 +102,7 @@ public class KitCMS extends Verticle {
             })
             .get("/admin/get", new Middleware() {
                 @Override
-                public void handle(final YokeRequest request, final Handler<Object> next) {
+                public void handle(@NotNull final YokeRequest request, @NotNull final Handler<Object> next) {
                     final Config.Domain domain = request.get("domain");
                     String key = request.params().get("key");
 
@@ -126,7 +127,7 @@ public class KitCMS extends Verticle {
             })
             .post("/admin/set", new Middleware() {
                 @Override
-                public void handle(final YokeRequest request, final Handler<Object> next) {
+                public void handle(@NotNull final YokeRequest request, @NotNull final Handler<Object> next) {
                     final Config.Domain domain = request.get("domain");
 
                     MultiMap body = request.formAttributes();
@@ -159,7 +160,7 @@ public class KitCMS extends Verticle {
             })
             .post("/admin/unset", new Middleware() {
                 @Override
-                public void handle(final YokeRequest request, final Handler<Object> next) {
+                public void handle(@NotNull final YokeRequest request, @NotNull final Handler<Object> next) {
                     final Config.Domain domain = request.get("domain");
 
                     MultiMap body = request.formAttributes();
@@ -186,7 +187,7 @@ public class KitCMS extends Verticle {
             })
             .get("/admin/export", new Middleware() {
                 @Override
-                public void handle(final YokeRequest request, final Handler<Object> next) {
+                public void handle(@NotNull final YokeRequest request, @NotNull final Handler<Object> next) {
                     final Config.Domain domain = request.get("domain");
 
                     db.keys(domain.namespace + "&*", new Handler<Message<JsonObject>>() {
@@ -236,7 +237,7 @@ public class KitCMS extends Verticle {
             })
             .post("/admin/import", new Middleware() {
                 @Override
-                public void handle(final YokeRequest request, final Handler<Object> next) {
+                public void handle(@NotNull final YokeRequest request, @NotNull final Handler<Object> next) {
                     final Config.Domain domain = request.get("domain");
 
                     final YokeFileUpload file = request.getFile("file");
@@ -277,7 +278,7 @@ public class KitCMS extends Verticle {
         // if the request fall through it is a view to render from the db
         yoke.use(new Middleware() {
             @Override
-            public void handle(final YokeRequest request, final Handler<Object> next) {
+            public void handle(@NotNull final YokeRequest request, @NotNull final Handler<Object> next) {
                 final Config.Domain domain = request.get("domain");
                 final String file = request.path().toLowerCase();
 

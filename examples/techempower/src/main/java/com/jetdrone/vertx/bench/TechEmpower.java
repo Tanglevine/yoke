@@ -4,6 +4,7 @@ import com.jetdrone.vertx.yoke.Middleware;
 import com.jetdrone.vertx.yoke.Yoke;
 import com.jetdrone.vertx.yoke.engine.MVELEngine;
 import com.jetdrone.vertx.yoke.middleware.YokeRequest;
+import org.jetbrains.annotations.NotNull;
 import org.vertx.java.core.eventbus.EventBus;
 import org.vertx.java.core.eventbus.Message;
 import org.vertx.java.core.json.JsonArray;
@@ -80,7 +81,7 @@ public class TechEmpower extends Verticle {
                 // Test 1: JSON serialization
                 .use("/json", new Middleware() {
                     @Override
-                    public void handle(YokeRequest request, Handler<Object> next) {
+                    public void handle(@NotNull YokeRequest request, @NotNull Handler<Object> next) {
                         // For each request, an object mapping the key message to Hello, World! must be instantiated.
                         request.response().end(new JsonObject().putString("message", "Hello, World!"));
                     }
@@ -88,7 +89,7 @@ public class TechEmpower extends Verticle {
                 // Test 2: db
                 .use("/db", new Middleware() {
                     @Override
-                    public void handle(final YokeRequest request, final Handler<Object> next) {
+                    public void handle(@NotNull final YokeRequest request, @NotNull final Handler<Object> next) {
 
                         final Random random = ThreadLocalRandom.current();
 
@@ -112,7 +113,7 @@ public class TechEmpower extends Verticle {
                 // Test 3: queries
                 .use("/queries", new Middleware() {
                     @Override
-                    public void handle(final YokeRequest request, Handler<Object> next) {
+                    public void handle(@NotNull final YokeRequest request, @NotNull Handler<Object> next) {
 
                         final Random random = ThreadLocalRandom.current();
 
@@ -153,7 +154,7 @@ public class TechEmpower extends Verticle {
                 // Test 4: fortune
                 .use("/fortunes", new Middleware() {
                     @Override
-                    public void handle(final YokeRequest request, final Handler<Object> next) {
+                    public void handle(@NotNull final YokeRequest request, @NotNull final Handler<Object> next) {
 
                         final List<JsonObject> results = new ArrayList<>();
 
@@ -200,7 +201,7 @@ public class TechEmpower extends Verticle {
                 // Test 5: updates
                 .use("/updates", new Middleware() {
                     @Override
-                    public void handle(final YokeRequest request, final Handler<Object> next) {
+                    public void handle(@NotNull final YokeRequest request, @NotNull final Handler<Object> next) {
 
                         final Random random = ThreadLocalRandom.current();
 
@@ -248,7 +249,7 @@ public class TechEmpower extends Verticle {
                 // Test 6: plain text
                 .use("/plaintext", new Middleware() {
                     @Override
-                    public void handle(YokeRequest request, Handler<Object> next) {
+                    public void handle(@NotNull YokeRequest request, @NotNull Handler<Object> next) {
                         request.response().setContentType("text/plain");
                         // Write plaintext "Hello, World!" to the response.
                         request.response().end("Hello, World!");
