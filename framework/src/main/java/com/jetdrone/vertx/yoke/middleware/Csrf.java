@@ -97,7 +97,8 @@ public class Csrf implements Middleware {
         this("_csrf", valueHandler);
     }
 
-    public interface ValueHandler {
+    @FunctionalInterface
+    public static interface ValueHandler {
         String handle(YokeRequest request);
     }
 

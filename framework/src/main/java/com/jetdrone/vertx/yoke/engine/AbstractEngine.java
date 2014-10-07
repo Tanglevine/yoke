@@ -35,16 +35,6 @@ public abstract class AbstractEngine<T> implements Engine {
         this.vertx = vertx;
     }
 
-    @Override
-    public String contentType() {
-        return "text/html";
-    }
-
-    @Override
-    public String contentEncoding() {
-        return "UTF-8";
-    }
-
     /**
      * Verifies if a file in the filesystem is still fresh against the cache. Errors are treated as not fresh.
      *

@@ -8,6 +8,7 @@ import java.util.Map;
 /**
  * # Function
  */
+@FunctionalInterface
 public interface Function {
 
     String exec(Map<String, Object> context, Object... args);

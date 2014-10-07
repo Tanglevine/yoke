@@ -14,7 +14,8 @@ public class JWT extends AbstractMiddleware {
 
     private static final Pattern BEARER = Pattern.compile("^Bearer$", Pattern.CASE_INSENSITIVE);
 
-    public interface JWTHandler {
+    @FunctionalInterface
+    public static interface JWTHandler {
         public void handle(JsonObject token, Handler<Object> result);
     }
 

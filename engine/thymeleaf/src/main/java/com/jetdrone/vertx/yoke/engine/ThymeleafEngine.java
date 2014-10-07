@@ -118,16 +118,6 @@ public class ThymeleafEngine implements Engine {
     }
 
     @Override
-    public String contentType() {
-        return "text/html";
-    }
-
-    @Override
-    public String contentEncoding() {
-        return "UTF-8";
-    }
-
-    @Override
     public void render(final String filename, final Map<String, Object> context, final Handler<AsyncResult<Buffer>> next) {
 
         final Buffer buffer = new Buffer();

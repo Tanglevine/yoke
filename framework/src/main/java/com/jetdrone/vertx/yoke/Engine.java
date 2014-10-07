@@ -31,14 +31,18 @@ public interface Engine {
      *
      * @return the content type
      */
-    String contentType();
+    default String contentType() {
+        return "text/html";
+    }
 
     /**
      * Returns the default content encoding for this template, e.g.: `UTF-8`.
      *
      * @return content encoding
      */
-    String contentEncoding();
+    default String contentEncoding() {
+        return "UTF-8";
+    }
 
     /**
      * The implementation of the render engine. The implementation should render the given file with the context in an

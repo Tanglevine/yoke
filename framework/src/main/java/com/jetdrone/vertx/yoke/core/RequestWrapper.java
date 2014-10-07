@@ -16,6 +16,7 @@ import java.util.Map;
  * Interface to wrap request objects to language specific implementations. This is an internal interface and should
  * not be used on a normal Yoke application.
  */
+@FunctionalInterface
 public interface RequestWrapper {
 
     /**

@@ -42,6 +42,7 @@ import org.vertx.java.core.file.FileSystem;
  * Using the extras project you get the following extra Middleware:
  * * [JsonRestRouter].
  */
+@FunctionalInterface
 public interface Middleware {
 
     /**
