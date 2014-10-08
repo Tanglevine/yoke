@@ -74,6 +74,7 @@
         <module>middleware/reststore</module>
         <module>middleware/swagger</module>
         <module>middleware/toobusy</module>
+        <module>middleware/jersey</module>
 
         <module>engine/handlebars</module>
         <module>engine/jade</module>

@@ -1,5 +1,5 @@
 
-package com.jetdrone.vertx.yoke.extras.middleware;
+package com.jetdrone.vertx.yoke.middleware;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -14,13 +14,11 @@ import com.jetdrone.vertx.yoke.middleware.YokeRequest;
 import com.jetdrone.vertx.yoke.middleware.YokeResponse;
 
 /**
- * <p>
  * A simple {@link Middleware} that allows adding custom response headers to all
  * {@link YokeResponse}.
- * </p>
- * <p>
+ *
  * Example:
- * </p>
+ *
  * <pre>
  * {@code
  * yoke.use(new ResponseHeaders()

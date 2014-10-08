@@ -1,5 +1,5 @@
 
-package com.jetdrone.vertx.yoke.extras.middleware;
+package com.jetdrone.vertx.yoke.middleware;
 
 import static org.vertx.java.core.http.HttpHeaders.CONTENT_LENGTH;
 
