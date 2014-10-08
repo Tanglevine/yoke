@@ -3,19 +3,17 @@ package com.jetdrone.vertx.yoke.middleware;
 import com.jetdrone.vertx.yoke.Yoke;
 import com.jetdrone.vertx.yoke.test.Response;
 import com.jetdrone.vertx.yoke.test.YokeTester;
+import io.vertx.core.http.CaseInsensitiveHeaders;
+import io.vertx.test.core.VertxTestBase;
 import org.junit.Test;
-import org.vertx.java.core.Handler;
-import org.vertx.java.core.MultiMap;
-import org.vertx.java.core.http.CaseInsensitiveMultiMap;
-import org.vertx.testtools.TestVerticle;
+import io.vertx.core.Handler;
+import io.vertx.core.MultiMap;
 
-import static org.vertx.testtools.VertxAssert.*;
-
-public class HelmetTest extends TestVerticle {
+public class HelmetTest extends VertxTestBase {
 
     @Test
     public void testCacheControl() {
-        final Yoke app = new Yoke(this);
+        final Yoke app = new Yoke(vertx);
         app.use(new CacheControl());
         app.use(new Handler<YokeRequest>() {
             @Override
@@ -32,7 +30,7 @@ public class HelmetTest extends TestVerticle {
 
     @Test
     public void testContentTypeOptions() {
-        final Yoke app = new Yoke(this);
+        final Yoke app = new Yoke(vertx);
         app.use(new ContentTypeOptions());
         app.use(new Handler<YokeRequest>() {
             @Override
@@ -49,7 +47,7 @@ public class HelmetTest extends TestVerticle {
 
     @Test
     public void testCrossDomain() {
-        final Yoke app = new Yoke(this);
+        final Yoke app = new Yoke(vertx);
         app.use(new CrossDomain());
         app.use(new Handler<YokeRequest>() {
             @Override
@@ -81,7 +79,7 @@ public class HelmetTest extends TestVerticle {
 
     @Test
     public void testIENoOpen() {
-        final Yoke app = new Yoke(this);
+        final Yoke app = new Yoke(vertx);
         app.use(new IENoOpen());
         app.use(new Handler<YokeRequest>() {
             @Override
@@ -99,7 +97,7 @@ public class HelmetTest extends TestVerticle {
 
     @Test
     public void testHSTS_1() {
-        final Yoke app = new Yoke(this);
+        final Yoke app = new Yoke(vertx);
         app.use(new HSTS());
         app.use(new Handler<YokeRequest>() {
             @Override
@@ -108,7 +106,7 @@ public class HelmetTest extends TestVerticle {
             }
         });
 
-        MultiMap headers = new CaseInsensitiveMultiMap();
+        MultiMap headers = new CaseInsensitiveHeaders();
         headers.add("x-forwarded-proto", "https");
 
         new YokeTester(app).request("GET", "/", headers, response -> {
@@ -120,7 +118,7 @@ public class HelmetTest extends TestVerticle {
 
     @Test
     public void testHSTS_2() {
-        final Yoke app = new Yoke(this);
+        final Yoke app = new Yoke(vertx);
         app.use(new HSTS(1234, true));
         app.use(new Handler<YokeRequest>() {
             @Override
@@ -129,7 +127,7 @@ public class HelmetTest extends TestVerticle {
             }
         });
 
-        MultiMap headers = new CaseInsensitiveMultiMap();
+        MultiMap headers = new CaseInsensitiveHeaders();
         headers.add("x-forwarded-proto", "https");
 
         new YokeTester(app).request("GET", "/", headers, response -> {

@@ -2,15 +2,13 @@ package com.jetdrone.vertx.yoke.middleware;
 
 import com.jetdrone.vertx.yoke.Yoke;
 import com.jetdrone.vertx.yoke.middleware.rest.Store;
+import io.vertx.test.core.VertxTestBase;
 import org.junit.Test;
-import org.vertx.java.core.AsyncResultHandler;
-import org.vertx.java.core.json.JsonArray;
-import org.vertx.java.core.json.JsonObject;
-import org.vertx.testtools.TestVerticle;
+import io.vertx.core.AsyncResultHandler;
+import io.vertx.core.json.JsonArray;
+import io.vertx.core.json.JsonObject;
 
-import static org.vertx.testtools.VertxAssert.*;
-
-public class RestTest extends TestVerticle {
+public class RestTest extends VertxTestBase {
 
     private Store dummyStore = new Store() {
         @Override
@@ -47,7 +45,7 @@ public class RestTest extends TestVerticle {
     @Test
     public void restTest() {
 
-        Yoke yoke = new Yoke(this);
+        Yoke yoke = new Yoke(vertx);
         JsonRestRouter restStore = new JsonRestRouter(dummyStore);
         restStore.rest("/persons", "persons");
         yoke.use(restStore);

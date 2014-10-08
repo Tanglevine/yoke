@@ -21,7 +21,7 @@ import java.util.Map;
 import com.jetdrone.vertx.yoke.middleware.YokeRequest;
 import com.jetdrone.vertx.yoke.middleware.YokeResponse;
 import org.pac4j.core.context.WebContext;
-import org.vertx.java.core.json.JsonObject;
+import io.vertx.core.json.JsonObject;
 
 /**
  * WebContext implementation for Vert.x.
@@ -124,7 +124,7 @@ public class VertxWebContext implements WebContext {
 
     @Override
     public String getScheme() {
-        return request.absoluteURI().getScheme();
+        return request.absoluteURI().substring(0, request.absoluteURI().indexOf(':'));
     }
 
     @Override

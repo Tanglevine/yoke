@@ -1,17 +1,14 @@
 package com.jetdrone.vertx.yoke.middleware;
 
 import com.jetdrone.vertx.yoke.Yoke;
-import com.jetdrone.vertx.yoke.test.Response;
 import com.jetdrone.vertx.yoke.test.YokeTester;
+import io.vertx.core.http.CaseInsensitiveHeaders;
+import io.vertx.test.core.VertxTestBase;
 import org.junit.Test;
-import org.vertx.java.core.Handler;
-import org.vertx.java.core.MultiMap;
-import org.vertx.java.core.http.CaseInsensitiveMultiMap;
-import org.vertx.testtools.TestVerticle;
+import io.vertx.core.Handler;
+import io.vertx.core.MultiMap;
 
-import static org.vertx.testtools.VertxAssert.*;
-
-public class IEXSSTest extends TestVerticle {
+public class IEXSSTest extends VertxTestBase {
 
     public static final String IE_7 = "Mozilla/5.0 (Windows; U; MSIE 7.0; Windows NT 6.0; en-US)";
     public static final String IE_8 = "Mozilla/4.0 ( ; MSIE 8.0; Windows NT 6.0; Trident/4.0; GTB6.6; .NET CLR 3.5.30729)";
@@ -20,7 +17,7 @@ public class IEXSSTest extends TestVerticle {
 
     @Test
     public void setsHeaderForFirefox23() {
-        final Yoke app = new Yoke(this);
+        final Yoke app = new Yoke(vertx);
         app.use(new IEXSS());
         app.use(new Handler<YokeRequest>() {
             @Override
@@ -29,7 +26,7 @@ public class IEXSSTest extends TestVerticle {
             }
         });
 
-        MultiMap headers = new CaseInsensitiveMultiMap();
+        MultiMap headers = new CaseInsensitiveHeaders();
         headers.add("User-Agent", FIREFOX_23);
 
         new YokeTester(app).request("GET", "/", headers, response -> {
@@ -40,7 +37,7 @@ public class IEXSSTest extends TestVerticle {
 
     @Test
     public void setsHeaderForIE9() {
-        final Yoke app = new Yoke(this);
+        final Yoke app = new Yoke(vertx);
         app.use(new IEXSS());
         app.use(new Handler<YokeRequest>() {
             @Override
@@ -49,7 +46,7 @@ public class IEXSSTest extends TestVerticle {
             }
         });
 
-        MultiMap headers = new CaseInsensitiveMultiMap();
+        MultiMap headers = new CaseInsensitiveHeaders();
         headers.add("User-Agent", IE_9);
 
         new YokeTester(app).request("GET", "/", headers, response -> {
@@ -60,7 +57,7 @@ public class IEXSSTest extends TestVerticle {
 
     @Test
     public void setsHeaderTo0ForIE8() {
-        final Yoke app = new Yoke(this);
+        final Yoke app = new Yoke(vertx);
         app.use(new IEXSS());
         app.use(new Handler<YokeRequest>() {
             @Override
@@ -69,7 +66,7 @@ public class IEXSSTest extends TestVerticle {
             }
         });
 
-        MultiMap headers = new CaseInsensitiveMultiMap();
+        MultiMap headers = new CaseInsensitiveHeaders();
         headers.add("User-Agent", IE_8);
 
         new YokeTester(app).request("GET", "/", headers, response -> {
@@ -80,7 +77,7 @@ public class IEXSSTest extends TestVerticle {
 
     @Test
     public void setsHeaderTo0ForIE7() {
-        final Yoke app = new Yoke(this);
+        final Yoke app = new Yoke(vertx);
         app.use(new IEXSS());
         app.use(new Handler<YokeRequest>() {
             @Override
@@ -89,7 +86,7 @@ public class IEXSSTest extends TestVerticle {
             }
         });
 
-        MultiMap headers = new CaseInsensitiveMultiMap();
+        MultiMap headers = new CaseInsensitiveHeaders();
         headers.add("User-Agent", IE_7);
 
         new YokeTester(app).request("GET", "/", headers, response -> {
@@ -100,7 +97,7 @@ public class IEXSSTest extends TestVerticle {
 
     @Test
     public void allowsYouToSetTheHeaderForOldIE() {
-        final Yoke app = new Yoke(this);
+        final Yoke app = new Yoke(vertx);
         app.use(new IEXSS(true));
         app.use(new Handler<YokeRequest>() {
             @Override
@@ -109,7 +106,7 @@ public class IEXSSTest extends TestVerticle {
             }
         });
 
-        MultiMap headers = new CaseInsensitiveMultiMap();
+        MultiMap headers = new CaseInsensitiveHeaders();
         headers.add("User-Agent", IE_8);
 
         new YokeTester(app).request("GET", "/", headers, response -> {
