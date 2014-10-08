@@ -5,11 +5,11 @@ import com.jetdrone.vertx.yoke.middleware.YokeRequest;
 import com.jetdrone.vertx.yoke.YokeSecurity;
 import com.jetdrone.vertx.yoke.core.YokeException;
 import org.jetbrains.annotations.NotNull;
-import org.vertx.java.core.AsyncResult;
-import org.vertx.java.core.Handler;
-import org.vertx.java.core.json.JsonArray;
-import org.vertx.java.core.json.JsonElement;
-import org.vertx.java.core.json.JsonObject;
+import io.vertx.core.AsyncResult;
+import io.vertx.core.Handler;
+import io.vertx.core.json.JsonArray;
+import io.vertx.core.json.JsonElement;
+import io.vertx.core.json.JsonObject;
 
 import javax.crypto.Cipher;
 import javax.crypto.Mac;
