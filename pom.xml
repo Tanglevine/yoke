@@ -80,6 +80,9 @@
         <module>engine/mvel</module>
         <module>engine/thymeleaf</module>
 
+        <module>store/redis</module>
+        <module>store/mongodb</module>
+
         <module>examples/benchmark</module>
         <module>examples/cluster-benchmark</module>
         <module>examples/dojo-reststore</module>

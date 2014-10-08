@@ -10,9 +10,9 @@
         <relativePath>../../pom.xml</relativePath>
     </parent>
 
-    <artifactId>yoke.example.session-store</artifactId>
+    <artifactId>yoke.store.mongodb</artifactId>
     <packaging>jar</packaging>
-    <name>session-store</name>
+    <name>mongodb</name>
 
     <dependencies>
         <dependency>
@@ -21,21 +21,18 @@
             <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.jetdrone</groupId>
-            <artifactId>yoke.store.mongodb</artifactId>
-            <version>${project.version}</version>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.11</version>
+            <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>io.vertx</groupId>
+            <artifactId>testtools</artifactId>
+            <version>2.0.3-final</version>
+            <scope>test</scope>
+        </dependency>
+
     </dependencies>
 
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-deploy-plugin</artifactId>
-                <configuration>
-                    <skip>true</skip>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
 </project>

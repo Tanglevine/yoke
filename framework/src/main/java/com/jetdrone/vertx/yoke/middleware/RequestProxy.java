@@ -6,7 +6,6 @@ package com.jetdrone.vertx.yoke.middleware;
 import org.jetbrains.annotations.NotNull;
 import org.vertx.java.core.Handler;
 import org.vertx.java.core.http.HttpClient;
-import org.vertx.java.core.VoidHandler;
 import org.vertx.java.core.buffer.Buffer;
 import org.vertx.java.core.http.HttpClientRequest;
 import org.vertx.java.core.http.HttpClientResponse;
@@ -60,8 +59,8 @@ public class RequestProxy extends AbstractMiddleware {
                 req.response().write(data);
               }
             });
-            cRes.endHandler(new VoidHandler() {
-              public void handle() {
+            cRes.endHandler(new Handler<Void>() {
+              public void handle(Void _void) {
                 req.response().end();
               }
             });
@@ -79,8 +78,8 @@ public class RequestProxy extends AbstractMiddleware {
             cReq.write(data);
           }
         });
-        req.endHandler(new VoidHandler() {
-          public void handle() {
+        req.endHandler(new Handler<Void>() {
+          public void handle(Void _void) {
             cReq.end();
           }
         });
