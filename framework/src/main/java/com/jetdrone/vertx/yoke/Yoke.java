@@ -13,23 +13,20 @@ import com.jetdrone.vertx.yoke.middleware.AbstractMiddleware;
 import com.jetdrone.vertx.yoke.middleware.YokeRequest;
 import com.jetdrone.vertx.yoke.security.KeyStoreSecurity;
 import com.jetdrone.vertx.yoke.security.SecretSecurity;
+import com.jetdrone.vertx.yoke.store.LocalDataSessionStore;
 import com.jetdrone.vertx.yoke.store.SessionStore;
-import com.jetdrone.vertx.yoke.store.SharedDataSessionStore;
 import com.jetdrone.vertx.yoke.core.YokeException;
 import io.netty.handler.codec.http.HttpResponseStatus;
-import org.vertx.java.core.AsyncResult;
-import org.vertx.java.core.Handler;
-import org.vertx.java.core.Vertx;
-import org.vertx.java.core.file.impl.PathAdjuster;
-import org.vertx.java.core.http.HttpServer;
-import org.vertx.java.core.http.HttpServerRequest;
-import org.vertx.java.core.http.HttpServerResponse;
-import org.vertx.java.core.impl.VertxInternal;
-import org.vertx.java.core.json.JsonArray;
-import org.vertx.java.core.json.JsonElement;
-import org.vertx.java.core.json.JsonObject;
-import org.vertx.java.platform.Container;
-import org.vertx.java.platform.Verticle;
+import io.vertx.core.*;
+import io.vertx.core.file.impl.PathAdjuster;
+import io.vertx.core.http.HttpServer;
+import io.vertx.core.http.HttpServerOptions;
+import io.vertx.core.http.HttpServerRequest;
+import io.vertx.core.http.HttpServerResponse;
+import io.vertx.core.impl.VertxInternal;
+import io.vertx.core.json.JsonArray;
+import io.vertx.core.json.JsonElement;
+import io.vertx.core.json.JsonObject;
 
 import org.jetbrains.annotations.*;
 
@@ -157,7 +154,7 @@ public class Yoke {
         defaultContext.put("title", "Yoke");
         defaultContext.put("x-powered-by", true);
         defaultContext.put("trust-proxy", true);
-        store = new SharedDataSessionStore(vertx, "yoke.sessiondata");
+        store = new LocalDataSessionStore(vertx, "yoke.sessiondata");
 
         // register on JMX
         try {
@@ -433,20 +430,20 @@ public class Yoke {
      * @param handler for asynchronous result of the listen operation
      * @return {Yoke}
      */
-    public Yoke listen(int port, @NotNull String address, final Handler<Boolean> handler) {
-        HttpServer server = vertx.createHttpServer();
+    public Yoke listen(int port, @NotNull String host, final Handler<Boolean> handler) {
+        HttpServer server = vertx.createHttpServer(new HttpServerOptions().setHost(host).setPort(port));
 
         listen(server);
 
         if (handler != null) {
-            server.listen(port, address, new Handler<AsyncResult<HttpServer>>() {
+            server.listen(new Handler<AsyncResult<HttpServer>>() {
                 @Override
                 public void handle(AsyncResult<HttpServer> listen) {
                     handler.handle(listen.succeeded());
                 }
             });
         } else {
-            server.listen(port, address);
+            server.listen();
         }
         return this;
     }
@@ -559,8 +556,8 @@ public class Yoke {
      *
      * @param config either a json object or a json array.
      */
-    public Yoke deploy(@NotNull final Container container, @NotNull JsonElement config) {
-        return deploy(container, config, null);
+    public Yoke deploy(@NotNull JsonElement config) {
+        return deploy(config, null);
     }
 
     /**
@@ -580,11 +577,10 @@ public class Yoke {
      * }
      * </pre>
      *
-     * @param container Vert.x2 container
      * @param config either a json object or a json array.
      * @param handler A handler that is called once all middleware is deployed or on error.
      */
-    public Yoke deploy(final @NotNull Container container, final @NotNull JsonElement config, final Handler<Object> handler) {
+    public Yoke deploy(final @NotNull JsonElement config, final Handler<Object> handler) {
 
         if (config.isArray() && config.asArray().size() == 0) {
             if (handler == null) {
@@ -596,7 +592,7 @@ public class Yoke {
         }
 
         if (config.isObject()) {
-            return deploy(container, new JsonArray().addObject(config.asObject()), handler);
+            return deploy(new JsonArray().addObject(config.asObject()), handler);
         }
 
         // wait for all deployments before calling the real handler
@@ -618,38 +614,36 @@ public class Yoke {
         };
 
         for (Object o : config.asArray()) {
-            JsonObject mod = (JsonObject) o;
-            if (mod.getString("module") != null) {
-                deploy(container, mod.getString("module"), true, false, false, mod.getInteger("instances", 1), mod.getObject("config", new JsonObject()), waitFor);
-            } else {
-                deploy(container, mod.getString("verticle"), false, mod.getBoolean("worker", false), mod.getBoolean("multiThreaded", false), mod.getInteger("instances", 1), mod.getObject("config", new JsonObject()), waitFor);
+            final JsonObject mod = (JsonObject) o;
+            final DeploymentOptions options = new DeploymentOptions()
+                    .setConfig(mod.getObject("config"))
+                    .setWorker(mod.getBoolean("worker", false))
+                    .setMultiThreaded(mod.getBoolean("multiThreaded", false))
+                    .setIsolationGroup(mod.getString("isolationGroup"))
+                    .setHA(mod.getBoolean("ha", false));
+
+            JsonArray extraClasspath = mod.getArray("extraClasspath");
+
+            if (extraClasspath != null) {
+                List<String> list = new ArrayList<>();
+                for (Object i : extraClasspath) {
+                    list.add(i.toString());
+                }
+
+                options.setExtraClasspath(list);
             }
+
+            deploy(mod.getString("verticle"), options, waitFor);
         }
 
         return this;
     }
 
-    private void deploy(@NotNull Container container, String name, boolean module, boolean worker, boolean multiThreaded, int instances, JsonObject config, Handler<AsyncResult<String>> handler) {
-        if (module) {
-            if (handler != null) {
-                container.deployModule(name, config, instances, handler);
-            } else {
-                container.deployModule(name, config, instances);
-            }
+    private void deploy(@NotNull String name, @NotNull DeploymentOptions options, @Nullable Handler<AsyncResult<String>> handler) {
+        if (handler != null) {
+            vertx.deployVerticle(name, options, handler);
         } else {
-            if (worker) {
-                if (handler != null) {
-                    container.deployWorkerVerticle(name, config, instances, multiThreaded, handler);
-                } else {
-                    container.deployWorkerVerticle(name, config, instances, multiThreaded);
-                }
-            } else {
-                if (handler != null) {
-                    container.deployVerticle(name, config, instances, handler);
-                } else {
-                    container.deployVerticle(name, config, instances);
-                }
-            }
+            vertx.deployVerticle(name, options);
         }
     }
 }

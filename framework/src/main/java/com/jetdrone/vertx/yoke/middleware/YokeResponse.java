@@ -12,17 +12,17 @@ import io.netty.handler.codec.http.Cookie;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.netty.handler.codec.http.ServerCookieEncoder;
 import org.jetbrains.annotations.NotNull;
-import org.vertx.java.core.streams.Pump;
-import org.vertx.java.core.AsyncResult;
-import org.vertx.java.core.AsyncResultHandler;
-import org.vertx.java.core.Handler;
-import org.vertx.java.core.MultiMap;
-import org.vertx.java.core.buffer.Buffer;
-import org.vertx.java.core.http.HttpServerResponse;
-import org.vertx.java.core.json.JsonArray;
-import org.vertx.java.core.json.JsonElement;
-import org.vertx.java.core.json.JsonObject;
-import org.vertx.java.core.streams.ReadStream;
+import io.vertx.core.streams.Pump;
+import io.vertx.core.AsyncResult;
+import io.vertx.core.AsyncResultHandler;
+import io.vertx.core.Handler;
+import io.vertx.core.MultiMap;
+import io.vertx.core.buffer.Buffer;
+import io.vertx.core.http.HttpServerResponse;
+import io.vertx.core.json.JsonArray;
+import io.vertx.core.json.JsonElement;
+import io.vertx.core.json.JsonObject;
+import io.vertx.core.streams.ReadStream;
 
 import java.util.*;
 
@@ -240,12 +240,12 @@ public class YokeResponse implements HttpServerResponse {
         end(cb + " && " + cb + "(" + body + ");");
     }
 
-    public void end(ReadStream<?> stream) {
+    public void end(ReadStream<Buffer> stream) {
         // TODO: filter stream?
         hasBody = true;
         filter = null;
         triggerHeadersHandlers();
-        Pump.createPump(stream, response).start();
+        Pump.pump(stream, response).start();
         stream.endHandler(new Handler<Void>() {
             @Override
             public void handle(Void event) {

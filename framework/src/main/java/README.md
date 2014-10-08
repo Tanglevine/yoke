@@ -148,7 +148,7 @@ like you would on Vert.x. So we start by creating a Verticle the same way we wou
     import com.jetdrone.vertx.yoke.*;
     import com.jetdrone.vertx.yoke.middleware.*;
 
-    import org.vertx.java.core.*;
+    import io.vertx.core.*;
     import org.vertx.java.platform.*;
 
     public class HelloWorldVerticle extends Verticle {

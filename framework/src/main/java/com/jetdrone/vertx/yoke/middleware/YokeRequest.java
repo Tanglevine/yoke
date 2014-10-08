@@ -3,8 +3,6 @@
  */
 package com.jetdrone.vertx.yoke.middleware;
 
-import java.net.InetSocketAddress;
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -21,16 +19,16 @@ import javax.net.ssl.SSLPeerUnverifiedException;
 import javax.security.cert.X509Certificate;
 
 import com.jetdrone.vertx.yoke.util.Utils;
+import io.vertx.core.net.SocketAddress;
 import org.jetbrains.annotations.NotNull;
-import org.vertx.java.core.Handler;
-import org.vertx.java.core.MultiMap;
-import org.vertx.java.core.buffer.Buffer;
-import org.vertx.java.core.http.HttpServerFileUpload;
-import org.vertx.java.core.http.HttpServerRequest;
-import org.vertx.java.core.http.HttpVersion;
-import org.vertx.java.core.json.JsonArray;
-import org.vertx.java.core.json.JsonObject;
-import org.vertx.java.core.net.NetSocket;
+import io.vertx.core.Handler;
+import io.vertx.core.MultiMap;
+import io.vertx.core.buffer.Buffer;
+import io.vertx.core.http.HttpServerFileUpload;
+import io.vertx.core.http.HttpServerRequest;
+import io.vertx.core.json.JsonArray;
+import io.vertx.core.json.JsonObject;
+import io.vertx.core.net.NetSocket;
 
 import com.jetdrone.vertx.yoke.core.Context;
 import com.jetdrone.vertx.yoke.core.YokeCookie;
@@ -582,7 +580,7 @@ public class YokeRequest implements HttpServerRequest {
             }
         }
 
-        return request.remoteAddress().getHostName();
+        return request.remoteAddress().hostAddress();
     }
 
     /** Allow getting parameters in a generified way.
@@ -690,7 +688,7 @@ public class YokeRequest implements HttpServerRequest {
     }
 
     @Override
-    public HttpVersion version() {
+    public String version() {
         return request.version();
     }
 
@@ -789,7 +787,7 @@ public class YokeRequest implements HttpServerRequest {
     }
 
     @Override
-    public InetSocketAddress remoteAddress() {
+    public SocketAddress remoteAddress() {
         return request.remoteAddress();
     }
 
@@ -799,7 +797,7 @@ public class YokeRequest implements HttpServerRequest {
     }
 
     @Override
-    public URI absoluteURI() {
+    public String absoluteURI() {
         return request.absoluteURI();
     }
 
@@ -815,18 +813,23 @@ public class YokeRequest implements HttpServerRequest {
     }
 
     @Override
-    public YokeRequest expectMultiPart(final boolean expect) {
+    public boolean isExpectMultipart() {
+        return request.isExpectMultipart();
+    }
+
+    @Override
+    public YokeRequest setExpectMultipart(final boolean expect) {
         // if we expect
         if (expect) {
             // then only call it once
             if (!expectMultiPartCalled) {
                 expectMultiPartCalled = true;
-                request.expectMultiPart(true);
+                request.setExpectMultipart(true);
             }
         } else {
             // if we don't expect reset even if we were called before
             expectMultiPartCalled = false;
-            request.expectMultiPart(false);
+            request.setExpectMultipart(false);
         }
         return this;
     }
@@ -843,8 +846,8 @@ public class YokeRequest implements HttpServerRequest {
     }
 
     @Override
-    public YokeRequest dataHandler(Handler<Buffer> handler) {
-        request.dataHandler(handler);
+    public YokeRequest handler(Handler<Buffer> handler) {
+        request.handler(handler);
         return this;
     }
 
@@ -873,7 +876,7 @@ public class YokeRequest implements HttpServerRequest {
     }
 
     @Override
-    public InetSocketAddress localAddress() {
+    public SocketAddress localAddress() {
         return request.localAddress();
     }
 }

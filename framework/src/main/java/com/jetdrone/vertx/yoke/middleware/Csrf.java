@@ -5,7 +5,7 @@ package com.jetdrone.vertx.yoke.middleware;
 
 import com.jetdrone.vertx.yoke.Middleware;
 import org.jetbrains.annotations.NotNull;
-import org.vertx.java.core.Handler;
+import io.vertx.core.Handler;
 
 import java.util.UUID;
 
@@ -119,7 +119,7 @@ public class Csrf implements Middleware {
         }
 
         // expect multipart
-        request.expectMultiPart(true);
+        request.setExpectMultipart(true);
 
         // determine value
         String val = valueHandler.handle(request);

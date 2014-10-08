@@ -5,9 +5,9 @@ package com.jetdrone.vertx.yoke.middleware;
 
 import com.jetdrone.vertx.yoke.Middleware;
 import org.jetbrains.annotations.NotNull;
-import org.vertx.java.core.Handler;
-import org.vertx.java.core.MultiMap;
-import org.vertx.java.core.json.JsonObject;
+import io.vertx.core.Handler;
+import io.vertx.core.MultiMap;
+import io.vertx.core.json.JsonObject;
 
 /** # MethodOverride
  *
@@ -35,7 +35,7 @@ public class MethodOverride implements Middleware {
         // other methods than GET, HEAD and OPTIONS may have body
         if (!"GET".equals(request.method()) && !"HEAD".equals(request.method()) && !"OPTIONS".equals(request.method())) {
             // expect multipart
-            request.expectMultiPart(true);
+            request.setExpectMultipart(true);
 
             final MultiMap urlEncoded = request.formAttributes();
 

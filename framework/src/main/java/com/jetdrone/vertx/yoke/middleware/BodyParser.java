@@ -6,10 +6,10 @@ package com.jetdrone.vertx.yoke.middleware;
 import com.jetdrone.vertx.yoke.core.JSON;
 import com.jetdrone.vertx.yoke.core.YokeFileUpload;
 import org.jetbrains.annotations.NotNull;
-import org.vertx.java.core.Handler;
-import org.vertx.java.core.buffer.Buffer;
-import org.vertx.java.core.http.HttpServerFileUpload;
-import org.vertx.java.core.json.DecodeException;
+import io.vertx.core.Handler;
+import io.vertx.core.buffer.Buffer;
+import io.vertx.core.http.HttpServerFileUpload;
+import io.vertx.core.json.DecodeException;
 
 import java.util.HashMap;
 
@@ -79,10 +79,10 @@ public class BodyParser extends AbstractMiddleware {
             final boolean isJSON = contentType != null && contentType.contains("application/json");
             final boolean isMULTIPART = contentType != null && contentType.contains("multipart/form-data");
             final boolean isURLENCODEC = contentType != null && contentType.contains("application/x-www-form-urlencoded");
-            final Buffer buffer = (!isMULTIPART && !isURLENCODEC) ? new Buffer(0) : null;
+            final Buffer buffer = (!isMULTIPART && !isURLENCODEC) ? Buffer.buffer(0) : null;
 
             // enable the parsing at Vert.x level
-            request.expectMultiPart(true);
+            request.setExpectMultipart(true);
 
             if (isMULTIPART) {
                 request.uploadHandler(new Handler<HttpServerFileUpload>() {
@@ -118,7 +118,7 @@ public class BodyParser extends AbstractMiddleware {
                 });
             }
 
-            request.dataHandler(new Handler<Buffer>() {
+            request.handler(new Handler<Buffer>() {
                 long size = 0;
                 final long limit = request.bodyLengthLimit();
 
@@ -131,7 +131,7 @@ public class BodyParser extends AbstractMiddleware {
                                 buffer.appendBuffer(event);
                             }
                         } else {
-                            request.dataHandler(null);
+                            request.handler(null);
                             request.endHandler(null);
 
                             request.put("canceled", true);

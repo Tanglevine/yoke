@@ -5,12 +5,11 @@ package com.jetdrone.vertx.yoke.middleware;
 
 import com.jetdrone.vertx.yoke.Middleware;
 import com.jetdrone.vertx.yoke.core.impl.ThreadLocalUTCDateFormat;
+import io.vertx.core.net.SocketAddress;
 import org.jetbrains.annotations.NotNull;
-import org.vertx.java.core.Handler;
-import org.vertx.java.core.http.HttpVersion;
-import org.vertx.java.core.logging.impl.LoggerFactory;
+import io.vertx.core.Handler;
+import io.vertx.core.logging.impl.LoggerFactory;
 
-import java.net.InetSocketAddress;
 import java.util.Date;
 
 /** # Logger
@@ -27,7 +26,7 @@ import java.util.Date;
  */
 public class Logger implements Middleware {
 
-    private final org.vertx.java.core.logging.Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final io.vertx.core.logging.Logger logger = LoggerFactory.getLogger(this.getClass());
 
     /** The Date formatter (UTC JS compatible format)
      */
@@ -65,22 +64,12 @@ public class Logger implements Middleware {
         this(false, Format.DEFAULT);
     }
 
-    private String getVersionString(HttpVersion version) {
-        switch (version) {
-            case HTTP_1_1:
-                return "HTTP/1.1";
-            case HTTP_1_0:
-                return "HTTP/1.0";
-        }
-        return null;
-    }
-
-    private String getClientAddress(InetSocketAddress inetSocketAddress) {
+    private String getClientAddress(SocketAddress inetSocketAddress) {
         if (inetSocketAddress == null) {
             return null;
         }
 
-        return inetSocketAddress.getHostString();
+        return inetSocketAddress.hostAddress();
     }
 
     private void log(YokeRequest request, long timestamp, final String remoteClient, final String version, final String method, final String uri) {
@@ -155,7 +144,7 @@ public class Logger implements Middleware {
         final String remoteClient = getClientAddress(request.remoteAddress());
         final String method = request.method();
         final String uri = request.uri();
-        final String version = getVersionString(request.version());
+        final String version = "HTTP/" + request.version();
 
         if (immediate) {
             log(request, timestamp, remoteClient, version, method, uri);

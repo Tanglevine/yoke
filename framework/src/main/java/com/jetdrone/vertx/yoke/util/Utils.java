@@ -4,9 +4,9 @@
 package com.jetdrone.vertx.yoke.util;
 
 import org.jetbrains.annotations.NotNull;
-import org.vertx.java.core.buffer.Buffer;
-import org.vertx.java.core.json.JsonArray;
-import org.vertx.java.core.json.JsonObject;
+import io.vertx.core.buffer.Buffer;
+import io.vertx.core.json.JsonArray;
+import io.vertx.core.json.JsonObject;
 
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
@@ -32,7 +32,7 @@ public final class Utils {
      */
     public static Buffer readResourceToBuffer(@NotNull Class<?> clazz, @NotNull String resource) {
         try {
-            Buffer buffer = new Buffer(0);
+            Buffer buffer = Buffer.buffer(0);
 
             try (InputStream in = clazz.getResourceAsStream(resource)) {
                 int read;

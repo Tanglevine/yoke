@@ -3,12 +3,10 @@
  */
 package com.jetdrone.vertx.yoke.middleware;
 
+import io.vertx.core.http.*;
 import org.jetbrains.annotations.NotNull;
-import org.vertx.java.core.Handler;
-import org.vertx.java.core.http.HttpClient;
-import org.vertx.java.core.buffer.Buffer;
-import org.vertx.java.core.http.HttpClientRequest;
-import org.vertx.java.core.http.HttpClientResponse;
+import io.vertx.core.Handler;
+import io.vertx.core.buffer.Buffer;
 
 /** # RequestProxy
  *
@@ -43,21 +41,17 @@ public class RequestProxy extends AbstractMiddleware {
           return;
         }
         final String newUri = req.uri().replaceFirst(prefix, "");
-        final HttpClient client = vertx().createHttpClient().setHost(host).setPort(port);
+        final HttpClient client = vertx().createHttpClient(new HttpClientOptions().setSsl(secure));
 
-        if (secure) {
-            client.setSSL(true);
-        }
-        
-        final HttpClientRequest cReq = client.request(req.method(), newUri, new Handler<HttpClientResponse>() {
+        final HttpClientRequest cReq = client.request(HttpMethod.valueOf(req.method()), port, host, newUri, new Handler<HttpClientResponse>() {
           public void handle(HttpClientResponse cRes) {
             req.response().setStatusCode(cRes.statusCode());
-            req.response().headers().set(cRes.headers());
+            req.response().headers().setAll(cRes.headers());
             req.response().setChunked(true);
-            cRes.dataHandler(new Handler<Buffer>() {
-              public void handle(Buffer data) {
-                req.response().write(data);
-              }
+            cRes.handler(new Handler<Buffer>() {
+                public void handle(Buffer data) {
+                    req.response().write(data);
+                }
             });
             cRes.endHandler(new Handler<Void>() {
               public void handle(Void _void) {
@@ -71,9 +65,9 @@ public class RequestProxy extends AbstractMiddleware {
             });
           }
         });
-        cReq.headers().set(req.headers());
+        cReq.headers().setAll(req.headers());
         cReq.setChunked(true);
-        req.dataHandler(new Handler<Buffer>() {
+        req.handler(new Handler<Buffer>() {
           public void handle(Buffer data) {
             cReq.write(data);
           }

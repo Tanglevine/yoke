@@ -10,10 +10,10 @@ import org.mozilla.javascript.Callable;
 import org.mozilla.javascript.Scriptable;
 import org.mozilla.javascript.Undefined;
 import org.mozilla.javascript.WrappedException;
-import org.vertx.java.core.Handler;
-import org.vertx.java.core.buffer.Buffer;
-import org.vertx.java.core.http.HttpServerFileUpload;
-import org.vertx.java.core.http.HttpServerRequest;
+import io.vertx.core.Handler;
+import io.vertx.core.buffer.Buffer;
+import io.vertx.core.http.HttpServerFileUpload;
+import io.vertx.core.http.HttpServerRequest;
 
 import com.jetdrone.vertx.yoke.core.Context;
 import com.jetdrone.vertx.yoke.middleware.YokeRequest;
@@ -27,10 +27,11 @@ final class JSYokeRequest  extends YokeRequest implements Scriptable {
     private Callable accepts;
     private Callable bodyHandler;
     private Object cookies;
-    private Callable dataHandler;
+    private Callable handler;
     private Callable endHandler;
     private Callable exceptionHandler;
-    private Callable expectMultipart;
+    private Callable setExpectMultipart;
+    private Callable isExpectMultipart;
     private Object files;
     private Object formAttributes;
 
@@ -169,9 +170,9 @@ final class JSYokeRequest  extends YokeRequest implements Scriptable {
                     };
             	}
                 return createSession;
-            case "dataHandler":
-                if (dataHandler == null) {
-                    dataHandler = new Callable() {
+            case "handler":
+                if (handler == null) {
+                    handler = new Callable() {
                         @Override
                         @SuppressWarnings({ "unchecked", "rawtypes" })
                         public Object call(final org.mozilla.javascript.Context cx, final Scriptable scope, final Scriptable thisObj, final Object[] args) {
@@ -180,12 +181,12 @@ final class JSYokeRequest  extends YokeRequest implements Scriptable {
                             }
 
                             if (JSUtil.is(args, Handler.class)) {
-                                JSYokeRequest.this.dataHandler((Handler) args[0]);
+                                JSYokeRequest.this.handler((Handler) args[0]);
                                 return Undefined.instance;
                             }
 
                             if (JSUtil.is(args, Callable.class)) {
-                                JSYokeRequest.this.dataHandler(new Handler<Buffer>() {
+                                JSYokeRequest.this.handler(new Handler<Buffer>() {
                                     @Override
                                     public void handle(Buffer buffer) {
                                         ((Callable) args[0]).call(cx, scope, thisObj, new Object[]{
@@ -200,7 +201,7 @@ final class JSYokeRequest  extends YokeRequest implements Scriptable {
                         }
                     };
                 }
-                return dataHandler;
+                return handler;
             case "destroySession":
             	if (destroySession == null) {
             		destroySession = new Callable() {
@@ -276,9 +277,24 @@ final class JSYokeRequest  extends YokeRequest implements Scriptable {
                     };
                 }
                 return exceptionHandler;
-            case "expectMultipart":
-                if (expectMultipart == null) {
-                    expectMultipart = new Callable() {
+            case "isExpectMultipart":
+                if (isExpectMultipart == null) {
+                    isExpectMultipart = new Callable() {
+                        @Override
+                        public Object call(org.mozilla.javascript.Context cx, Scriptable scope, Scriptable thisObj, Object[] args) {
+                            if (JSYokeRequest.this != thisObj) {
+                                throw new RuntimeException("[native JSYokeFunction not bind to JSYokeRequest]");
+                            }
+
+                            JSYokeRequest.this.isExpectMultipart();
+                            return Undefined.instance;
+                        }
+                    };
+                }
+                return isExpectMultipart;
+            case "setExpectMultipart":
+                if (setExpectMultipart == null) {
+                    setExpectMultipart = new Callable() {
                         @Override
                         public Object call(org.mozilla.javascript.Context cx, Scriptable scope, Scriptable thisObj, Object[] args) {
                             if (JSYokeRequest.this != thisObj) {
@@ -286,7 +302,7 @@ final class JSYokeRequest  extends YokeRequest implements Scriptable {
                             }
 
                             if (JSUtil.is(args, Boolean.class)) {
-                                JSYokeRequest.this.expectMultiPart((Boolean) args[0]);
+                                JSYokeRequest.this.setExpectMultipart((Boolean) args[0]);
                                 return Undefined.instance;
                             }
 
@@ -294,7 +310,7 @@ final class JSYokeRequest  extends YokeRequest implements Scriptable {
                         }
                     };
                 }
-                return expectMultipart;
+                return setExpectMultipart;
             case "files":
                 if (files == null) {
                 	files = javaToJS(files(), getParentScope());
@@ -693,14 +709,7 @@ final class JSYokeRequest  extends YokeRequest implements Scriptable {
             case "uri":
                 return uri();
             case "version":
-            	switch (version()) {
-            	case HTTP_1_0:
-            		return "1.0";
-            	case HTTP_1_1:
-            		return "1.1";
-            	default:
-            		return "unknown";
-            	}
+                return version();
             case "vertxHttpServerRequest":
             	// TODO
                 return vertxHttpServerRequest();

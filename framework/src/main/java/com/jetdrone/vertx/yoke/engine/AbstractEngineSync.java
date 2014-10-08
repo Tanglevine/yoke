@@ -5,12 +5,10 @@ package com.jetdrone.vertx.yoke.engine;
 
 import com.jetdrone.vertx.yoke.Engine;
 import com.jetdrone.vertx.yoke.core.impl.LRUCache;
-import org.vertx.java.core.Vertx;
-import org.vertx.java.core.buffer.Buffer;
-import org.vertx.java.core.file.FileProps;
-import org.vertx.java.core.file.FileSystem;
-
-import java.util.Date;
+import io.vertx.core.Vertx;
+import io.vertx.core.buffer.Buffer;
+import io.vertx.core.file.FileProps;
+import io.vertx.core.file.FileSystem;
 
 /**
  * # AbstractEngineSync
@@ -41,7 +39,7 @@ public abstract class AbstractEngineSync<T> implements Engine {
         try {
             FileProps fileProps = fileSystem.propsSync(filename);
             LRUCache.CacheEntry<String, T> cacheEntry = cache.get(filename);
-            final Date lastModified = fileProps.lastModifiedTime();
+            final long lastModified = fileProps.lastModifiedTime();
 
             if (cacheEntry == null) {
                 return false;
@@ -75,11 +73,11 @@ public abstract class AbstractEngineSync<T> implements Engine {
 
         if (fileSystem.existsSync(filename)) {
             FileProps fileProps = fileSystem.propsSync(filename);
-            final Date lastModified = fileProps.lastModifiedTime();
+            final long lastModified = fileProps.lastModifiedTime();
             // load from the file system
             Buffer content = fileSystem.readFileSync(filename);
             // cache the result
-            cache.put(filename, new LRUCache.CacheEntry<String, T>(lastModified, content.toString(contentEncoding())));
+            cache.put(filename, new LRUCache.CacheEntry<>(lastModified, content.toString(contentEncoding())));
         }
     }
 

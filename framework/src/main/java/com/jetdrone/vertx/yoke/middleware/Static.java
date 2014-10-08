@@ -6,14 +6,15 @@ package com.jetdrone.vertx.yoke.middleware;
 import com.jetdrone.vertx.yoke.MimeType;
 import com.jetdrone.vertx.yoke.util.Utils;
 import org.jetbrains.annotations.NotNull;
-import org.vertx.java.core.*;
-import org.vertx.java.core.file.FileProps;
-import org.vertx.java.core.file.FileSystem;
-import org.vertx.java.core.json.JsonArray;
+import io.vertx.core.*;
+import io.vertx.core.file.FileProps;
+import io.vertx.core.file.FileSystem;
+import io.vertx.core.json.JsonArray;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 import java.util.TimeZone;
 
 /**
@@ -124,7 +125,7 @@ public class Static extends AbstractMiddleware {
         MultiMap headers = request.response().headers();
 
         if (!headers.contains("etag")) {
-            headers.set("etag", "\"" + props.size() + "-" + props.lastModifiedTime().getTime() + "\"");
+            headers.set("etag", "\"" + props.size() + "-" + props.lastModifiedTime() + "\"");
         }
 
         if (!headers.contains("date")) {
@@ -172,9 +173,9 @@ public class Static extends AbstractMiddleware {
     private void sendDirectory(final YokeRequest request, final String dir, final Handler<Object> next) {
         final FileSystem fileSystem = vertx().fileSystem();
 
-        fileSystem.readDir(dir, new AsyncResultHandler<String[]>() {
+        fileSystem.readDir(dir, new Handler<AsyncResult<List<String>>>() {
             @Override
-            public void handle(AsyncResult<String[]> asyncResult) {
+            public void handle(AsyncResult<List<String>> asyncResult) {
                 if (asyncResult.failed()) {
                     next.handle(asyncResult.cause());
                 } else {

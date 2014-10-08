@@ -7,8 +7,8 @@ import com.jetdrone.vertx.yoke.Middleware;
 import com.jetdrone.vertx.yoke.Yoke;
 import com.jetdrone.vertx.yoke.util.Utils;
 import org.jetbrains.annotations.NotNull;
-import org.vertx.java.core.Handler;
-import org.vertx.java.core.buffer.Buffer;
+import io.vertx.core.Handler;
+import io.vertx.core.buffer.Buffer;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -144,7 +144,7 @@ public class Favicon extends AbstractMiddleware {
     @Override
     public void handle(@NotNull final YokeRequest request, @NotNull final Handler<Object> next) {
         if ("/favicon.ico".equals(request.normalizedPath())) {
-            request.response().headers().set(icon.headers);
+            request.response().headers().setAll(icon.headers);
             request.response().end(icon.body);
         } else {
             next.handle(null);

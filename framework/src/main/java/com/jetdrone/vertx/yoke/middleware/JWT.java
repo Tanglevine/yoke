@@ -5,8 +5,8 @@ import com.jetdrone.vertx.yoke.Yoke;
 import com.jetdrone.vertx.yoke.core.YokeException;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.vertx.java.core.Handler;
-import org.vertx.java.core.json.JsonObject;
+import io.vertx.core.Handler;
+import io.vertx.core.json.JsonObject;
 
 import java.util.regex.Pattern;
 
