@@ -4,7 +4,6 @@ import com.jetdrone.vertx.yoke.Middleware;
 import com.jetdrone.vertx.yoke.middleware.YokeRequest;
 import com.jetdrone.vertx.yoke.YokeSecurity;
 import com.jetdrone.vertx.yoke.core.YokeException;
-import com.jetdrone.vertx.yoke.middleware.YokeRequest;
 import org.jetbrains.annotations.NotNull;
 import org.vertx.java.core.AsyncResult;
 import org.vertx.java.core.Handler;
@@ -14,8 +13,8 @@ import org.vertx.java.core.json.JsonObject;
 
 import javax.crypto.Cipher;
 import javax.crypto.Mac;
-import javax.xml.bind.DatatypeConverter;
 import java.security.Key;
+import java.util.Base64;
 import java.util.Date;
 import java.util.UUID;
 
@@ -58,7 +57,7 @@ public abstract class OAuth2 {
                 return null;
             }
 
-            String[] credentials = new String(DatatypeConverter.parseBase64Binary(parts[1])).split(":");
+            String[] credentials = new String(Base64.getDecoder().decode(parts[1])).split(":");
             user = credentials[0];
             pass = credentials[1];
 

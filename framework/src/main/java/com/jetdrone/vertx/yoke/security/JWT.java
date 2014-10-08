@@ -2,15 +2,11 @@ package com.jetdrone.vertx.yoke.security;
 
 import com.jetdrone.vertx.yoke.YokeSecurity;
 import org.vertx.java.core.json.JsonObject;
-import org.vertx.java.core.json.impl.Base64;
 
 import javax.crypto.Mac;
 import java.security.Signature;
 import java.security.SignatureException;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public final class JWT {
 
@@ -123,7 +119,7 @@ public final class JWT {
             // verify signature. `sign` will return base64 string.
             String signingInput = headerSeg + "." + payloadSeg;
 
-            if (!crypto.verify(Base64.decode(base64urlUnescape(signatureSeg), Base64.DONT_BREAK_LINES), signingInput.getBytes())) {
+            if (!crypto.verify(Base64.getDecoder().decode(base64urlUnescape(signatureSeg)), signingInput.getBytes())) {
                 throw new RuntimeException("Signature verification failed");
             }
         }
@@ -152,13 +148,13 @@ public final class JWT {
         String headerSegment = base64urlEncode(header.encode());
         String payloadSegment = base64urlEncode(payload.encode());
         String signingInput = headerSegment + "." + payloadSegment;
-        String signSegment = base64urlEscape(Base64.encodeBytes(crypto.sign(signingInput.getBytes()), Base64.DONT_BREAK_LINES));
+        String signSegment = base64urlEscape(Base64.getEncoder().encodeToString(crypto.sign(signingInput.getBytes())));
 
         return headerSegment + "." + payloadSegment + "." + signSegment;
     }
 
     private static String base64urlDecode(String str) {
-        return new String(Base64.decode(base64urlUnescape(str), Base64.DONT_BREAK_LINES));
+        return new String(Base64.getDecoder().decode(base64urlUnescape(str)));
     }
 
     private static String base64urlUnescape(String str) {
@@ -172,7 +168,7 @@ public final class JWT {
     }
 
     private static String base64urlEncode(String str) {
-        return base64urlEscape(Base64.encodeBytes(str.getBytes(), Base64.DONT_BREAK_LINES));
+        return base64urlEscape(Base64.getEncoder().encodeToString(str.getBytes()));
     }
 
     private static String base64urlEscape(String str) {
