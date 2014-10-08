@@ -41,7 +41,7 @@ public final class Context implements Map<String, Object> {
     }
 
     @Override
-    public boolean containsKey(@NotNull Object o) {
+    public boolean containsKey(Object o) {
         if (rw != null) {
             if (rw.containsKey(o)) {
                 return true;
@@ -63,7 +63,7 @@ public final class Context implements Map<String, Object> {
     }
 
     @Override
-    public Object get(@NotNull Object o) {
+    public Object get(Object o) {
         if (rw != null) {
             if (rw.containsKey(o)) {
                 return rw.get(o);
@@ -82,7 +82,7 @@ public final class Context implements Map<String, Object> {
     }
 
     @Override
-    public Object remove(@NotNull Object o) {
+    public Object remove(Object o) {
         if (rw == null) {
             return null;
         }
