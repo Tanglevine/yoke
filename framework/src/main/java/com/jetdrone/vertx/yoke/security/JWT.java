@@ -106,8 +106,8 @@ public final class JWT {
         String signatureSeg = segments[2];
 
         // base64 decode and parse JSON
-        JsonObject header = new JsonObject(base64urlDecode(headerSeg));
-        JsonObject payload = new JsonObject(base64urlDecode(payloadSeg));
+        JsonObject header = new JsonObject(new String(Base64.getUrlDecoder().decode(headerSeg)));
+        JsonObject payload = new JsonObject(new String(Base64.getUrlDecoder().decode(payloadSeg)));
 
         if (!noVerify) {
             Crypto crypto = CRYPTO_MAP.get(header.getString("alg"));
@@ -119,7 +119,7 @@ public final class JWT {
             // verify signature. `sign` will return base64 string.
             String signingInput = headerSeg + "." + payloadSeg;
 
-            if (!crypto.verify(Base64.getDecoder().decode(base64urlUnescape(signatureSeg)), signingInput.getBytes())) {
+            if (!crypto.verify(Base64.getUrlDecoder().decode(signatureSeg), signingInput.getBytes())) {
                 throw new RuntimeException("Signature verification failed");
             }
         }
@@ -145,33 +145,11 @@ public final class JWT {
 
 
         // create segments, all segment should be base64 string
-        String headerSegment = base64urlEncode(header.encode());
-        String payloadSegment = base64urlEncode(payload.encode());
+        String headerSegment = Base64.getUrlEncoder().encodeToString(header.encode().getBytes());
+        String payloadSegment = Base64.getUrlEncoder().encodeToString(payload.encode().getBytes());
         String signingInput = headerSegment + "." + payloadSegment;
-        String signSegment = base64urlEscape(Base64.getEncoder().encodeToString(crypto.sign(signingInput.getBytes())));
+        String signSegment = Base64.getUrlEncoder().encodeToString(crypto.sign(signingInput.getBytes()));
 
         return headerSegment + "." + payloadSegment + "." + signSegment;
-    }
-
-    private static String base64urlDecode(String str) {
-        return new String(Base64.getDecoder().decode(base64urlUnescape(str)));
-    }
-
-    private static String base64urlUnescape(String str) {
-        int padding = 5 - str.length() % 4;
-        StringBuilder sb = new StringBuilder(str.length() + padding);
-        sb.append(str);
-        for (int i = 0; i < padding; i++) {
-            sb.append('=');
-        }
-        return sb.toString().replaceAll("\\-", "+").replaceAll("_", "/");
-    }
-
-    private static String base64urlEncode(String str) {
-        return base64urlEscape(Base64.getEncoder().encodeToString(str.getBytes()));
-    }
-
-    private static String base64urlEscape(String str) {
-        return str.replaceAll("\\+", "-").replaceAll("/", "_").replaceAll("=", "");
     }
 }
