@@ -35,13 +35,10 @@ public class RequestFunctions extends TestVerticle {
         // text/html
         // text/plain
 
-        new YokeTester(yoke).request("GET", "/", headers, new Handler<Response>() {
-            @Override
-            public void handle(Response resp) {
-                assertEquals(200, resp.getStatusCode());
-                assertEquals(resp.body.toString(), "text/xml");
-                testComplete();
-            }
+        new YokeTester(yoke).request("GET", "/", headers, resp -> {
+            assertEquals(200, resp.getStatusCode());
+            assertEquals(resp.body.toString(), "text/xml");
+            testComplete();
         });
     }
 

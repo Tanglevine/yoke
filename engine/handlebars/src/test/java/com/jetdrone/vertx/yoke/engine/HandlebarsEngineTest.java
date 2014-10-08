@@ -37,13 +37,10 @@ public class HandlebarsEngineTest extends TestVerticle {
                 }
             });
 
-            new YokeTester(yoke).request("GET", "/", new Handler<Response>() {
-                @Override
-                public void handle(Response resp) {
-                    assertEquals(200, resp.getStatusCode());
-                    assertEquals("Hello Paulo!", resp.body.toString());
-                    testComplete();
-                }
+            new YokeTester(yoke).request("GET", "/", resp -> {
+                assertEquals(200, resp.getStatusCode());
+                assertEquals("Hello Paulo!", resp.body.toString());
+                testComplete();
             });
         } catch (Exception e) {
             fail(e.getMessage());
@@ -76,13 +73,10 @@ public class HandlebarsEngineTest extends TestVerticle {
                 }
             });
 
-            new YokeTester(yoke).request("GET", "/", new Handler<Response>() {
-                @Override
-                public void handle(Response resp) {
-                    assertEquals(200, resp.getStatusCode());
-                    assertEquals("<html><body><ul><li>Handlebars.java</li><li>Handlebars.js</li><li>Mustache</li></ul></body></html>", resp.body.toString());
-                    testComplete();
-                }
+            new YokeTester(yoke).request("GET", "/", resp -> {
+                assertEquals(200, resp.getStatusCode());
+                assertEquals("<html><body><ul><li>Handlebars.java</li><li>Handlebars.js</li><li>Mustache</li></ul></body></html>", resp.body.toString());
+                testComplete();
             });
         } catch (Exception e) {
             fail(e.getMessage());
@@ -100,15 +94,12 @@ public class HandlebarsEngineTest extends TestVerticle {
             }
         });
 
-        new YokeTester(yoke).request("GET", "/", new Handler<Response>() {
-            @Override
-            public void handle(Response resp) {
-                assertEquals(200, resp.getStatusCode());
-                assertEquals("<h1>Yoke</h1>" + NEWLINE +
-                        "<p>Home page</p>" + NEWLINE +
-                        "<span>Powered by Handlebars.java</span>", resp.body.toString());
-                testComplete();
-            }
+        new YokeTester(yoke).request("GET", "/", resp -> {
+            assertEquals(200, resp.getStatusCode());
+            assertEquals("<h1>Yoke</h1>" + NEWLINE +
+                    "<p>Home page</p>" + NEWLINE +
+                    "<span>Powered by Handlebars.java</span>", resp.body.toString());
+            testComplete();
         });
     }
 
@@ -123,21 +114,18 @@ public class HandlebarsEngineTest extends TestVerticle {
             }
         });
 
-        new YokeTester(yoke).request("GET", "/", new Handler<Response>() {
-            @Override
-            public void handle(Response resp) {
-                assertEquals(200, resp.getStatusCode());
-                assertEquals(NEWLINE +
-                				NEWLINE +
-                        "<h1>Yoke</h1>" + NEWLINE +
-                        NEWLINE +
-                        NEWLINE +
-                        "<p>Home page</p>" + NEWLINE +
-                        NEWLINE +
-                        NEWLINE +
-                        "<span>Powered by Handlebars.java</span>", resp.body.toString());
-                testComplete();
-            }
+        new YokeTester(yoke).request("GET", "/", resp -> {
+            assertEquals(200, resp.getStatusCode());
+            assertEquals(NEWLINE +
+                            NEWLINE +
+                    "<h1>Yoke</h1>" + NEWLINE +
+                    NEWLINE +
+                    NEWLINE +
+                    "<p>Home page</p>" + NEWLINE +
+                    NEWLINE +
+                    NEWLINE +
+                    "<span>Powered by Handlebars.java</span>", resp.body.toString());
+            testComplete();
         });
     }
 }

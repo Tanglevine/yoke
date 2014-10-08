@@ -23,13 +23,10 @@ public class ResponseTime extends TestVerticle {
             }
         });
 
-        new YokeTester(yoke).request("GET", "/", new Handler<Response>() {
-            @Override
-            public void handle(Response resp) {
-                assertEquals(200, resp.getStatusCode());
-                assertNotNull(resp.headers().get("x-response-time"));
-                testComplete();
-            }
+        new YokeTester(yoke).request("GET", "/", resp -> {
+            assertEquals(200, resp.getStatusCode());
+            assertNotNull(resp.headers().get("x-response-time"));
+            testComplete();
         });
     }
 }

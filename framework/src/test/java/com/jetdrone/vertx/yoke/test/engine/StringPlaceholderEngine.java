@@ -39,13 +39,10 @@ public class StringPlaceholderEngine extends TestVerticle {
                 }
             });
 
-            new YokeTester(yoke).request("GET", "/", new Handler<Response>() {
-                @Override
-                public void handle(Response resp) {
-                    assertEquals(200, resp.getStatusCode());
-                    assertEquals("Hello Paulo!", resp.body.toString());
-                    testComplete();
-                }
+            new YokeTester(yoke).request("GET", "/", resp -> {
+                assertEquals(200, resp.getStatusCode());
+                assertEquals("Hello Paulo!", resp.body.toString());
+                testComplete();
             });
         } catch (Exception e) {
             fail(e.getMessage());
@@ -78,13 +75,10 @@ public class StringPlaceholderEngine extends TestVerticle {
                 }
             });
 
-            new YokeTester(yoke).request("GET", "/", new Handler<Response>() {
-                @Override
-                public void handle(Response resp) {
-                    assertEquals(200, resp.getStatusCode());
-                    assertEquals("Hello Paulo Lopes!", resp.body.toString());
-                    testComplete();
-                }
+            new YokeTester(yoke).request("GET", "/", resp -> {
+                assertEquals(200, resp.getStatusCode());
+                assertEquals("Hello Paulo Lopes!", resp.body.toString());
+                testComplete();
             });
         } catch (Exception e) {
             fail(e.getMessage());

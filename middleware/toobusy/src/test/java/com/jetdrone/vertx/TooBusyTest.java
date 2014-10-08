@@ -46,15 +46,12 @@ public class TooBusyTest extends TestVerticle {
 
             @Override
             public void handle(Long event) {
-                tester.request("GET", "/", new Handler<Response>() {
-                    @Override
-                    public void handle(Response response) {
-                        if (response.getStatusCode() == 200) {
-                            some200++;
-                        }
-                        if (response.getStatusCode() == 503) {
-                            some503++;
-                        }
+                tester.request("GET", "/", response -> {
+                    if (response.getStatusCode() == 200) {
+                        some200++;
+                    }
+                    if (response.getStatusCode() == 503) {
+                        some503++;
                     }
                 });
 

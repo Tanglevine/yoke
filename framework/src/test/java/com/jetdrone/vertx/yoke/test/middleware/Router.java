@@ -34,13 +34,10 @@ public class Router extends TestVerticle {
         Yoke yoke = new Yoke(this);
         yoke.use(com.jetdrone.vertx.yoke.middleware.Router.from(new TestRouter()));
 
-        new YokeTester(yoke).request("GET", "/ws", new Handler<Response>() {
-            @Override
-            public void handle(Response resp) {
-                assertEquals(200, resp.getStatusCode());
-                assertEquals("Hello ws!", resp.body.toString());
-                testComplete();
-            }
+        new YokeTester(yoke).request("GET", "/ws", resp -> {
+            assertEquals(200, resp.getStatusCode());
+            assertEquals("Hello ws!", resp.body.toString());
+            testComplete();
         });
     }
 
@@ -57,13 +54,10 @@ public class Router extends TestVerticle {
         Yoke yoke = new Yoke(this);
         yoke.use(com.jetdrone.vertx.yoke.middleware.Router.from(new TestRouter2()));
 
-        new YokeTester(yoke).request("GET", "/ws", new Handler<Response>() {
-            @Override
-            public void handle(Response resp) {
-                assertEquals(200, resp.getStatusCode());
-                assertEquals("Hello ws!", resp.body.toString());
-                testComplete();
-            }
+        new YokeTester(yoke).request("GET", "/ws", resp -> {
+            assertEquals(200, resp.getStatusCode());
+            assertEquals("Hello ws!", resp.body.toString());
+            testComplete();
         });
     }
 
@@ -91,13 +85,10 @@ public class Router extends TestVerticle {
             });
         }});
 
-        new YokeTester(yoke).request("GET", "/api/1", new Handler<Response>() {
-            @Override
-            public void handle(Response resp) {
-                assertEquals(200, resp.getStatusCode());
-                assertEquals("OK", resp.body.toString());
-                testComplete();
-            }
+        new YokeTester(yoke).request("GET", "/api/1", resp -> {
+            assertEquals(200, resp.getStatusCode());
+            assertEquals("OK", resp.body.toString());
+            testComplete();
         });
     }
 
@@ -115,12 +106,9 @@ public class Router extends TestVerticle {
         }});
 
         // the pattern expects 2 digits
-        new YokeTester(yoke).request("GET", "/api/1", new Handler<Response>() {
-            @Override
-            public void handle(Response resp) {
-                assertEquals(400, resp.getStatusCode());
-                testComplete();
-            }
+        new YokeTester(yoke).request("GET", "/api/1", resp -> {
+            assertEquals(400, resp.getStatusCode());
+            testComplete();
         });
     }
 
@@ -138,12 +126,9 @@ public class Router extends TestVerticle {
         }});
 
         // the pattern expects 2 digits
-        new YokeTester(yoke).request("GET", "/api/10", new Handler<Response>() {
-            @Override
-            public void handle(Response resp) {
-                assertEquals(200, resp.getStatusCode());
-                testComplete();
-            }
+        new YokeTester(yoke).request("GET", "/api/10", resp -> {
+            assertEquals(200, resp.getStatusCode());
+            testComplete();
         });
     }
 
@@ -161,19 +146,16 @@ public class Router extends TestVerticle {
 
         final YokeTester yokeAssert = new YokeTester(yoke);
 
-        yokeAssert.request("GET", "/api", new Handler<Response>() {
-            @Override
-            public void handle(Response resp) {
-                assertEquals(200, resp.getStatusCode());
+        yokeAssert.request("GET", "/api", resp -> {
+            assertEquals(200, resp.getStatusCode());
 
-                yokeAssert.request("GET", "/api/", new Handler<Response>() {
-                    @Override
-                    public void handle(Response resp) {
-                        assertEquals(200, resp.getStatusCode());
-                        testComplete();
-                    }
-                });
-            }
+            yokeAssert.request("GET", "/api/", new Handler<Response>() {
+                @Override
+                public void handle(Response resp) {
+                    assertEquals(200, resp.getStatusCode());
+                    testComplete();
+                }
+            });
         });
     }
 
@@ -191,12 +173,9 @@ public class Router extends TestVerticle {
 
         final YokeTester yokeAssert = new YokeTester(yoke);
 
-        yokeAssert.request("GET", "/api-stable", new Handler<Response>() {
-            @Override
-            public void handle(Response resp) {
-                assertEquals(200, resp.getStatusCode());
-                testComplete();
-            }
+        yokeAssert.request("GET", "/api-stable", resp -> {
+            assertEquals(200, resp.getStatusCode());
+            testComplete();
         });
     }
 
@@ -217,12 +196,9 @@ public class Router extends TestVerticle {
         yoke.use(com.jetdrone.vertx.yoke.middleware.Router.from(new R2()));
 
         // the pattern expects 2 digits
-        new YokeTester(yoke).request("GET", "/api/1", new Handler<Response>() {
-            @Override
-            public void handle(Response resp) {
-                assertEquals(400, resp.getStatusCode());
-                testComplete();
-            }
+        new YokeTester(yoke).request("GET", "/api/1", resp -> {
+            assertEquals(400, resp.getStatusCode());
+            testComplete();
         });
     }
 
@@ -246,12 +222,9 @@ public class Router extends TestVerticle {
         headers.add("content-type", "application/json");
         headers.add("content-length", Integer.toString(body.length()));
 
-        new YokeTester(yoke).request("POST", "/api", headers, body, new Handler<Response>() {
-            @Override
-            public void handle(Response resp) {
-                assertEquals(400, resp.getStatusCode());
-                testComplete();
-            }
+        new YokeTester(yoke).request("POST", "/api", headers, body, resp -> {
+            assertEquals(400, resp.getStatusCode());
+            testComplete();
         });
     }
 
@@ -264,12 +237,9 @@ public class Router extends TestVerticle {
         headers.add("content-type", "application/json");
         headers.add("content-length", "0");
 
-        new YokeTester(yoke).request("POST", "/api", headers, null, new Handler<Response>() {
-            @Override
-            public void handle(Response resp) {
-                assertEquals(400, resp.getStatusCode());
-                testComplete();
-            }
+        new YokeTester(yoke).request("POST", "/api", headers, null, resp -> {
+            assertEquals(400, resp.getStatusCode());
+            testComplete();
         });
     }
 }

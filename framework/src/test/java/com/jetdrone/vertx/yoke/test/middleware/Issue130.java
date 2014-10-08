@@ -32,12 +32,9 @@ public class Issue130 extends TestVerticle {
             }
         }));
 
-        new YokeTester(yoke).request("GET", "/url/http://www.google.com", new Handler<Response>() {
-            @Override
-            public void handle(Response resp) {
-                assertEquals(200, resp.getStatusCode());
-                testComplete();
-            }
+        new YokeTester(yoke).request("GET", "/url/http://www.google.com", resp -> {
+            assertEquals(200, resp.getStatusCode());
+            testComplete();
         });
     }
 
@@ -51,12 +48,9 @@ public class Issue130 extends TestVerticle {
             }
         }));
 
-        new YokeTester(yoke).request("GET", "/url/http%3A%2F%2Fwww.google.com", new Handler<Response>() {
-            @Override
-            public void handle(Response resp) {
-                assertEquals(200, resp.getStatusCode());
-                testComplete();
-            }
+        new YokeTester(yoke).request("GET", "/url/http%3A%2F%2Fwww.google.com", resp -> {
+            assertEquals(200, resp.getStatusCode());
+            testComplete();
         });
     }
 

@@ -37,10 +37,7 @@ public class VHost extends TestVerticle {
         MultiMap headers = new CaseInsensitiveMultiMap();
         headers.add("host", "www.mycorp.com");
 
-        new YokeTester(yoke).request("GET", "/", headers, new Handler<Response>() {
-            @Override
-            public void handle(Response resp) {
-            }
+        new YokeTester(yoke).request("GET", "/", headers, resp -> {
         });
     }
 }

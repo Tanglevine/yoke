@@ -25,13 +25,10 @@ public class Jade4JEngineTest extends TestVerticle {
             }
         });
 
-        new YokeTester(yoke).request("GET", "/", new Handler<Response>() {
-            @Override
-            public void handle(Response resp) {
-                assertEquals(200, resp.getStatusCode());
-                assertEquals("<!DOCTYPE html><html><head></head><body></body></html>", resp.body.toString());
-                testComplete();
-            }
+        new YokeTester(yoke).request("GET", "/", resp -> {
+            assertEquals(200, resp.getStatusCode());
+            assertEquals("<!DOCTYPE html><html><head></head><body></body></html>", resp.body.toString());
+            testComplete();
         });
     }
 
@@ -47,13 +44,10 @@ public class Jade4JEngineTest extends TestVerticle {
             }
         });
 
-        new YokeTester(yoke).request("GET", "/", new Handler<Response>() {
-            @Override
-            public void handle(Response resp) {
-                assertEquals(200, resp.getStatusCode());
+        new YokeTester(yoke).request("GET", "/", resp -> {
+            assertEquals(200, resp.getStatusCode());
 //                assertEquals("<!DOCTYPE html><html><head><title>Vert.X Test</title><script src=\"static/sockjs-min-0.3.4.js\" type=\"text/javascript\"></script><script src=\"static/vertxbus.js\" type=\"text/javascript\"></script><script src=\"static/main.js\" type=\"text/javascript\"></script><link rel=\"stylesheet\" type=\"text/css\" href=\"static/main.css\"></head><body><h1>Vert.X Test</h1></body></html>", resp.body.toString());
-                testComplete();
-            }
+            testComplete();
         });
     }
 }

@@ -41,13 +41,10 @@ public class MVELEngineTest extends TestVerticle {
                 }
             });
 
-            new YokeTester(yoke).request("GET", "/", new Handler<Response>() {
-                @Override
-                public void handle(Response resp) {
-                    assertEquals(200, resp.getStatusCode());
-                    assertEquals("<h1>Paulo</h1>", resp.body.toString());
-                    testComplete();
-                }
+            new YokeTester(yoke).request("GET", "/", resp -> {
+                assertEquals(200, resp.getStatusCode());
+                assertEquals("<h1>Paulo</h1>", resp.body.toString());
+                testComplete();
             });
         } catch (Exception e) {
             fail(e.getMessage());
@@ -85,13 +82,10 @@ public class MVELEngineTest extends TestVerticle {
                 }
             });
 
-            new YokeTester(yoke).request("GET", "/", new Handler<Response>() {
-                @Override
-                public void handle(Response resp) {
-                    assertEquals(200, resp.getStatusCode());
-                    assertEquals("<p><a href=\"a\">b</a><a href=\"c\">d</a></p>", resp.body.toString());
-                    testComplete();
-                }
+            new YokeTester(yoke).request("GET", "/", resp -> {
+                assertEquals(200, resp.getStatusCode());
+                assertEquals("<p><a href=\"a\">b</a><a href=\"c\">d</a></p>", resp.body.toString());
+                testComplete();
             });
         } catch (Exception e) {
             fail(e.getMessage());

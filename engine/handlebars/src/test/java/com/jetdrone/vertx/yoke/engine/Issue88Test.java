@@ -14,9 +14,6 @@ import org.vertx.testtools.TestVerticle;
 import static org.vertx.testtools.VertxAssert.assertEquals;
 import static org.vertx.testtools.VertxAssert.testComplete;
 
-/**
- * Created by paulo on 4/17/14.
- */
 public class Issue88Test extends TestVerticle {
 
     @Test
@@ -41,13 +38,10 @@ public class Issue88Test extends TestVerticle {
                 .listen(8080);
 
 
-        new YokeTester(yoke).request("GET", "/$", new Handler<Response>() {
-            @Override
-            public void handle(Response resp) {
-                assertEquals(200, resp.getStatusCode());
-                System.out.println(resp.body.toString());
-                testComplete();
-            }
+        new YokeTester(yoke).request("GET", "/$", resp -> {
+            assertEquals(200, resp.getStatusCode());
+            System.out.println(resp.body.toString());
+            testComplete();
         });
     }
 }

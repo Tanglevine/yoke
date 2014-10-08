@@ -32,12 +32,9 @@ public class IEXSSTest extends TestVerticle {
         MultiMap headers = new CaseInsensitiveMultiMap();
         headers.add("User-Agent", FIREFOX_23);
 
-        new YokeTester(app).request("GET", "/", headers, new Handler<Response>() {
-            @Override
-            public void handle(Response response) {
-                assertEquals(response.headers().get("X-XSS-Protection"), "1; mode=block");
-                testComplete();
-            }
+        new YokeTester(app).request("GET", "/", headers, response -> {
+            assertEquals(response.headers().get("X-XSS-Protection"), "1; mode=block");
+            testComplete();
         });
     }
 
@@ -55,12 +52,9 @@ public class IEXSSTest extends TestVerticle {
         MultiMap headers = new CaseInsensitiveMultiMap();
         headers.add("User-Agent", IE_9);
 
-        new YokeTester(app).request("GET", "/", headers, new Handler<Response>() {
-            @Override
-            public void handle(Response response) {
-                assertEquals(response.headers().get("X-XSS-Protection"), "1; mode=block");
-                testComplete();
-            }
+        new YokeTester(app).request("GET", "/", headers, response -> {
+            assertEquals(response.headers().get("X-XSS-Protection"), "1; mode=block");
+            testComplete();
         });
     }
 
@@ -78,12 +72,9 @@ public class IEXSSTest extends TestVerticle {
         MultiMap headers = new CaseInsensitiveMultiMap();
         headers.add("User-Agent", IE_8);
 
-        new YokeTester(app).request("GET", "/", headers, new Handler<Response>() {
-            @Override
-            public void handle(Response response) {
-                assertEquals(response.headers().get("X-XSS-Protection"), "0");
-                testComplete();
-            }
+        new YokeTester(app).request("GET", "/", headers, response -> {
+            assertEquals(response.headers().get("X-XSS-Protection"), "0");
+            testComplete();
         });
     }
 
@@ -101,12 +92,9 @@ public class IEXSSTest extends TestVerticle {
         MultiMap headers = new CaseInsensitiveMultiMap();
         headers.add("User-Agent", IE_7);
 
-        new YokeTester(app).request("GET", "/", headers, new Handler<Response>() {
-            @Override
-            public void handle(Response response) {
-                assertEquals(response.headers().get("X-XSS-Protection"), "0");
-                testComplete();
-            }
+        new YokeTester(app).request("GET", "/", headers, response -> {
+            assertEquals(response.headers().get("X-XSS-Protection"), "0");
+            testComplete();
         });
     }
 
@@ -124,12 +112,9 @@ public class IEXSSTest extends TestVerticle {
         MultiMap headers = new CaseInsensitiveMultiMap();
         headers.add("User-Agent", IE_8);
 
-        new YokeTester(app).request("GET", "/", headers, new Handler<Response>() {
-            @Override
-            public void handle(Response response) {
-                assertEquals(response.headers().get("X-XSS-Protection"), "1; mode=block");
-                testComplete();
-            }
+        new YokeTester(app).request("GET", "/", headers, response -> {
+            assertEquals(response.headers().get("X-XSS-Protection"), "1; mode=block");
+            testComplete();
         });
     }
 

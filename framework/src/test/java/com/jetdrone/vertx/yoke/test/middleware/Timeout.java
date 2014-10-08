@@ -23,12 +23,9 @@ public class Timeout extends TestVerticle {
             }
         });
 
-        new YokeTester(yoke).request("GET", "/", new Handler<Response>() {
-            @Override
-            public void handle(Response resp) {
-                assertEquals(408, resp.getStatusCode());
-                testComplete();
-            }
+        new YokeTester(yoke).request("GET", "/", resp -> {
+            assertEquals(408, resp.getStatusCode());
+            testComplete();
         });
     }
 }

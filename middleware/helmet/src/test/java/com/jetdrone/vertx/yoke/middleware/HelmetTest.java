@@ -24,12 +24,9 @@ public class HelmetTest extends TestVerticle {
             }
         });
 
-        new YokeTester(app).request("GET", "/", new Handler<Response>() {
-            @Override
-            public void handle(Response response) {
-                assertEquals(response.headers().get("Cache-Control"), "no-store, no-cache");
-                testComplete();
-            }
+        new YokeTester(app).request("GET", "/", response -> {
+            assertEquals(response.headers().get("Cache-Control"), "no-store, no-cache");
+            testComplete();
         });
     }
 
@@ -44,12 +41,9 @@ public class HelmetTest extends TestVerticle {
             }
         });
 
-        new YokeTester(app).request("GET", "/", new Handler<Response>() {
-            @Override
-            public void handle(Response response) {
-                assertEquals(response.headers().get("X-Content-Type-Options"), "nosniff");
-                testComplete();
-            }
+        new YokeTester(app).request("GET", "/", response -> {
+            assertEquals(response.headers().get("X-Content-Type-Options"), "nosniff");
+            testComplete();
         });
     }
 
@@ -66,25 +60,22 @@ public class HelmetTest extends TestVerticle {
 
         final YokeTester tester = new YokeTester(app);
 
-        tester.request("GET", "/", new Handler<Response>() {
-            @Override
-            public void handle(Response response) {
-                assertEquals(response.body.toString(), "hello");
+        tester.request("GET", "/", response -> {
+            assertEquals(response.body.toString(), "hello");
 
-                tester.request("GET", "/crossdomain.xml", new Handler<Response>() {
-                    @Override
-                    public void handle(Response response) {
-                        assertEquals(response.headers().get("Content-Type"), "text/x-cross-domain-policy");
-                        assertEquals(response.body.toString(), "<?xml version=\"1.0\"?>" +
-                                "<!DOCTYPE cross-domain-policy SYSTEM \"http://www.adobe.com/xml/dtds/cross-domain-policy.dtd\">" +
-                                "<cross-domain-policy>" +
-                                "<site-control permitted-cross-domain-policies=\"none\"/>" +
-                                "</cross-domain-policy>");
+            tester.request("GET", "/crossdomain.xml", new Handler<Response>() {
+                @Override
+                public void handle(Response response) {
+                    assertEquals(response.headers().get("Content-Type"), "text/x-cross-domain-policy");
+                    assertEquals(response.body.toString(), "<?xml version=\"1.0\"?>" +
+                            "<!DOCTYPE cross-domain-policy SYSTEM \"http://www.adobe.com/xml/dtds/cross-domain-policy.dtd\">" +
+                            "<cross-domain-policy>" +
+                            "<site-control permitted-cross-domain-policies=\"none\"/>" +
+                            "</cross-domain-policy>");
 
-                        testComplete();
-                    }
-                });
-            }
+                    testComplete();
+                }
+            });
         });
     }
 
@@ -100,12 +91,9 @@ public class HelmetTest extends TestVerticle {
             }
         });
 
-        new YokeTester(app).request("GET", "/", new Handler<Response>() {
-            @Override
-            public void handle(Response response) {
-                assertEquals(response.headers().get("X-Download-Options"), "noopen");
-                testComplete();
-            }
+        new YokeTester(app).request("GET", "/", response -> {
+            assertEquals(response.headers().get("X-Download-Options"), "noopen");
+            testComplete();
         });
     }
 
@@ -123,12 +111,9 @@ public class HelmetTest extends TestVerticle {
         MultiMap headers = new CaseInsensitiveMultiMap();
         headers.add("x-forwarded-proto", "https");
 
-        new YokeTester(app).request("GET", "/", headers, new Handler<Response>() {
-            @Override
-            public void handle(Response response) {
-                assertEquals(response.headers().get("Strict-Transport-Security"), "max-age=15768000");
-                testComplete();
-            }
+        new YokeTester(app).request("GET", "/", headers, response -> {
+            assertEquals(response.headers().get("Strict-Transport-Security"), "max-age=15768000");
+            testComplete();
         });
 
     }
@@ -147,12 +132,9 @@ public class HelmetTest extends TestVerticle {
         MultiMap headers = new CaseInsensitiveMultiMap();
         headers.add("x-forwarded-proto", "https");
 
-        new YokeTester(app).request("GET", "/", headers, new Handler<Response>() {
-            @Override
-            public void handle(Response response) {
-                assertEquals(response.headers().get("Strict-Transport-Security"), "max-age=1234; includeSubdomains");
-                testComplete();
-            }
+        new YokeTester(app).request("GET", "/", headers, response -> {
+            assertEquals(response.headers().get("Strict-Transport-Security"), "max-age=1234; includeSubdomains");
+            testComplete();
         });
 
     }

@@ -119,12 +119,9 @@ public class BodyParser extends TestVerticle {
             }
         });
 
-        new YokeTester(yoke).request("DELETE", "/upload", new Handler<Response>() {
-            @Override
-            public void handle(Response resp) {
-                assertEquals(200, resp.getStatusCode());
-                testComplete();
-            }
+        new YokeTester(yoke).request("DELETE", "/upload", resp -> {
+            assertEquals(200, resp.getStatusCode());
+            testComplete();
         });
     }
 
@@ -147,12 +144,9 @@ public class BodyParser extends TestVerticle {
         headers.add("content-type", "application/json");
         headers.add("transfer-encoding", "chunked");
 
-        new YokeTester(yoke).request("POST", "/upload", headers, body, new Handler<Response>() {
-            @Override
-            public void handle(Response resp) {
-                assertEquals(413, resp.getStatusCode());
-                testComplete();
-            }
+        new YokeTester(yoke).request("POST", "/upload", headers, body, resp -> {
+            assertEquals(413, resp.getStatusCode());
+            testComplete();
         });
     }
 
@@ -175,12 +169,9 @@ public class BodyParser extends TestVerticle {
         headers.add("content-type", "plain/text");
         headers.add("transfer-encoding", "chunked");
 
-        new YokeTester(yoke).request("POST", "/upload", headers, body, new Handler<Response>() {
-            @Override
-            public void handle(Response resp) {
-                assertEquals(413, resp.getStatusCode());
-                testComplete();
-            }
+        new YokeTester(yoke).request("POST", "/upload", headers, body, resp -> {
+            assertEquals(413, resp.getStatusCode());
+            testComplete();
         });
     }
 
@@ -203,12 +194,9 @@ public class BodyParser extends TestVerticle {
         headers.add("content-type", HttpHeaders.Values.APPLICATION_X_WWW_FORM_URLENCODED);
         headers.add("transfer-encoding", "chunked");
 
-        new YokeTester(yoke).request("POST", "/upload", headers, body, new Handler<Response>() {
-            @Override
-            public void handle(Response resp) {
-                assertEquals(413, resp.getStatusCode());
-                testComplete();
-            }
+        new YokeTester(yoke).request("POST", "/upload", headers, body, resp -> {
+            assertEquals(413, resp.getStatusCode());
+            testComplete();
         });
     }
 
@@ -229,12 +217,9 @@ public class BodyParser extends TestVerticle {
         headers.add("Content-Type", "application/json");
         headers.add("Content-Length", "0");
 
-        new YokeTester(yoke).request("DELETE", "/delete", headers, new Handler<Response>() {
-            @Override
-            public void handle(Response resp) {
-                assertEquals(204, resp.getStatusCode());
-                testComplete();
-            }
+        new YokeTester(yoke).request("DELETE", "/delete", headers, resp -> {
+            assertEquals(204, resp.getStatusCode());
+            testComplete();
         });
     }
 }

@@ -33,12 +33,9 @@ public class MethodOverride extends TestVerticle {
         MultiMap headers = new CaseInsensitiveMultiMap();
         headers.add("x-http-setMethod-override", "DELETE");
 
-        new YokeTester(yoke).request("GET", "/upload", headers, new Handler<Response>() {
-            @Override
-            public void handle(Response resp) {
-                assertEquals(200, resp.getStatusCode());
-                testComplete();
-            }
+        new YokeTester(yoke).request("GET", "/upload", headers, resp -> {
+            assertEquals(200, resp.getStatusCode());
+            testComplete();
         });
     }
 
@@ -62,12 +59,9 @@ public class MethodOverride extends TestVerticle {
         headers.add("content-type", "application/x-www-form-urlencoded");
         headers.add("content-length", Integer.toString(body.length()));
 
-        new YokeTester(yoke).request("POST", "/upload", headers, body, new Handler<Response>() {
-            @Override
-            public void handle(Response resp) {
-                assertEquals(200, resp.getStatusCode());
-                testComplete();
-            }
+        new YokeTester(yoke).request("POST", "/upload", headers, body, resp -> {
+            assertEquals(200, resp.getStatusCode());
+            testComplete();
         });
     }
 
@@ -93,12 +87,9 @@ public class MethodOverride extends TestVerticle {
         headers.add("content-type", "application/json");
         headers.add("content-length", Integer.toString(body.length()));
 
-        new YokeTester(yoke).request("POST", "/upload", headers, body, new Handler<Response>() {
-            @Override
-            public void handle(Response resp) {
-                assertEquals(200, resp.getStatusCode());
-                testComplete();
-            }
+        new YokeTester(yoke).request("POST", "/upload", headers, body, resp -> {
+            assertEquals(200, resp.getStatusCode());
+            testComplete();
         });
     }
 }

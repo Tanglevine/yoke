@@ -32,24 +32,18 @@ public class BasicAuth extends TestVerticle {
         final YokeTester yokeAssert = new YokeTester(yoke);
 
         // first time is forbidden
-        yokeAssert.request("GET", "/", new Handler<Response>() {
-            @Override
-            public void handle(Response resp) {
-                assertEquals(401, resp.getStatusCode());
-                assertNotNull(resp.headers.get("www-authenticate"));
+        yokeAssert.request("GET", "/", resp -> {
+            assertEquals(401, resp.getStatusCode());
+            assertNotNull(resp.headers.get("www-authenticate"));
 
-                // second time send the authorization header
-                MultiMap headers = new CaseInsensitiveMultiMap();
-                headers.add("authorization", "Basic QWxhZGRpbjpvcGVuIHNlc2FtZQ==");
+            // second time send the authorization header
+            MultiMap headers = new CaseInsensitiveMultiMap();
+            headers.add("authorization", "Basic QWxhZGRpbjpvcGVuIHNlc2FtZQ==");
 
-                yokeAssert.request("GET", "/", headers, new Handler<Response>() {
-                    @Override
-                    public void handle(Response resp) {
-                        assertEquals(200, resp.getStatusCode());
-                        testComplete();
-                    }
-                });
-            }
+            yokeAssert.request("GET", "/", headers, resp1 -> {
+                assertEquals(200, resp1.getStatusCode());
+                testComplete();
+            });
         });
     }
 
@@ -78,24 +72,18 @@ public class BasicAuth extends TestVerticle {
         final YokeTester yokeAssert = new YokeTester(yoke);
 
         // first time is forbidden
-        yokeAssert.request("GET", "/", new Handler<Response>() {
-            @Override
-            public void handle(Response resp) {
-                assertEquals(401, resp.getStatusCode());
-                assertNotNull(resp.headers.get("www-authenticate"));
+        yokeAssert.request("GET", "/", resp -> {
+            assertEquals(401, resp.getStatusCode());
+            assertNotNull(resp.headers.get("www-authenticate"));
 
-                // second time send the authorization header
-                MultiMap headers = new CaseInsensitiveMultiMap();
-                headers.add("authorization", "Basic QWxhZGRpbjo=");
+            // second time send the authorization header
+            MultiMap headers = new CaseInsensitiveMultiMap();
+            headers.add("authorization", "Basic QWxhZGRpbjo=");
 
-                yokeAssert.request("GET", "/", headers, new Handler<Response>() {
-                    @Override
-                    public void handle(Response resp) {
-                        assertEquals(200, resp.getStatusCode());
-                        testComplete();
-                    }
-                });
-            }
+            yokeAssert.request("GET", "/", headers, resp1 -> {
+                assertEquals(200, resp1.getStatusCode());
+                testComplete();
+            });
         });
     }
 }

@@ -24,12 +24,9 @@ public class StaticTest extends TestVerticle {
         Yoke yoke = new Yoke(this);
         yoke.use(new Static("static"));
 
-        new YokeTester(yoke).request("GET", "/dir1/file.1", new Handler<Response>() {
-            @Override
-            public void handle(Response resp) {
-                assertEquals(200, resp.getStatusCode());
-                testComplete();
-            }
+        new YokeTester(yoke).request("GET", "/dir1/file.1", resp -> {
+            assertEquals(200, resp.getStatusCode());
+            testComplete();
         });
     }
 
@@ -39,12 +36,9 @@ public class StaticTest extends TestVerticle {
         Yoke yoke = new Yoke(this);
         yoke.use(new Static("static"));
 
-        new YokeTester(yoke).request("GET", "/dir1/file.2", new Handler<Response>() {
-            @Override
-            public void handle(Response resp) {
-                assertEquals(404, resp.getStatusCode());
-                testComplete();
-            }
+        new YokeTester(yoke).request("GET", "/dir1/file.2", resp -> {
+            assertEquals(404, resp.getStatusCode());
+            testComplete();
         });
     }
 
@@ -55,12 +49,9 @@ public class StaticTest extends TestVerticle {
         Yoke yoke = new Yoke(this);
         yoke.use(new Static("static"));
 
-        new YokeTester(yoke).request("GET", "/dir1/new%20file.1", new Handler<Response>() {
-            @Override
-            public void handle(Response resp) {
-                assertEquals(200, resp.getStatusCode());
-                testComplete();
-            }
+        new YokeTester(yoke).request("GET", "/dir1/new%20file.1", resp -> {
+            assertEquals(200, resp.getStatusCode());
+            testComplete();
         });
     }
 }
