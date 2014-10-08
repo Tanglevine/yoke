@@ -4,6 +4,7 @@ import com.jetdrone.vertx.yoke.core.YokeAsyncResult;
 import org.vertx.java.core.AsyncResultHandler;
 import org.vertx.java.core.Handler;
 
+@Deprecated
 final class Promise<T> {
 
     @SuppressWarnings("unchecked")

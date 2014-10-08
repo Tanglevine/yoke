@@ -21,6 +21,7 @@ import java.util.Map;
 /**
  * # JSON
  */
+@Deprecated
 public final class JSON {
 
     private JSON() {}
