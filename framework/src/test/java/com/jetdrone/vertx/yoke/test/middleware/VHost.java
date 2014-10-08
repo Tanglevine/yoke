@@ -3,22 +3,19 @@ package com.jetdrone.vertx.yoke.test.middleware;
 import com.jetdrone.vertx.yoke.Yoke;
 import com.jetdrone.vertx.yoke.middleware.Vhost;
 import com.jetdrone.vertx.yoke.middleware.YokeRequest;
-import com.jetdrone.vertx.yoke.test.Response;
 import com.jetdrone.vertx.yoke.test.YokeTester;
+import io.vertx.core.http.CaseInsensitiveHeaders;
+import io.vertx.test.core.VertxTestBase;
 import org.junit.Test;
-import org.vertx.java.core.http.CaseInsensitiveMultiMap;
-import org.vertx.java.core.Handler;
-import org.vertx.java.core.MultiMap;
-import org.vertx.java.core.http.HttpServerRequest;
-import org.vertx.testtools.TestVerticle;
+import io.vertx.core.Handler;
+import io.vertx.core.MultiMap;
+import io.vertx.core.http.HttpServerRequest;
 
-import static org.vertx.testtools.VertxAssert.*;
-
-public class VHost extends TestVerticle {
+public class VHost extends VertxTestBase {
 
     @Test
     public void testLimit() {
-        Yoke yoke = new Yoke(this);
+        Yoke yoke = new Yoke(vertx);
         yoke.use(new Vhost("*.com", new Handler<HttpServerRequest>() {
             @Override
             public void handle(HttpServerRequest request) {
@@ -34,7 +31,7 @@ public class VHost extends TestVerticle {
             }
         });
 
-        MultiMap headers = new CaseInsensitiveMultiMap();
+        MultiMap headers = new CaseInsensitiveHeaders();
         headers.add("host", "www.mycorp.com");
 
         new YokeTester(yoke).request("GET", "/", headers, resp -> {

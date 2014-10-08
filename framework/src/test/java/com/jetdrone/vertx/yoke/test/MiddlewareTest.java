@@ -4,22 +4,20 @@ import com.jetdrone.vertx.yoke.middleware.AbstractMiddleware;
 import com.jetdrone.vertx.yoke.Yoke;
 import com.jetdrone.vertx.yoke.middleware.YokeRequest;
 import com.jetdrone.vertx.yoke.util.Utils;
+import io.vertx.test.core.VertxTestBase;
 import org.jetbrains.annotations.NotNull;
 import org.junit.Test;
-import org.vertx.java.core.Handler;
-import org.vertx.java.core.json.JsonObject;
-import org.vertx.testtools.TestVerticle;
+import io.vertx.core.Handler;
+import io.vertx.core.json.JsonObject;
 
 import javax.xml.stream.XMLStreamException;
 import javax.xml.transform.TransformerException;
 
-import static org.vertx.testtools.VertxAssert.*;
-
-public class MiddlewareTest extends TestVerticle {
+public class MiddlewareTest extends VertxTestBase {
 
     @Test
     public void testMiddleware() {
-        final Yoke yoke = new Yoke(this);
+        final Yoke yoke = new Yoke(vertx);
 
         yoke.use(new AbstractMiddleware() {
             @Override

@@ -2,25 +2,21 @@ package com.jetdrone.vertx.yoke.test.middleware;
 
 import com.jetdrone.vertx.yoke.Yoke;
 import com.jetdrone.vertx.yoke.middleware.YokeRequest;
-import com.jetdrone.vertx.yoke.test.Response;
 import com.jetdrone.vertx.yoke.test.YokeTester;
+import io.vertx.core.http.CaseInsensitiveHeaders;
+import io.vertx.test.core.VertxTestBase;
 import org.junit.Test;
-import org.vertx.java.core.http.CaseInsensitiveMultiMap;
-import org.vertx.java.core.Handler;
-import org.vertx.java.core.MultiMap;
-import org.vertx.java.core.buffer.Buffer;
-import org.vertx.java.core.json.JsonObject;
-import org.vertx.testtools.TestVerticle;
+import io.vertx.core.Handler;
+import io.vertx.core.MultiMap;
+import io.vertx.core.buffer.Buffer;
+import io.vertx.core.json.JsonObject;
 
-import static org.vertx.testtools.VertxAssert.*;
-import static org.vertx.testtools.VertxAssert.assertEquals;
-
-public class MethodOverride extends TestVerticle {
+public class MethodOverride extends VertxTestBase {
 
     @Test
     public void testOverride() {
 
-        Yoke yoke = new Yoke(this);
+        Yoke yoke = new Yoke(vertx);
         yoke.use(new com.jetdrone.vertx.yoke.middleware.MethodOverride());
         yoke.use(new Handler<YokeRequest>() {
             @Override
@@ -30,7 +26,7 @@ public class MethodOverride extends TestVerticle {
             }
         });
 
-        MultiMap headers = new CaseInsensitiveMultiMap();
+        MultiMap headers = new CaseInsensitiveHeaders();
         headers.add("x-http-setMethod-override", "DELETE");
 
         new YokeTester(yoke).request("GET", "/upload", headers, resp -> {
@@ -42,7 +38,7 @@ public class MethodOverride extends TestVerticle {
     @Test
     public void testOverrideUrlPost() {
 
-        Yoke yoke = new Yoke(this);
+        Yoke yoke = new Yoke(vertx);
         yoke.use(new com.jetdrone.vertx.yoke.middleware.BodyParser());
         yoke.use(new com.jetdrone.vertx.yoke.middleware.MethodOverride());
         yoke.use(new Handler<YokeRequest>() {
@@ -53,9 +49,9 @@ public class MethodOverride extends TestVerticle {
             }
         });
 
-        Buffer body = new Buffer("_method=delete");
+        Buffer body = Buffer.buffer("_method=delete");
 
-        MultiMap headers = new CaseInsensitiveMultiMap();
+        MultiMap headers = new CaseInsensitiveHeaders();
         headers.add("content-type", "application/x-www-form-urlencoded");
         headers.add("content-length", Integer.toString(body.length()));
 
@@ -70,7 +66,7 @@ public class MethodOverride extends TestVerticle {
 
         final JsonObject json = new JsonObject().putString("_method", "delete");
 
-        Yoke yoke = new Yoke(this);
+        Yoke yoke = new Yoke(vertx);
         yoke.use(new com.jetdrone.vertx.yoke.middleware.BodyParser());
         yoke.use(new com.jetdrone.vertx.yoke.middleware.MethodOverride());
         yoke.use(new Handler<YokeRequest>() {
@@ -81,9 +77,9 @@ public class MethodOverride extends TestVerticle {
             }
         });
 
-        Buffer body = new Buffer(json.encode());
+        Buffer body = Buffer.buffer(json.encode());
 
-        MultiMap headers = new CaseInsensitiveMultiMap();
+        MultiMap headers = new CaseInsensitiveHeaders();
         headers.add("content-type", "application/json");
         headers.add("content-length", Integer.toString(body.length()));
 

@@ -4,23 +4,20 @@ import com.jetdrone.vertx.yoke.Yoke;
 import com.jetdrone.vertx.yoke.middleware.CookieParser;
 import com.jetdrone.vertx.yoke.middleware.Router;
 import com.jetdrone.vertx.yoke.middleware.YokeRequest;
-import com.jetdrone.vertx.yoke.test.Response;
 import com.jetdrone.vertx.yoke.test.YokeTester;
+import io.vertx.core.http.CaseInsensitiveHeaders;
+import io.vertx.test.core.VertxTestBase;
 import org.junit.Test;
-import org.vertx.java.core.http.CaseInsensitiveMultiMap;
-import org.vertx.java.core.Handler;
-import org.vertx.java.core.MultiMap;
-import org.vertx.testtools.TestVerticle;
+import io.vertx.core.Handler;
+import io.vertx.core.MultiMap;
 
 import javax.crypto.Mac;
 
-import static org.vertx.testtools.VertxAssert.*;
-
-public class Session extends TestVerticle {
+public class Session extends VertxTestBase {
 
     @Test
     public void testSession() {
-        final Yoke yoke = new Yoke(this);
+        final Yoke yoke = new Yoke(vertx);
         yoke.secretSecurity("keyboard cat");
 
         final Mac hmac = yoke.security().getMac("HmacSHA256");
@@ -65,7 +62,7 @@ public class Session extends TestVerticle {
                 assertNotNull(cookie);
 
                 // make a new request to / with cookie should return again the same cookie
-                MultiMap headers = new CaseInsensitiveMultiMap();
+                MultiMap headers = new CaseInsensitiveHeaders();
                 headers.add("cookie", cookie);
 
                 yokeAssert.request("GET", "/", headers, resp2 -> {
@@ -75,7 +72,7 @@ public class Session extends TestVerticle {
                     assertNull(nocookie1);
 
                     // end the session
-                    MultiMap headers1 = new CaseInsensitiveMultiMap();
+                    MultiMap headers1 = new CaseInsensitiveHeaders();
                     headers1.add("cookie", cookie);
 
                     yokeAssert.request("GET", "/delete", headers1, resp3 -> {

@@ -7,20 +7,18 @@ import com.jetdrone.vertx.yoke.middleware.*;
 import com.jetdrone.vertx.yoke.middleware.BodyParser;
 import com.jetdrone.vertx.yoke.test.Response;
 import com.jetdrone.vertx.yoke.test.YokeTester;
+import io.vertx.core.http.CaseInsensitiveHeaders;
+import io.vertx.test.core.VertxTestBase;
 import org.jetbrains.annotations.NotNull;
 import org.junit.Test;
-import org.vertx.java.core.Handler;
-import org.vertx.java.core.MultiMap;
-import org.vertx.java.core.buffer.Buffer;
-import org.vertx.java.core.http.CaseInsensitiveMultiMap;
-import org.vertx.java.core.json.JsonObject;
-import org.vertx.testtools.TestVerticle;
+import io.vertx.core.Handler;
+import io.vertx.core.MultiMap;
+import io.vertx.core.buffer.Buffer;
+import io.vertx.core.json.JsonObject;
 
 import java.util.regex.Pattern;
 
-import static org.vertx.testtools.VertxAssert.*;
-
-public class Router extends TestVerticle {
+public class Router extends VertxTestBase {
 
     public static class TestRouter {
         @GET("/ws")
@@ -31,7 +29,7 @@ public class Router extends TestVerticle {
 
     @Test
     public void testAnnotatedRouter() {
-        Yoke yoke = new Yoke(this);
+        Yoke yoke = new Yoke(vertx);
         yoke.use(com.jetdrone.vertx.yoke.middleware.Router.from(new TestRouter()));
 
         new YokeTester(yoke).request("GET", "/ws", resp -> {
@@ -51,7 +49,7 @@ public class Router extends TestVerticle {
 
     @Test
     public void testAnnotatedRouter2() {
-        Yoke yoke = new Yoke(this);
+        Yoke yoke = new Yoke(vertx);
         yoke.use(com.jetdrone.vertx.yoke.middleware.Router.from(new TestRouter2()));
 
         new YokeTester(yoke).request("GET", "/ws", resp -> {
@@ -63,7 +61,7 @@ public class Router extends TestVerticle {
 
     @Test
     public void testRouterWithParams() {
-        Yoke yoke = new Yoke(this);
+        Yoke yoke = new Yoke(vertx);
         yoke.use(new com.jetdrone.vertx.yoke.middleware.Router() {{
             get("/api/:userId", new Middleware() {
                 @Override
@@ -94,7 +92,7 @@ public class Router extends TestVerticle {
 
     @Test
     public void testRouterWithRegExParamsFail() {
-        Yoke yoke = new Yoke(this);
+        Yoke yoke = new Yoke(vertx);
         yoke.use(new com.jetdrone.vertx.yoke.middleware.Router() {{
             get("/api/:userId", new Middleware() {
                 @Override
@@ -114,7 +112,7 @@ public class Router extends TestVerticle {
 
     @Test
     public void testRouterWithRegExParamsPass() {
-        Yoke yoke = new Yoke(this);
+        Yoke yoke = new Yoke(vertx);
         yoke.use(new com.jetdrone.vertx.yoke.middleware.Router() {{
             get("/api/:userId", new Middleware() {
                 @Override
@@ -134,7 +132,7 @@ public class Router extends TestVerticle {
 
     @Test
     public void testTrailingSlashes() {
-        final Yoke yoke = new Yoke(this);
+        final Yoke yoke = new Yoke(vertx);
         yoke.use(new com.jetdrone.vertx.yoke.middleware.Router() {{
             get("/api", new Middleware() {
                 @Override
@@ -161,7 +159,7 @@ public class Router extends TestVerticle {
 
     @Test
     public void testDash() {
-        final Yoke yoke = new Yoke(this);
+        final Yoke yoke = new Yoke(vertx);
         yoke.use(new com.jetdrone.vertx.yoke.middleware.Router() {{
             get("/api-stable", new Middleware() {
                 @Override
@@ -192,7 +190,7 @@ public class Router extends TestVerticle {
 
     @Test
     public void testRouterWithRegExAnnParamsFail() {
-        Yoke yoke = new Yoke(this);
+        Yoke yoke = new Yoke(vertx);
         yoke.use(com.jetdrone.vertx.yoke.middleware.Router.from(new R2()));
 
         // the pattern expects 2 digits
@@ -212,13 +210,13 @@ public class Router extends TestVerticle {
 
     @Test
     public void testJsonSchemaProcessing() {
-        Yoke yoke = new Yoke(this);
+        Yoke yoke = new Yoke(vertx);
         yoke.use(new BodyParser());
         yoke.use(com.jetdrone.vertx.yoke.middleware.Router.from(new R3()));
 
-        Buffer body = new Buffer("{}");
+        Buffer body = Buffer.buffer("{}");
 
-        MultiMap headers = new CaseInsensitiveMultiMap();
+        MultiMap headers = new CaseInsensitiveHeaders();
         headers.add("content-type", "application/json");
         headers.add("content-length", Integer.toString(body.length()));
 
@@ -230,10 +228,10 @@ public class Router extends TestVerticle {
 
     @Test
     public void testJsonSchemaProcessing2() {
-        Yoke yoke = new Yoke(this);
+        Yoke yoke = new Yoke(vertx);
         yoke.use(com.jetdrone.vertx.yoke.middleware.Router.from(new R3()));
 
-        MultiMap headers = new CaseInsensitiveMultiMap();
+        MultiMap headers = new CaseInsensitiveHeaders();
         headers.add("content-type", "application/json");
         headers.add("content-length", "0");
 

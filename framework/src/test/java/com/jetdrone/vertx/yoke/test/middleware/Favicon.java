@@ -2,20 +2,16 @@ package com.jetdrone.vertx.yoke.test.middleware;
 
 import com.jetdrone.vertx.yoke.Yoke;
 import com.jetdrone.vertx.yoke.util.Utils;
-import com.jetdrone.vertx.yoke.test.Response;
 import com.jetdrone.vertx.yoke.test.YokeTester;
+import io.vertx.test.core.VertxTestBase;
 import org.junit.Test;
-import org.vertx.java.core.Handler;
-import org.vertx.java.core.buffer.Buffer;
-import org.vertx.testtools.TestVerticle;
+import io.vertx.core.buffer.Buffer;
 
-import static org.vertx.testtools.VertxAssert.*;
-
-public class Favicon extends TestVerticle {
+public class Favicon extends VertxTestBase {
 
     @Test
     public void testFavicon() {
-        Yoke yoke = new Yoke(this);
+        Yoke yoke = new Yoke(vertx);
         yoke.use(new com.jetdrone.vertx.yoke.middleware.Favicon());
 
         final Buffer icon = Utils.readResourceToBuffer(com.jetdrone.vertx.yoke.middleware.Favicon.class, "favicon.ico");

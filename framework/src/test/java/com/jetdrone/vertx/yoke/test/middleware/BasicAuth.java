@@ -4,23 +4,20 @@ import com.jetdrone.vertx.yoke.Middleware;
 import com.jetdrone.vertx.yoke.Yoke;
 import com.jetdrone.vertx.yoke.middleware.AuthHandler;
 import com.jetdrone.vertx.yoke.middleware.YokeRequest;
-import com.jetdrone.vertx.yoke.test.Response;
 import com.jetdrone.vertx.yoke.test.YokeTester;
+import io.vertx.core.http.CaseInsensitiveHeaders;
+import io.vertx.test.core.VertxTestBase;
 import org.jetbrains.annotations.NotNull;
 import org.junit.Test;
-import org.vertx.java.core.http.CaseInsensitiveMultiMap;
-import org.vertx.java.core.Handler;
-import org.vertx.java.core.MultiMap;
-import org.vertx.java.core.json.JsonObject;
-import org.vertx.testtools.TestVerticle;
+import io.vertx.core.Handler;
+import io.vertx.core.MultiMap;
+import io.vertx.core.json.JsonObject;
 
-import static org.vertx.testtools.VertxAssert.*;
-
-public class BasicAuth extends TestVerticle {
+public class BasicAuth extends VertxTestBase {
 
     @Test
     public void testBasicAuth() {
-        final Yoke yoke = new Yoke(this);
+        final Yoke yoke = new Yoke(vertx);
         yoke.use(new com.jetdrone.vertx.yoke.middleware.BasicAuth("Aladdin", "open sesame"));
         yoke.use(new Middleware() {
             @Override
@@ -37,7 +34,7 @@ public class BasicAuth extends TestVerticle {
             assertNotNull(resp.headers.get("www-authenticate"));
 
             // second time send the authorization header
-            MultiMap headers = new CaseInsensitiveMultiMap();
+            MultiMap headers = new CaseInsensitiveHeaders();
             headers.add("authorization", "Basic QWxhZGRpbjpvcGVuIHNlc2FtZQ==");
 
             yokeAssert.request("GET", "/", headers, resp1 -> {
@@ -49,7 +46,7 @@ public class BasicAuth extends TestVerticle {
 
     @Test
     public void testEmptyPassword() {
-        final Yoke yoke = new Yoke(this);
+        final Yoke yoke = new Yoke(vertx);
         yoke.use(new com.jetdrone.vertx.yoke.middleware.BasicAuth(new AuthHandler() {
             @Override
             public void handle(String username, String password, Handler<JsonObject> result) {
@@ -77,7 +74,7 @@ public class BasicAuth extends TestVerticle {
             assertNotNull(resp.headers.get("www-authenticate"));
 
             // second time send the authorization header
-            MultiMap headers = new CaseInsensitiveMultiMap();
+            MultiMap headers = new CaseInsensitiveHeaders();
             headers.add("authorization", "Basic QWxhZGRpbjo=");
 
             yokeAssert.request("GET", "/", headers, resp1 -> {

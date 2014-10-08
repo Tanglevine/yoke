@@ -2,23 +2,20 @@ package com.jetdrone.vertx.yoke.test.middleware;
 
 import com.jetdrone.vertx.yoke.Yoke;
 import com.jetdrone.vertx.yoke.middleware.YokeRequest;
-import com.jetdrone.vertx.yoke.test.Response;
 import com.jetdrone.vertx.yoke.test.YokeTester;
+import io.vertx.core.http.CaseInsensitiveHeaders;
+import io.vertx.test.core.VertxTestBase;
 import org.junit.Test;
-import org.vertx.java.core.http.CaseInsensitiveMultiMap;
-import org.vertx.java.core.Handler;
-import org.vertx.java.core.MultiMap;
-import org.vertx.testtools.TestVerticle;
+import io.vertx.core.Handler;
+import io.vertx.core.MultiMap;
 
 import java.util.Locale;
 
-import static org.vertx.testtools.VertxAssert.*;
-
-public class RequestFunctions extends TestVerticle {
+public class RequestFunctions extends VertxTestBase {
 
     @Test
     public void testAccepts() {
-        Yoke yoke = new Yoke(this);
+        Yoke yoke = new Yoke(vertx);
         yoke.use(new Handler<YokeRequest>() {
             @Override
             public void handle(YokeRequest request) {
@@ -27,7 +24,7 @@ public class RequestFunctions extends TestVerticle {
         });
 
         // second time send the authorization header
-        MultiMap headers = new CaseInsensitiveMultiMap();
+        MultiMap headers = new CaseInsensitiveHeaders();
         headers.add("accept", "text/plain; q=0.5, application/json, text/html; q=0.8, text/xml");
         // expected order is:
         // application/json
@@ -44,7 +41,7 @@ public class RequestFunctions extends TestVerticle {
 
     @Test
     public void testIp() {
-        Yoke yoke = new Yoke(this);
+        Yoke yoke = new Yoke(vertx);
         yoke.use(new Handler<YokeRequest>() {
             @Override
             public void handle(YokeRequest request) {
@@ -54,7 +51,7 @@ public class RequestFunctions extends TestVerticle {
         });
 
         // second time send the authorization header
-        MultiMap headers = new CaseInsensitiveMultiMap();
+        MultiMap headers = new CaseInsensitiveHeaders();
         headers.add("x-forward-for", "123.456.123.456, 111.111.11.11");
 
         new YokeTester(yoke).request("GET", "/", headers, null);
@@ -62,7 +59,7 @@ public class RequestFunctions extends TestVerticle {
 
     @Test
     public void testLocale() {
-        Yoke yoke = new Yoke(this);
+        Yoke yoke = new Yoke(vertx);
         yoke.use(new Handler<YokeRequest>() {
             @Override
             public void handle(YokeRequest request) {
@@ -72,7 +69,7 @@ public class RequestFunctions extends TestVerticle {
         });
 
         // second time send the authorization header
-        MultiMap headers = new CaseInsensitiveMultiMap();
+        MultiMap headers = new CaseInsensitiveHeaders();
         headers.add("Accept-Language", "en-gb;q=0.8, en;q=0.7, da_DK;q=0.9");
 
         new YokeTester(yoke).request("GET", "/", headers, null);
@@ -80,7 +77,7 @@ public class RequestFunctions extends TestVerticle {
 
     @Test
     public void testLocale2() {
-        Yoke yoke = new Yoke(this);
+        Yoke yoke = new Yoke(vertx);
         yoke.use(new Handler<YokeRequest>() {
             @Override
             public void handle(YokeRequest request) {
@@ -90,7 +87,7 @@ public class RequestFunctions extends TestVerticle {
         });
 
         // second time send the authorization header
-        MultiMap headers = new CaseInsensitiveMultiMap();
+        MultiMap headers = new CaseInsensitiveHeaders();
         headers.add("Accept-Language", "da, en-gb;q=0.8, en;q=0.7");
 
         new YokeTester(yoke).request("GET", "/", headers, null);
@@ -98,7 +95,7 @@ public class RequestFunctions extends TestVerticle {
 
     @Test
     public void testLocale3() {
-        Yoke yoke = new Yoke(this);
+        Yoke yoke = new Yoke(vertx);
         yoke.use(new Handler<YokeRequest>() {
             @Override
             public void handle(YokeRequest request) {
@@ -108,7 +105,7 @@ public class RequestFunctions extends TestVerticle {
         });
 
         // second time send the authorization header
-        MultiMap headers = new CaseInsensitiveMultiMap();
+        MultiMap headers = new CaseInsensitiveHeaders();
         headers.add("Accept-Language", "en-gb");
 
         new YokeTester(yoke).request("GET", "/", headers, null);

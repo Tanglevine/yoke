@@ -2,29 +2,20 @@ package com.jetdrone.vertx.yoke.test.middleware;
 
 import com.jetdrone.vertx.yoke.Middleware;
 import com.jetdrone.vertx.yoke.Yoke;
-import com.jetdrone.vertx.yoke.annotations.*;
 import com.jetdrone.vertx.yoke.middleware.*;
-import com.jetdrone.vertx.yoke.middleware.BodyParser;
-import com.jetdrone.vertx.yoke.test.Response;
 import com.jetdrone.vertx.yoke.test.YokeTester;
+import io.vertx.test.core.VertxTestBase;
 import org.jetbrains.annotations.NotNull;
 import org.junit.Test;
-import org.vertx.java.core.Handler;
-import org.vertx.java.core.MultiMap;
-import org.vertx.java.core.buffer.Buffer;
-import org.vertx.java.core.http.CaseInsensitiveMultiMap;
-import org.vertx.java.core.json.JsonObject;
-import org.vertx.testtools.TestVerticle;
+import io.vertx.core.Handler;
 
 import java.util.regex.Pattern;
 
-import static org.vertx.testtools.VertxAssert.*;
-
-public class Issue130 extends TestVerticle {
+public class Issue130 extends VertxTestBase {
 
     @Test
     public void testRegEx() {
-        Yoke yoke = new Yoke(this);
+        Yoke yoke = new Yoke(vertx);
         yoke.use(new com.jetdrone.vertx.yoke.middleware.Router().get(Pattern.compile("^/url/.*"), new Middleware() {
             @Override
             public void handle(@NotNull YokeRequest request, @NotNull Handler<Object> next) {
@@ -40,7 +31,7 @@ public class Issue130 extends TestVerticle {
 
     @Test
     public void testRegExEscaped() {
-        Yoke yoke = new Yoke(this);
+        Yoke yoke = new Yoke(vertx);
         yoke.use(new com.jetdrone.vertx.yoke.middleware.Router().get(Pattern.compile("^/url/.*"), new Middleware() {
             @Override
             public void handle(@NotNull YokeRequest request, @NotNull Handler<Object> next) {
@@ -56,7 +47,7 @@ public class Issue130 extends TestVerticle {
 
 //    @Test
 //    public void testParam() {
-//        Yoke yoke = new Yoke(this);
+//        Yoke yoke = new Yoke(vertx);
 //        yoke.use(new com.jetdrone.vertx.yoke.middleware.Router().get("/url/:url", new Middleware() {
 //            @Override
 //            public void handle(@NotNull YokeRequest request, @NotNull Handler<Object> next) {

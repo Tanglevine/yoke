@@ -4,20 +4,18 @@ import com.jetdrone.vertx.yoke.Middleware;
 import com.jetdrone.vertx.yoke.Yoke;
 import com.jetdrone.vertx.yoke.middleware.YokeRequest;
 import com.jetdrone.vertx.yoke.test.YokeTester;
+import io.vertx.core.http.CaseInsensitiveHeaders;
+import io.vertx.test.core.VertxTestBase;
 import org.jetbrains.annotations.NotNull;
 import org.junit.Test;
-import org.vertx.java.core.http.CaseInsensitiveMultiMap;
-import org.vertx.java.core.Handler;
-import org.vertx.java.core.MultiMap;
-import org.vertx.testtools.TestVerticle;
+import io.vertx.core.Handler;
+import io.vertx.core.MultiMap;
 
-import static org.vertx.testtools.VertxAssert.*;
-
-public class YokeRequestTest extends TestVerticle {
+public class YokeRequestTest extends VertxTestBase {
 
     @Test
     public void testAccept() {
-        final Yoke yoke = new Yoke(this);
+        final Yoke yoke = new Yoke(vertx);
         yoke.use(new Middleware() {
             @Override
             public void handle(@NotNull YokeRequest request, @NotNull Handler<Object> next) {
@@ -27,7 +25,7 @@ public class YokeRequestTest extends TestVerticle {
         });
 
         // make a new request to / with cookie should return again the same cookie
-        MultiMap headers = new CaseInsensitiveMultiMap();
+        MultiMap headers = new CaseInsensitiveHeaders();
         headers.add("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8");
 
         new YokeTester(yoke).request("GET", "/", headers, null);
@@ -35,7 +33,7 @@ public class YokeRequestTest extends TestVerticle {
 
     @Test
     public void testNormalizedPath() {
-        final Yoke yoke = new Yoke(this);
+        final Yoke yoke = new Yoke(vertx);
         yoke.use(new Middleware() {
             @Override
             public void handle(@NotNull YokeRequest request, @NotNull Handler<Object> next) {
@@ -49,7 +47,7 @@ public class YokeRequestTest extends TestVerticle {
 
     @Test
     public void testNormalizedPath2() {
-        final Yoke yoke = new Yoke(this);
+        final Yoke yoke = new Yoke(vertx);
         yoke.use(new Middleware() {
             @Override
             public void handle(@NotNull YokeRequest request, @NotNull Handler<Object> next) {
@@ -63,7 +61,7 @@ public class YokeRequestTest extends TestVerticle {
 
     @Test
     public void testNormalizedPath3() {
-        final Yoke yoke = new Yoke(this);
+        final Yoke yoke = new Yoke(vertx);
         yoke.use(new Middleware() {
             @Override
             public void handle(@NotNull YokeRequest request, @NotNull Handler<Object> next) {
@@ -77,7 +75,7 @@ public class YokeRequestTest extends TestVerticle {
 
     @Test
     public void testNormalizedPath4() {
-        final Yoke yoke = new Yoke(this);
+        final Yoke yoke = new Yoke(vertx);
         yoke.use(new Middleware() {
             @Override
             public void handle(@NotNull YokeRequest request, @NotNull Handler<Object> next) {
@@ -91,7 +89,7 @@ public class YokeRequestTest extends TestVerticle {
 
     @Test
     public void testNormalizedPath5() {
-        final Yoke yoke = new Yoke(this);
+        final Yoke yoke = new Yoke(vertx);
         yoke.use(new Middleware() {
             @Override
             public void handle(@NotNull YokeRequest request, @NotNull Handler<Object> next) {

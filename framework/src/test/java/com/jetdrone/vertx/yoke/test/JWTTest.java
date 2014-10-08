@@ -2,20 +2,16 @@ package com.jetdrone.vertx.yoke.test;
 
 import com.jetdrone.vertx.yoke.Yoke;
 import com.jetdrone.vertx.yoke.security.JWT;
+import io.vertx.test.core.VertxTestBase;
 import org.junit.Test;
-import org.vertx.java.core.json.JsonArray;
-import org.vertx.java.core.json.JsonObject;
-import org.vertx.testtools.TestVerticle;
+import io.vertx.core.json.JsonArray;
+import io.vertx.core.json.JsonObject;
 
-import static org.vertx.testtools.VertxAssert.assertEquals;
-import static org.vertx.testtools.VertxAssert.assertTrue;
-import static org.vertx.testtools.VertxAssert.testComplete;
-
-public class JWTTest extends TestVerticle {
+public class JWTTest extends VertxTestBase {
 
     @Test
     public void testJWT() {
-        final Yoke yoke = new Yoke(this);
+        final Yoke yoke = new Yoke(vertx);
         yoke.secretSecurity("keyboard cat");
 
         JWT jwt = new JWT(yoke.security());
@@ -24,7 +20,7 @@ public class JWTTest extends TestVerticle {
 
     @Test
     public void testJWT2() {
-        Yoke yoke = new Yoke(this);
+        Yoke yoke = new Yoke(vertx);
         yoke.secretSecurity("keyboard cat");
 
         JWT jwt = new JWT(yoke.security());

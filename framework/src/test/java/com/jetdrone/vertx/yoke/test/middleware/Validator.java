@@ -7,24 +7,22 @@ import com.jetdrone.vertx.yoke.middleware.Router;
 import com.jetdrone.vertx.yoke.test.Response;
 import com.jetdrone.vertx.yoke.test.YokeTester;
 import com.jetdrone.vertx.yoke.util.validation.Type;
+import io.vertx.core.http.CaseInsensitiveHeaders;
+import io.vertx.test.core.VertxTestBase;
 import org.jetbrains.annotations.NotNull;
 import org.junit.Test;
-import org.vertx.java.core.Handler;
-import org.vertx.java.core.MultiMap;
-import org.vertx.java.core.buffer.Buffer;
-import org.vertx.java.core.http.CaseInsensitiveMultiMap;
-import org.vertx.java.core.json.JsonObject;
-import org.vertx.testtools.TestVerticle;
+import io.vertx.core.Handler;
+import io.vertx.core.MultiMap;
+import io.vertx.core.buffer.Buffer;
+import io.vertx.core.json.JsonObject;
 
 import static com.jetdrone.vertx.yoke.util.Validator.that;
-import static org.vertx.testtools.VertxAssert.assertEquals;
-import static org.vertx.testtools.VertxAssert.testComplete;
 
-public class Validator extends TestVerticle {
+public class Validator extends VertxTestBase {
 
     @Test
     public void testParam() {
-        final Yoke yoke = new Yoke(this);
+        final Yoke yoke = new Yoke(vertx);
 
         yoke.use(new Router().get("/search/:from/:to", new Middleware() {
             @Override
@@ -64,7 +62,7 @@ public class Validator extends TestVerticle {
 
         final JsonObject json = new JsonObject().putObject("user", new JsonObject().putString("login", "paulo").putString("password", "pwd"));
 
-        Yoke yoke = new Yoke(this);
+        Yoke yoke = new Yoke(vertx);
         yoke.use(new com.jetdrone.vertx.yoke.middleware.BodyParser());
         yoke.use(new Router().post("/search/:from/:to", new Middleware() {
             @Override
@@ -87,9 +85,9 @@ public class Validator extends TestVerticle {
             }
         }));
 
-        Buffer body = new Buffer(json.encode());
+        Buffer body = Buffer.buffer(json.encode());
 
-        MultiMap headers = new CaseInsensitiveMultiMap();
+        MultiMap headers = new CaseInsensitiveHeaders();
         headers.add("content-type", "application/json");
         headers.add("content-length", Integer.toString(body.length()));
 
@@ -104,7 +102,7 @@ public class Validator extends TestVerticle {
 
         final JsonObject json = new JsonObject().putObject("user", new JsonObject());
 
-        Yoke yoke = new Yoke(this);
+        Yoke yoke = new Yoke(vertx);
         yoke.use(new com.jetdrone.vertx.yoke.middleware.BodyParser());
         yoke.use(new Middleware() {
             @Override
@@ -123,9 +121,9 @@ public class Validator extends TestVerticle {
             }
         });
 
-        Buffer body = new Buffer(json.encode());
+        Buffer body = Buffer.buffer(json.encode());
 
-        MultiMap headers = new CaseInsensitiveMultiMap();
+        MultiMap headers = new CaseInsensitiveHeaders();
         headers.add("content-type", "application/json");
         headers.add("content-length", Integer.toString(body.length()));
 
@@ -140,7 +138,7 @@ public class Validator extends TestVerticle {
 
         final JsonObject json = new JsonObject().putObject("user", new JsonObject());
 
-        Yoke yoke = new Yoke(this);
+        Yoke yoke = new Yoke(vertx);
         yoke.use(new com.jetdrone.vertx.yoke.middleware.BodyParser());
         yoke.use(new Middleware() {
             @Override
@@ -158,9 +156,9 @@ public class Validator extends TestVerticle {
             }
         });
 
-        Buffer body = new Buffer(json.encode());
+        Buffer body = Buffer.buffer(json.encode());
 
-        MultiMap headers = new CaseInsensitiveMultiMap();
+        MultiMap headers = new CaseInsensitiveHeaders();
         headers.add("content-type", "application/json");
         headers.add("content-length", Integer.toString(body.length()));
 

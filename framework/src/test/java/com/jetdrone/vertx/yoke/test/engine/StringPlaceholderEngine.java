@@ -4,20 +4,17 @@ import com.jetdrone.vertx.yoke.Middleware;
 import com.jetdrone.vertx.yoke.Yoke;
 import com.jetdrone.vertx.yoke.engine.Function;
 import com.jetdrone.vertx.yoke.middleware.YokeRequest;
-import com.jetdrone.vertx.yoke.test.Response;
 import com.jetdrone.vertx.yoke.test.YokeTester;
+import io.vertx.test.core.VertxTestBase;
 import org.jetbrains.annotations.NotNull;
 import org.junit.Test;
-import org.vertx.java.core.Handler;
-import org.vertx.testtools.TestVerticle;
+import io.vertx.core.Handler;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.util.Map;
 
-import static org.vertx.testtools.VertxAssert.*;
-
-public class StringPlaceholderEngine extends TestVerticle {
+public class StringPlaceholderEngine extends VertxTestBase {
 
     @Test
     public void testEngine() {
@@ -29,7 +26,7 @@ public class StringPlaceholderEngine extends TestVerticle {
             out.close();
             final String location = temp.getAbsolutePath();
 
-            Yoke yoke = new Yoke(this);
+            Yoke yoke = new Yoke(vertx);
             yoke.engine("shtml", new com.jetdrone.vertx.yoke.engine.StringPlaceholderEngine(""));
             yoke.use(new Middleware() {
                 @Override
@@ -59,7 +56,7 @@ public class StringPlaceholderEngine extends TestVerticle {
             out.close();
             final String location = temp.getAbsolutePath();
 
-            Yoke yoke = new Yoke(this);
+            Yoke yoke = new Yoke(vertx);
             yoke.set("fnName", new Function() {
                 @Override
                 public String exec(Map<String, Object> context, Object... args) {
