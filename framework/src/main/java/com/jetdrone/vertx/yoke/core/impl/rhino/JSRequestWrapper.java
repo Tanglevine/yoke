@@ -1,4 +1,4 @@
-package com.jetdrone.vertx.yoke.core.impl;
+package com.jetdrone.vertx.yoke.core.impl.rhino;
 
 import com.jetdrone.vertx.yoke.Engine;
 import com.jetdrone.vertx.yoke.core.Context;

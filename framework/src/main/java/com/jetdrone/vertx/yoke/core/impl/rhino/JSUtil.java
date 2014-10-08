@@ -1,4 +1,4 @@
-package com.jetdrone.vertx.yoke.core.impl;
+package com.jetdrone.vertx.yoke.core.impl.rhino;
 
 import java.util.List;
 import java.util.Map;

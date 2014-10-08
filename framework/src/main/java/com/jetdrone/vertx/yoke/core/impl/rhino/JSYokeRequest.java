@@ -1,8 +1,8 @@
-package com.jetdrone.vertx.yoke.core.impl;
+package com.jetdrone.vertx.yoke.core.impl.rhino;
 
-import static com.jetdrone.vertx.yoke.core.impl.JSUtil.EMPTY_OBJECT_ARRAY;
-import static com.jetdrone.vertx.yoke.core.impl.JSUtil.isVararg;
-import static com.jetdrone.vertx.yoke.core.impl.JSUtil.javaToJS;
+import static com.jetdrone.vertx.yoke.core.impl.rhino.JSUtil.EMPTY_OBJECT_ARRAY;
+import static com.jetdrone.vertx.yoke.core.impl.rhino.JSUtil.isVararg;
+import static com.jetdrone.vertx.yoke.core.impl.rhino.JSUtil.javaToJS;
 
 import javax.net.ssl.SSLPeerUnverifiedException;
 
