@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class GSharedDataSessionStore extends SharedDataSessionStore {
+public class GSharedDataSessionStore extends LocalDataSessionStore {
 
     private static <T> Handler<T> wrapClosure(final Closure<T> closure) {
         return new Handler<T>() {

@@ -503,7 +503,7 @@ public class Jersey extends AbstractMiddleware implements Container {
     }
 
     @Override
-    public Middleware init(final Yoke yoke, final String mount) {
+    public Middleware init(@NotNull final Yoke yoke, @NotNull final String mount) {
         super.init(yoke, mount);
         initJersey();
         containerListener.onStartup(this);
