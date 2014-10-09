@@ -5,12 +5,12 @@ import com.jetdrone.vertx.yoke.Yoke;
 import com.jetdrone.vertx.yoke.middleware.BodyParser;
 import com.jetdrone.vertx.yoke.middleware.Router;
 import com.jetdrone.vertx.yoke.middleware.YokeRequest;
+import io.vertx.core.AbstractVerticle;
 import org.jetbrains.annotations.NotNull;
-import org.vertx.java.core.json.JsonObject;
-import org.vertx.java.core.Handler;
-import org.vertx.java.platform.Verticle;
+import io.vertx.core.json.JsonObject;
+import io.vertx.core.Handler;
 
-public class YokeBench extends Verticle {
+public class YokeBench extends AbstractVerticle {
 
     @Override
     public void start() {

@@ -3,20 +3,18 @@ package com.jetdrone.vertx;
 import com.jetdrone.vertx.yoke.Yoke;
 import com.jetdrone.vertx.yoke.middleware.*;
 import com.jetdrone.vertx.yoke.store.MongoDBSessionStore;
-import org.vertx.java.core.AsyncResult;
-import org.vertx.java.core.AsyncResultHandler;
-import org.vertx.java.core.Handler;
-import org.vertx.java.core.json.JsonObject;
-import org.vertx.java.platform.Verticle;
+import io.vertx.core.AbstractVerticle;
+import io.vertx.core.AsyncResult;
+import io.vertx.core.AsyncResultHandler;
+import io.vertx.core.Handler;
+import io.vertx.core.json.JsonObject;
 
 import javax.crypto.Mac;
 
-public class SessionStoreExample extends Verticle {
+public class SessionStoreExample extends AbstractVerticle {
 
     @Override
     public void start() {
-        super.start();
-
         // load the general config object, loaded by using -config on command line
         JsonObject appConfig = new JsonObject()
                 .putString("db_name", "test");

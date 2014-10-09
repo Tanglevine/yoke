@@ -4,21 +4,22 @@ import com.jetdrone.vertx.yoke.Middleware;
 import com.jetdrone.vertx.yoke.Yoke;
 import com.jetdrone.vertx.yoke.engine.StringPlaceholderEngine;
 import com.jetdrone.vertx.yoke.middleware.*;
+import io.vertx.core.AbstractVerticle;
+import io.vertx.core.http.*;
+import io.vertx.core.logging.impl.LoggerFactory;
 import org.jetbrains.annotations.NotNull;
-import org.vertx.java.core.Handler;
-import org.vertx.java.core.buffer.Buffer;
-import org.vertx.java.core.http.HttpClient;
-import org.vertx.java.core.http.HttpClientRequest;
-import org.vertx.java.core.http.HttpClientResponse;
-import org.vertx.java.core.json.DecodeException;
-import org.vertx.java.core.json.JsonObject;
-import org.vertx.java.platform.Verticle;
+import io.vertx.core.Handler;
+import io.vertx.core.buffer.Buffer;
+import io.vertx.core.json.DecodeException;
+import io.vertx.core.json.JsonObject;
 
 import javax.crypto.Mac;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 
-public class Persona extends Verticle {
+public class Persona extends AbstractVerticle {
+
+    private final io.vertx.core.logging.Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Override
     public void start() {
@@ -82,9 +83,9 @@ public class Persona extends Verticle {
                             return;
                         }
 
-                        HttpClient client = getVertx().createHttpClient().setSSL(true).setHost("verifier.login.persona.org").setPort(443);
+                        HttpClient client = getVertx().createHttpClient(new HttpClientOptions().setSsl(true));
 
-                        HttpClientRequest clientRequest = client.post("/verify", new Handler<HttpClientResponse>() {
+                        HttpClientRequest clientRequest = client.request(HttpMethod.POST, 443, "verifier.login.persona.org", "/verify", new Handler<HttpClientResponse>() {
                             public void handle(HttpClientResponse response) {
                                 // error handler
                                 response.exceptionHandler(new Handler<Throwable>() {
@@ -94,10 +95,10 @@ public class Persona extends Verticle {
                                     }
                                 });
 
-                                final Buffer body = new Buffer(0);
+                                final Buffer body = Buffer.buffer(0);
 
                                 // body handler
-                                response.dataHandler(new Handler<Buffer>() {
+                                response.handler(new Handler<Buffer>() {
                                     @Override
                                     public void handle(Buffer buffer) {
                                         body.appendBuffer(buffer);
@@ -137,6 +138,6 @@ public class Persona extends Verticle {
         );
 
         yoke.listen(8080);
-        container.logger().info("Yoke server listening on port 8080");
+        logger.info("Yoke server listening on port 8080");
     }
 }

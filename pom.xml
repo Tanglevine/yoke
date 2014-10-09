@@ -81,19 +81,19 @@
         <module>engine/mvel</module>
         <module>engine/thymeleaf</module>
 
-        <module>store/redis</module>
-        <module>store/mongodb</module>
+        <!--<module>store/redis</module>-->
+        <!--<module>store/mongodb</module>-->
 
         <module>examples/benchmark</module>
         <module>examples/cluster-benchmark</module>
-        <module>examples/dojo-reststore</module>
+        <!--<module>examples/dojo-reststore</module>-->
         <module>examples/form-auth</module>
         <!--<module>examples/groovy</module>-->
-        <module>examples/kitcms</module>
+        <!--<module>examples/kitcms</module>-->
         <module>examples/mozilla-persona</module>
-        <module>examples/session-store</module>
+        <!--<module>examples/session-store</module>-->
         <!--<module>examples/swagger-petstore</module>-->
-        <module>examples/techempower</module>
+        <!--<module>examples/techempower</module>-->
     </modules>
 
     <build>

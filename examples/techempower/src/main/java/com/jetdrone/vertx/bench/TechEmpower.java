@@ -4,18 +4,18 @@ import com.jetdrone.vertx.yoke.Middleware;
 import com.jetdrone.vertx.yoke.Yoke;
 import com.jetdrone.vertx.yoke.engine.MVELEngine;
 import com.jetdrone.vertx.yoke.middleware.YokeRequest;
+import io.vertx.core.AbstractVerticle;
 import org.jetbrains.annotations.NotNull;
-import org.vertx.java.core.eventbus.EventBus;
-import org.vertx.java.core.eventbus.Message;
-import org.vertx.java.core.json.JsonArray;
-import org.vertx.java.core.json.JsonObject;
-import org.vertx.java.core.Handler;
-import org.vertx.java.platform.Verticle;
+import io.vertx.core.eventbus.EventBus;
+import io.vertx.core.eventbus.Message;
+import io.vertx.core.json.JsonArray;
+import io.vertx.core.json.JsonObject;
+import io.vertx.core.Handler;
 
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 
-public class TechEmpower extends Verticle {
+public class TechEmpower extends AbstractVerticle {
 
     // utilities
     private static JsonObject buildQuery(String action, String collection, int id) {
