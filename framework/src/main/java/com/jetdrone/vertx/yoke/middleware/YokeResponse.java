@@ -11,6 +11,7 @@ import com.jetdrone.vertx.yoke.core.YokeException;
 import io.netty.handler.codec.http.Cookie;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.netty.handler.codec.http.ServerCookieEncoder;
+import io.vertx.core.http.HttpMethod;
 import org.jetbrains.annotations.NotNull;
 import io.vertx.core.streams.Pump;
 import io.vertx.core.AsyncResult;
@@ -37,7 +38,7 @@ public class YokeResponse implements HttpServerResponse {
     // response cookies
     private Set<Cookie> cookies;
     // link to request method
-    private String method;
+    private HttpMethod method;
 
     // extra handlers
     private List<Handler<Void>> headersHandler;
@@ -56,7 +57,7 @@ public class YokeResponse implements HttpServerResponse {
 
     // protected extension
 
-    void setMethod(String method) {
+    void setMethod(HttpMethod method) {
         this.method = method;
     }
 

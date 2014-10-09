@@ -7,6 +7,7 @@ import com.jetdrone.vertx.yoke.test.Response;
 import com.jetdrone.vertx.yoke.test.YokeTester;
 import io.netty.handler.codec.http.HttpHeaders;
 import io.vertx.core.http.CaseInsensitiveHeaders;
+import io.vertx.core.http.HttpMethod;
 import io.vertx.test.core.VertxTestBase;
 import org.junit.Test;
 import io.vertx.core.Handler;
@@ -38,7 +39,7 @@ public class BodyParser extends VertxTestBase {
         headers.add("content-type", "application/json");
         headers.add("content-length", Integer.toString(body.length()));
 
-        new YokeTester(yoke).request("POST", "/upload", headers, body, new Handler<Response>() {
+        new YokeTester(yoke).request(HttpMethod.POST, "/upload", headers, body, new Handler<Response>() {
             @Override
             public void handle(Response resp) {
                 assertEquals(200, resp.getStatusCode());
@@ -46,6 +47,7 @@ public class BodyParser extends VertxTestBase {
                 testComplete();
             }
         });
+        await();
     }
 
     @Test
@@ -67,7 +69,7 @@ public class BodyParser extends VertxTestBase {
         headers.add("content-type", "application/x-www-form-urlencoded");
         headers.add("content-length", Integer.toString(body.length()));
 
-        new YokeTester(yoke).request("POST", "/upload", headers, body, new Handler<Response>() {
+        new YokeTester(yoke).request(HttpMethod.POST, "/upload", headers, body, new Handler<Response>() {
             @Override
             public void handle(Response resp) {
                 assertEquals(200, resp.getStatusCode());
@@ -75,6 +77,7 @@ public class BodyParser extends VertxTestBase {
                 testComplete();
             }
         });
+        await();
     }
 
     @Test
@@ -96,7 +99,7 @@ public class BodyParser extends VertxTestBase {
         MultiMap headers = new CaseInsensitiveHeaders();
         headers.add("content-length", Integer.toString(body.length()));
 
-        new YokeTester(yoke).request("POST", "/upload", headers, body, new Handler<Response>() {
+        new YokeTester(yoke).request(HttpMethod.POST, "/upload", headers, body, new Handler<Response>() {
             @Override
             public void handle(Response resp) {
                 assertEquals(200, resp.getStatusCode());
@@ -104,6 +107,7 @@ public class BodyParser extends VertxTestBase {
                 testComplete();
             }
         });
+        await();
     }
 
     @Test
@@ -117,10 +121,11 @@ public class BodyParser extends VertxTestBase {
             }
         });
 
-        new YokeTester(yoke).request("DELETE", "/upload", resp -> {
+        new YokeTester(yoke).request(HttpMethod.DELETE, "/upload", resp -> {
             assertEquals(200, resp.getStatusCode());
             testComplete();
         });
+        await();
     }
 
     @Test
@@ -142,10 +147,11 @@ public class BodyParser extends VertxTestBase {
         headers.add("content-type", "application/json");
         headers.add("transfer-encoding", "chunked");
 
-        new YokeTester(yoke).request("POST", "/upload", headers, body, resp -> {
+        new YokeTester(yoke).request(HttpMethod.POST, "/upload", headers, body, resp -> {
             assertEquals(413, resp.getStatusCode());
             testComplete();
         });
+        await();
     }
 
     @Test
@@ -167,10 +173,11 @@ public class BodyParser extends VertxTestBase {
         headers.add("content-type", "plain/text");
         headers.add("transfer-encoding", "chunked");
 
-        new YokeTester(yoke).request("POST", "/upload", headers, body, resp -> {
+        new YokeTester(yoke).request(HttpMethod.POST, "/upload", headers, body, resp -> {
             assertEquals(413, resp.getStatusCode());
             testComplete();
         });
+        await();
     }
 
     @Test
@@ -192,10 +199,11 @@ public class BodyParser extends VertxTestBase {
         headers.add("content-type", HttpHeaders.Values.APPLICATION_X_WWW_FORM_URLENCODED);
         headers.add("transfer-encoding", "chunked");
 
-        new YokeTester(yoke).request("POST", "/upload", headers, body, resp -> {
+        new YokeTester(yoke).request(HttpMethod.POST, "/upload", headers, body, resp -> {
             assertEquals(413, resp.getStatusCode());
             testComplete();
         });
+        await();
     }
 
     @Test
@@ -215,9 +223,10 @@ public class BodyParser extends VertxTestBase {
         headers.add("Content-Type", "application/json");
         headers.add("Content-Length", "0");
 
-        new YokeTester(yoke).request("DELETE", "/delete", headers, resp -> {
+        new YokeTester(yoke).request(HttpMethod.DELETE, "/delete", headers, resp -> {
             assertEquals(204, resp.getStatusCode());
             testComplete();
         });
+        await();
     }
 }

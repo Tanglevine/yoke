@@ -8,6 +8,7 @@ import com.jetdrone.vertx.yoke.middleware.BodyParser;
 import com.jetdrone.vertx.yoke.test.Response;
 import com.jetdrone.vertx.yoke.test.YokeTester;
 import io.vertx.core.http.CaseInsensitiveHeaders;
+import io.vertx.core.http.HttpMethod;
 import io.vertx.test.core.VertxTestBase;
 import org.jetbrains.annotations.NotNull;
 import org.junit.Test;
@@ -32,11 +33,12 @@ public class Router extends VertxTestBase {
         Yoke yoke = new Yoke(vertx);
         yoke.use(com.jetdrone.vertx.yoke.middleware.Router.from(new TestRouter()));
 
-        new YokeTester(yoke).request("GET", "/ws", resp -> {
+        new YokeTester(yoke).request(HttpMethod.GET, "/ws", resp -> {
             assertEquals(200, resp.getStatusCode());
             assertEquals("Hello ws!", resp.body.toString());
             testComplete();
         });
+        await();
     }
 
     public static class TestRouter2 {
@@ -52,11 +54,12 @@ public class Router extends VertxTestBase {
         Yoke yoke = new Yoke(vertx);
         yoke.use(com.jetdrone.vertx.yoke.middleware.Router.from(new TestRouter2()));
 
-        new YokeTester(yoke).request("GET", "/ws", resp -> {
+        new YokeTester(yoke).request(HttpMethod.GET, "/ws", resp -> {
             assertEquals(200, resp.getStatusCode());
             assertEquals("Hello ws!", resp.body.toString());
             testComplete();
         });
+        await();
     }
 
     @Test
@@ -83,11 +86,12 @@ public class Router extends VertxTestBase {
             });
         }});
 
-        new YokeTester(yoke).request("GET", "/api/1", resp -> {
+        new YokeTester(yoke).request(HttpMethod.GET, "/api/1", resp -> {
             assertEquals(200, resp.getStatusCode());
             assertEquals("OK", resp.body.toString());
             testComplete();
         });
+        await();
     }
 
     @Test
@@ -104,10 +108,11 @@ public class Router extends VertxTestBase {
         }});
 
         // the pattern expects 2 digits
-        new YokeTester(yoke).request("GET", "/api/1", resp -> {
+        new YokeTester(yoke).request(HttpMethod.GET, "/api/1", resp -> {
             assertEquals(400, resp.getStatusCode());
             testComplete();
         });
+        await();
     }
 
     @Test
@@ -124,10 +129,11 @@ public class Router extends VertxTestBase {
         }});
 
         // the pattern expects 2 digits
-        new YokeTester(yoke).request("GET", "/api/10", resp -> {
+        new YokeTester(yoke).request(HttpMethod.GET, "/api/10", resp -> {
             assertEquals(200, resp.getStatusCode());
             testComplete();
         });
+        await();
     }
 
     @Test
@@ -144,10 +150,10 @@ public class Router extends VertxTestBase {
 
         final YokeTester yokeAssert = new YokeTester(yoke);
 
-        yokeAssert.request("GET", "/api", resp -> {
+        yokeAssert.request(HttpMethod.GET, "/api", resp -> {
             assertEquals(200, resp.getStatusCode());
 
-            yokeAssert.request("GET", "/api/", new Handler<Response>() {
+            yokeAssert.request(HttpMethod.GET, "/api/", new Handler<Response>() {
                 @Override
                 public void handle(Response resp) {
                     assertEquals(200, resp.getStatusCode());
@@ -155,6 +161,7 @@ public class Router extends VertxTestBase {
                 }
             });
         });
+        await();
     }
 
     @Test
@@ -171,10 +178,11 @@ public class Router extends VertxTestBase {
 
         final YokeTester yokeAssert = new YokeTester(yoke);
 
-        yokeAssert.request("GET", "/api-stable", resp -> {
+        yokeAssert.request(HttpMethod.GET, "/api-stable", resp -> {
             assertEquals(200, resp.getStatusCode());
             testComplete();
         });
+        await();
     }
 
     public static class R2 {
@@ -194,10 +202,11 @@ public class Router extends VertxTestBase {
         yoke.use(com.jetdrone.vertx.yoke.middleware.Router.from(new R2()));
 
         // the pattern expects 2 digits
-        new YokeTester(yoke).request("GET", "/api/1", resp -> {
+        new YokeTester(yoke).request(HttpMethod.GET, "/api/1", resp -> {
             assertEquals(400, resp.getStatusCode());
             testComplete();
         });
+        await();
     }
 
     public static class R3 {
@@ -220,10 +229,11 @@ public class Router extends VertxTestBase {
         headers.add("content-type", "application/json");
         headers.add("content-length", Integer.toString(body.length()));
 
-        new YokeTester(yoke).request("POST", "/api", headers, body, resp -> {
+        new YokeTester(yoke).request(HttpMethod.POST, "/api", headers, body, resp -> {
             assertEquals(400, resp.getStatusCode());
             testComplete();
         });
+        await();
     }
 
     @Test
@@ -235,9 +245,10 @@ public class Router extends VertxTestBase {
         headers.add("content-type", "application/json");
         headers.add("content-length", "0");
 
-        new YokeTester(yoke).request("POST", "/api", headers, null, resp -> {
+        new YokeTester(yoke).request(HttpMethod.POST, "/api", headers, null, resp -> {
             assertEquals(400, resp.getStatusCode());
             testComplete();
         });
+        await();
     }
 }

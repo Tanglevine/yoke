@@ -19,6 +19,8 @@ import javax.net.ssl.SSLPeerUnverifiedException;
 import javax.security.cert.X509Certificate;
 
 import com.jetdrone.vertx.yoke.util.Utils;
+import io.vertx.core.http.HttpMethod;
+import io.vertx.core.http.HttpVersion;
 import io.vertx.core.net.SocketAddress;
 import org.jetbrains.annotations.NotNull;
 import io.vertx.core.Handler;
@@ -80,7 +82,7 @@ public class YokeRequest implements HttpServerRequest {
     final protected SessionStore store;
 
     // we can overrride the setMethod
-    private String method;
+    private HttpMethod method;
     private long bodyLengthLimit = -1;
     // the body is protected so extensions can access the raw object instead of casted versions.
     protected Object body;
@@ -219,15 +221,15 @@ public class YokeRequest implements HttpServerRequest {
     }
 
     // The original HTTP setMethod for the request. One of GET, PUT, POST, DELETE, TRACE, CONNECT, OPTIONS or HEAD
-    public String originalMethod() {
+    public HttpMethod originalMethod() {
         return request.method();
     }
 
     /** Package level mutator for the overrided setMethod
      * @param newMethod new setMethod GET, PUT, POST, DELETE, TRACE, CONNECT, OPTIONS or HEAD
      */
-    void setMethod(@NotNull final String newMethod) {
-        this.method = newMethod.toUpperCase();
+    void setMethod(@NotNull final HttpMethod newMethod) {
+        this.method = newMethod;
         response.setMethod(this.method);
     }
 
@@ -688,12 +690,12 @@ public class YokeRequest implements HttpServerRequest {
     }
 
     @Override
-    public String version() {
+    public HttpVersion version() {
         return request.version();
     }
 
     @Override
-    public String method() {
+    public HttpMethod method() {
         if (method != null) {
             return method;
         }

@@ -5,6 +5,7 @@ import com.jetdrone.vertx.yoke.Yoke;
 import com.jetdrone.vertx.yoke.middleware.YokeRequest;
 import com.jetdrone.vertx.yoke.test.YokeTester;
 import io.vertx.core.http.CaseInsensitiveHeaders;
+import io.vertx.core.http.HttpMethod;
 import io.vertx.test.core.VertxTestBase;
 import org.jetbrains.annotations.NotNull;
 import org.junit.Test;
@@ -28,7 +29,8 @@ public class YokeRequestTest extends VertxTestBase {
         MultiMap headers = new CaseInsensitiveHeaders();
         headers.add("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8");
 
-        new YokeTester(yoke).request("GET", "/", headers, null);
+        new YokeTester(yoke).request(HttpMethod.GET, "/", headers, null);
+        await();
     }
 
     @Test
@@ -42,7 +44,8 @@ public class YokeRequestTest extends VertxTestBase {
             }
         });
 
-        new YokeTester(yoke).request("GET", "/./me/../pom.xml", null);
+        new YokeTester(yoke).request(HttpMethod.GET, "/./me/../pom.xml", null);
+        await();
     }
 
     @Test
@@ -56,7 +59,8 @@ public class YokeRequestTest extends VertxTestBase {
             }
         });
 
-        new YokeTester(yoke).request("GET", "/", null);
+        new YokeTester(yoke).request(HttpMethod.GET, "/", null);
+        await();
     }
 
     @Test
@@ -70,7 +74,8 @@ public class YokeRequestTest extends VertxTestBase {
             }
         });
 
-        new YokeTester(yoke).request("GET", "/%2e%2e%2f", null);
+        new YokeTester(yoke).request(HttpMethod.GET, "/%2e%2e%2f", null);
+        await();
     }
 
     @Test
@@ -84,7 +89,8 @@ public class YokeRequestTest extends VertxTestBase {
             }
         });
 
-        new YokeTester(yoke).request("GET", "/%2e%2e/", null);
+        new YokeTester(yoke).request(HttpMethod.GET, "/%2e%2e/", null);
+        await();
     }
 
     @Test
@@ -98,6 +104,7 @@ public class YokeRequestTest extends VertxTestBase {
             }
         });
 
-        new YokeTester(yoke).request("GET", "/..%2f", null);
+        new YokeTester(yoke).request(HttpMethod.GET, "/..%2f", null);
+        await();
     }
 }

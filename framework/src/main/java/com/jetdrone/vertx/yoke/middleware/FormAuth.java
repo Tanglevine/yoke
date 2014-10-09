@@ -12,6 +12,8 @@ import com.jetdrone.vertx.yoke.Yoke;
 import com.jetdrone.vertx.yoke.store.json.SessionObject;
 import com.jetdrone.vertx.yoke.util.Utils;
 
+import static io.vertx.core.http.HttpMethod.*;
+
 public class FormAuth extends AbstractMiddleware {
 
     private final AuthHandler authHandler;
@@ -60,7 +62,7 @@ public class FormAuth extends AbstractMiddleware {
     @Override
     public void handle(@NotNull final YokeRequest request, @NotNull final Handler<Object> next) {
         if (request.path().equals(loginURI)) {
-            if ("GET".equals(request.method())) {
+            if (GET == request.method()) {
                 if (loginTemplate != null) {
                     // render internal login
                     request.response().setContentType("text/html");
@@ -75,7 +77,7 @@ public class FormAuth extends AbstractMiddleware {
                 return;
             }
 
-            if ("POST".equals(request.method())) {
+            if (POST == request.method()) {
                 if (forceSSL && !request.isSecure()) {
                     // SSL is required but the post is insecure
                     next.handle(400);
@@ -113,7 +115,7 @@ public class FormAuth extends AbstractMiddleware {
         }
 
         if (request.path().equals(logoutURI)) {
-            if ("GET".equals(request.method())) {
+            if (GET == request.method()) {
                 // remove session from storage
                 request.destroySession();
                 // get the redirect_url parameter

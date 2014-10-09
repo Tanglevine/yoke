@@ -6,6 +6,7 @@ import com.jetdrone.vertx.yoke.middleware.AuthHandler;
 import com.jetdrone.vertx.yoke.middleware.YokeRequest;
 import com.jetdrone.vertx.yoke.test.YokeTester;
 import io.vertx.core.http.CaseInsensitiveHeaders;
+import io.vertx.core.http.HttpMethod;
 import io.vertx.test.core.VertxTestBase;
 import org.jetbrains.annotations.NotNull;
 import org.junit.Test;
@@ -29,7 +30,7 @@ public class BasicAuth extends VertxTestBase {
         final YokeTester yokeAssert = new YokeTester(yoke);
 
         // first time is forbidden
-        yokeAssert.request("GET", "/", resp -> {
+        yokeAssert.request(HttpMethod.GET, "/", resp -> {
             assertEquals(401, resp.getStatusCode());
             assertNotNull(resp.headers.get("www-authenticate"));
 
@@ -37,11 +38,12 @@ public class BasicAuth extends VertxTestBase {
             MultiMap headers = new CaseInsensitiveHeaders();
             headers.add("authorization", "Basic QWxhZGRpbjpvcGVuIHNlc2FtZQ==");
 
-            yokeAssert.request("GET", "/", headers, resp1 -> {
+            yokeAssert.request(HttpMethod.GET, "/", headers, resp1 -> {
                 assertEquals(200, resp1.getStatusCode());
                 testComplete();
             });
         });
+        await();
     }
 
     @Test
@@ -69,7 +71,7 @@ public class BasicAuth extends VertxTestBase {
         final YokeTester yokeAssert = new YokeTester(yoke);
 
         // first time is forbidden
-        yokeAssert.request("GET", "/", resp -> {
+        yokeAssert.request(HttpMethod.GET, "/", resp -> {
             assertEquals(401, resp.getStatusCode());
             assertNotNull(resp.headers.get("www-authenticate"));
 
@@ -77,10 +79,11 @@ public class BasicAuth extends VertxTestBase {
             MultiMap headers = new CaseInsensitiveHeaders();
             headers.add("authorization", "Basic QWxhZGRpbjo=");
 
-            yokeAssert.request("GET", "/", headers, resp1 -> {
+            yokeAssert.request(HttpMethod.GET, "/", headers, resp1 -> {
                 assertEquals(200, resp1.getStatusCode());
                 testComplete();
             });
         });
+        await();
     }
 }

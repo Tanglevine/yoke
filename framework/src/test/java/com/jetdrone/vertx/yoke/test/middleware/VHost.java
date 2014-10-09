@@ -5,6 +5,7 @@ import com.jetdrone.vertx.yoke.middleware.Vhost;
 import com.jetdrone.vertx.yoke.middleware.YokeRequest;
 import com.jetdrone.vertx.yoke.test.YokeTester;
 import io.vertx.core.http.CaseInsensitiveHeaders;
+import io.vertx.core.http.HttpMethod;
 import io.vertx.test.core.VertxTestBase;
 import org.junit.Test;
 import io.vertx.core.Handler;
@@ -34,7 +35,7 @@ public class VHost extends VertxTestBase {
         MultiMap headers = new CaseInsensitiveHeaders();
         headers.add("host", "www.mycorp.com");
 
-        new YokeTester(yoke).request("GET", "/", headers, resp -> {
-        });
+        new YokeTester(yoke).request(HttpMethod.GET, "/", headers, null);
+        await();
     }
 }

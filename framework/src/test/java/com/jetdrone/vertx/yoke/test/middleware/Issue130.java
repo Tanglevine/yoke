@@ -4,6 +4,7 @@ import com.jetdrone.vertx.yoke.Middleware;
 import com.jetdrone.vertx.yoke.Yoke;
 import com.jetdrone.vertx.yoke.middleware.*;
 import com.jetdrone.vertx.yoke.test.YokeTester;
+import io.vertx.core.http.HttpMethod;
 import io.vertx.test.core.VertxTestBase;
 import org.jetbrains.annotations.NotNull;
 import org.junit.Test;
@@ -23,10 +24,11 @@ public class Issue130 extends VertxTestBase {
             }
         }));
 
-        new YokeTester(yoke).request("GET", "/url/http://www.google.com", resp -> {
+        new YokeTester(yoke).request(HttpMethod.GET, "/url/http://www.google.com", resp -> {
             assertEquals(200, resp.getStatusCode());
             testComplete();
         });
+        await();
     }
 
     @Test
@@ -39,10 +41,11 @@ public class Issue130 extends VertxTestBase {
             }
         }));
 
-        new YokeTester(yoke).request("GET", "/url/http%3A%2F%2Fwww.google.com", resp -> {
+        new YokeTester(yoke).request(HttpMethod.GET, "/url/http%3A%2F%2Fwww.google.com", resp -> {
             assertEquals(200, resp.getStatusCode());
             testComplete();
         });
+        await();
     }
 
 //    @Test

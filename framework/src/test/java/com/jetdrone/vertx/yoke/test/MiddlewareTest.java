@@ -4,6 +4,7 @@ import com.jetdrone.vertx.yoke.middleware.AbstractMiddleware;
 import com.jetdrone.vertx.yoke.Yoke;
 import com.jetdrone.vertx.yoke.middleware.YokeRequest;
 import com.jetdrone.vertx.yoke.util.Utils;
+import io.vertx.core.http.HttpMethod;
 import io.vertx.test.core.VertxTestBase;
 import org.jetbrains.annotations.NotNull;
 import org.junit.Test;
@@ -27,7 +28,7 @@ public class MiddlewareTest extends VertxTestBase {
             }
         });
 
-        new YokeTester(yoke).request("GET", "/", null);
+        new YokeTester(yoke).request(HttpMethod.GET, "/", null);
     }
 
     @Test

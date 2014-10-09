@@ -8,6 +8,7 @@ import com.jetdrone.vertx.yoke.test.Response;
 import com.jetdrone.vertx.yoke.test.YokeTester;
 import com.jetdrone.vertx.yoke.util.validation.Type;
 import io.vertx.core.http.CaseInsensitiveHeaders;
+import io.vertx.core.http.HttpMethod;
 import io.vertx.test.core.VertxTestBase;
 import org.jetbrains.annotations.NotNull;
 import org.junit.Test;
@@ -41,12 +42,12 @@ public class Validator extends VertxTestBase {
             }
         }));
 
-        new YokeTester(yoke).request("GET", "/search/2012-07-14T00:00:00Z/2013-07-14T00:00:00Z", new Handler<Response>() {
+        new YokeTester(yoke).request(HttpMethod.GET, "/search/2012-07-14T00:00:00Z/2013-07-14T00:00:00Z", new Handler<Response>() {
             @Override
             public void handle(Response resp) {
                 assertEquals(200, resp.getStatusCode());
 
-                new YokeTester(yoke).request("GET", "/search/from/to", new Handler<Response>() {
+                new YokeTester(yoke).request(HttpMethod.GET, "/search/from/to", new Handler<Response>() {
                     @Override
                     public void handle(Response resp) {
                         assertEquals(400, resp.getStatusCode());
@@ -55,6 +56,7 @@ public class Validator extends VertxTestBase {
                 });
             }
         });
+        await();
     }
 
     @Test
@@ -91,10 +93,11 @@ public class Validator extends VertxTestBase {
         headers.add("content-type", "application/json");
         headers.add("content-length", Integer.toString(body.length()));
 
-        new YokeTester(yoke).request("POST", "/search/2012-07-14T00:00:00Z/2013-07-14T00:00:00Z", headers, body, resp -> {
+        new YokeTester(yoke).request(HttpMethod.POST, "/search/2012-07-14T00:00:00Z/2013-07-14T00:00:00Z", headers, body, resp -> {
             assertEquals(200, resp.getStatusCode());
             testComplete();
         });
+        await();
     }
 
     @Test
@@ -127,10 +130,11 @@ public class Validator extends VertxTestBase {
         headers.add("content-type", "application/json");
         headers.add("content-length", Integer.toString(body.length()));
 
-        new YokeTester(yoke).request("POST", "/", headers, body, resp -> {
+        new YokeTester(yoke).request(HttpMethod.POST, "/", headers, body, resp -> {
             assertEquals(200, resp.getStatusCode());
             testComplete();
         });
+        await();
     }
 
     @Test
@@ -162,9 +166,10 @@ public class Validator extends VertxTestBase {
         headers.add("content-type", "application/json");
         headers.add("content-length", Integer.toString(body.length()));
 
-        new YokeTester(yoke).request("POST", "/", headers, body, resp -> {
+        new YokeTester(yoke).request(HttpMethod.POST, "/", headers, body, resp -> {
             assertEquals(200, resp.getStatusCode());
             testComplete();
         });
+        await();
     }
 }

@@ -17,6 +17,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
 
+import static io.vertx.core.http.HttpMethod.*;
+
 /**
  * # Static
  *
@@ -156,7 +158,7 @@ public class Static extends AbstractMiddleware {
         request.response().putHeader("Content-Length", Long.toString(props.size()));
 
         // head support
-        if ("HEAD".equals(request.method())) {
+        if (HEAD == request.method()) {
             request.response().end();
         } else {
             request.response().sendFile(file);
@@ -326,7 +328,7 @@ public class Static extends AbstractMiddleware {
 
     @Override
     public void handle(@NotNull final YokeRequest request, @NotNull final Handler<Object> next) {
-        if (!"GET".equals(request.method()) && !"HEAD".equals(request.method())) {
+        if (GET != request.method() && HEAD != request.method()) {
             next.handle(null);
         } else {
             String path = request.normalizedPath();

@@ -4,6 +4,7 @@ import com.jetdrone.vertx.yoke.Yoke;
 import com.jetdrone.vertx.yoke.middleware.YokeRequest;
 import com.jetdrone.vertx.yoke.test.YokeTester;
 import io.vertx.core.http.CaseInsensitiveHeaders;
+import io.vertx.core.http.HttpMethod;
 import io.vertx.test.core.VertxTestBase;
 import org.junit.Test;
 import io.vertx.core.Handler;
@@ -29,7 +30,7 @@ public class MethodOverride extends VertxTestBase {
         MultiMap headers = new CaseInsensitiveHeaders();
         headers.add("x-http-setMethod-override", "DELETE");
 
-        new YokeTester(yoke).request("GET", "/upload", headers, resp -> {
+        new YokeTester(yoke).request(HttpMethod.GET, "/upload", headers, resp -> {
             assertEquals(200, resp.getStatusCode());
             testComplete();
         });
@@ -55,7 +56,7 @@ public class MethodOverride extends VertxTestBase {
         headers.add("content-type", "application/x-www-form-urlencoded");
         headers.add("content-length", Integer.toString(body.length()));
 
-        new YokeTester(yoke).request("POST", "/upload", headers, body, resp -> {
+        new YokeTester(yoke).request(HttpMethod.POST, "/upload", headers, body, resp -> {
             assertEquals(200, resp.getStatusCode());
             testComplete();
         });
@@ -83,9 +84,10 @@ public class MethodOverride extends VertxTestBase {
         headers.add("content-type", "application/json");
         headers.add("content-length", Integer.toString(body.length()));
 
-        new YokeTester(yoke).request("POST", "/upload", headers, body, resp -> {
+        new YokeTester(yoke).request(HttpMethod.POST, "/upload", headers, body, resp -> {
             assertEquals(200, resp.getStatusCode());
             testComplete();
         });
+        await();
     }
 }

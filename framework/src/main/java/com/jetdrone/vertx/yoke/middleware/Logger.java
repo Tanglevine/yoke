@@ -142,9 +142,21 @@ public class Logger implements Middleware {
         // common logging data
         final long timestamp = System.currentTimeMillis();
         final String remoteClient = getClientAddress(request.remoteAddress());
-        final String method = request.method();
+        final String method = request.method().toString();
         final String uri = request.uri();
-        final String version = "HTTP/" + request.version();
+        final String version;
+
+        switch (request.version()) {
+            case HTTP_1_1:
+                version = "HTTP/1.1";
+                break;
+            case HTTP_1_0:
+                version = "HTTP/1.0";
+                break;
+            default:
+                version = "HTTP/unknown";
+                break;
+        }
 
         if (immediate) {
             log(request, timestamp, remoteClient, version, method, uri);

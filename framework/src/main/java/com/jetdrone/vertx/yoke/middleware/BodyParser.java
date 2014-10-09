@@ -5,6 +5,7 @@ package com.jetdrone.vertx.yoke.middleware;
 
 import com.jetdrone.vertx.yoke.core.JSON;
 import com.jetdrone.vertx.yoke.core.YokeFileUpload;
+import io.vertx.core.http.HttpMethod;
 import org.jetbrains.annotations.NotNull;
 import io.vertx.core.Handler;
 import io.vertx.core.buffer.Buffer;
@@ -12,6 +13,8 @@ import io.vertx.core.http.HttpServerFileUpload;
 import io.vertx.core.json.DecodeException;
 
 import java.util.HashMap;
+
+import static io.vertx.core.http.HttpMethod.*;
 
 /** # BodyParser
  *
@@ -67,10 +70,10 @@ public class BodyParser extends AbstractMiddleware {
      */
     @Override
     public void handle(@NotNull final YokeRequest request, @NotNull final Handler<Object> next) {
-        final String method = request.method();
+        final HttpMethod method = request.method();
 
         // GET and HEAD have no setBody
-        if ("GET".equals(method) || "HEAD".equals(method) || !request.hasBody()) {
+        if (GET == method || HEAD == method || !request.hasBody()) {
             next.handle(null);
         } else {
 

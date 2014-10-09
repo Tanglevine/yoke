@@ -4,6 +4,7 @@ import com.jetdrone.vertx.yoke.Yoke;
 import com.jetdrone.vertx.yoke.middleware.YokeRequest;
 import com.jetdrone.vertx.yoke.test.YokeTester;
 import io.vertx.core.http.CaseInsensitiveHeaders;
+import io.vertx.core.http.HttpMethod;
 import io.vertx.test.core.VertxTestBase;
 import org.junit.Test;
 import io.vertx.core.Handler;
@@ -32,11 +33,12 @@ public class RequestFunctions extends VertxTestBase {
         // text/html
         // text/plain
 
-        new YokeTester(yoke).request("GET", "/", headers, resp -> {
+        new YokeTester(yoke).request(HttpMethod.GET, "/", headers, resp -> {
             assertEquals(200, resp.getStatusCode());
             assertEquals(resp.body.toString(), "text/xml");
             testComplete();
         });
+        await();
     }
 
     @Test
@@ -54,7 +56,8 @@ public class RequestFunctions extends VertxTestBase {
         MultiMap headers = new CaseInsensitiveHeaders();
         headers.add("x-forward-for", "123.456.123.456, 111.111.11.11");
 
-        new YokeTester(yoke).request("GET", "/", headers, null);
+        new YokeTester(yoke).request(HttpMethod.GET, "/", headers, null);
+        await();
     }
 
     @Test
@@ -72,7 +75,8 @@ public class RequestFunctions extends VertxTestBase {
         MultiMap headers = new CaseInsensitiveHeaders();
         headers.add("Accept-Language", "en-gb;q=0.8, en;q=0.7, da_DK;q=0.9");
 
-        new YokeTester(yoke).request("GET", "/", headers, null);
+        new YokeTester(yoke).request(HttpMethod.GET, "/", headers, null);
+        await();
     }
 
     @Test
@@ -90,7 +94,8 @@ public class RequestFunctions extends VertxTestBase {
         MultiMap headers = new CaseInsensitiveHeaders();
         headers.add("Accept-Language", "da, en-gb;q=0.8, en;q=0.7");
 
-        new YokeTester(yoke).request("GET", "/", headers, null);
+        new YokeTester(yoke).request(HttpMethod.GET, "/", headers, null);
+        await();
     }
 
     @Test
@@ -108,6 +113,7 @@ public class RequestFunctions extends VertxTestBase {
         MultiMap headers = new CaseInsensitiveHeaders();
         headers.add("Accept-Language", "en-gb");
 
-        new YokeTester(yoke).request("GET", "/", headers, null);
+        new YokeTester(yoke).request(HttpMethod.GET, "/", headers, null);
+        await();
     }
 }

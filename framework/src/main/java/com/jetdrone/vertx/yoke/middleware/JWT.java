@@ -10,6 +10,8 @@ import io.vertx.core.json.JsonObject;
 
 import java.util.regex.Pattern;
 
+import static io.vertx.core.http.HttpMethod.*;
+
 public class JWT extends AbstractMiddleware {
 
     private static final Pattern BEARER = Pattern.compile("^Bearer$", Pattern.CASE_INSENSITIVE);
@@ -50,7 +52,7 @@ public class JWT extends AbstractMiddleware {
     public void handle(@NotNull final YokeRequest request, @NotNull final Handler<Object> next) {
         String token = null;
 
-        if ("OPTIONS".equals(request.method()) && request.getHeader("access-control-request-headers") != null) {
+        if (OPTIONS == request.method() && request.getHeader("access-control-request-headers") != null) {
             for (String ctrlReq : request.getHeader("access-control-request-headers").split(",")) {
                 if (ctrlReq.contains("authorization")) {
                     next.handle(null);

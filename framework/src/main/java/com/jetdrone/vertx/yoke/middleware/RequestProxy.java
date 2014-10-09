@@ -43,7 +43,7 @@ public class RequestProxy extends AbstractMiddleware {
         final String newUri = req.uri().replaceFirst(prefix, "");
         final HttpClient client = vertx().createHttpClient(new HttpClientOptions().setSsl(secure));
 
-        final HttpClientRequest cReq = client.request(HttpMethod.valueOf(req.method()), port, host, newUri, new Handler<HttpClientResponse>() {
+        final HttpClientRequest cReq = client.request(req.method(), port, host, newUri, new Handler<HttpClientResponse>() {
           public void handle(HttpClientResponse cRes) {
             req.response().setStatusCode(cRes.statusCode());
             req.response().headers().setAll(cRes.headers());

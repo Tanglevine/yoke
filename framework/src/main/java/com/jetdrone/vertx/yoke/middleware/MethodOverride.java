@@ -4,10 +4,13 @@
 package com.jetdrone.vertx.yoke.middleware;
 
 import com.jetdrone.vertx.yoke.Middleware;
+import io.vertx.core.http.HttpMethod;
 import org.jetbrains.annotations.NotNull;
 import io.vertx.core.Handler;
 import io.vertx.core.MultiMap;
 import io.vertx.core.json.JsonObject;
+
+import static io.vertx.core.http.HttpMethod.*;
 
 /** # MethodOverride
  *
@@ -33,7 +36,7 @@ public class MethodOverride implements Middleware {
     public void handle(@NotNull final YokeRequest request, @NotNull final Handler<Object> next) {
 
         // other methods than GET, HEAD and OPTIONS may have body
-        if (!"GET".equals(request.method()) && !"HEAD".equals(request.method()) && !"OPTIONS".equals(request.method())) {
+        if (GET != request.method() && HEAD != request.method() && OPTIONS != request.method()) {
             // expect multipart
             request.setExpectMultipart(true);
 
@@ -43,7 +46,7 @@ public class MethodOverride implements Middleware {
                 String method = urlEncoded.get(key);
                 if (method != null) {
                     urlEncoded.remove(key);
-                    request.setMethod(method);
+                    request.setMethod(HttpMethod.valueOf(method.toUpperCase()));
                     next.handle(null);
                     return;
                 }
@@ -54,7 +57,7 @@ public class MethodOverride implements Middleware {
                 String method = json.getString(key);
                 if (method != null) {
                     json.removeField(key);
-                    request.setMethod(method);
+                    request.setMethod(HttpMethod.valueOf(method.toUpperCase()));
                     next.handle(null);
                     return;
                 }
@@ -64,7 +67,7 @@ public class MethodOverride implements Middleware {
         String xHttpMethodOverride = request.getHeader("x-http-setmethod-override");
 
         if (xHttpMethodOverride != null) {
-            request.setMethod(xHttpMethodOverride);
+            request.setMethod(HttpMethod.valueOf(xHttpMethodOverride.toUpperCase()));
         }
 
         // if reached the end continue to the next middleware

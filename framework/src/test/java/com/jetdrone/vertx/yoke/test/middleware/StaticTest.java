@@ -3,6 +3,7 @@ package com.jetdrone.vertx.yoke.test.middleware;
 import com.jetdrone.vertx.yoke.Yoke;
 import com.jetdrone.vertx.yoke.middleware.Static;
 import com.jetdrone.vertx.yoke.test.YokeTester;
+import io.vertx.core.http.HttpMethod;
 import io.vertx.test.core.VertxTestBase;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -15,10 +16,11 @@ public class StaticTest extends VertxTestBase {
         Yoke yoke = new Yoke(vertx);
         yoke.use(new Static("target/test-classes/static"));
 
-        new YokeTester(yoke).request("GET", "/dir1/file.1", resp -> {
+        new YokeTester(yoke).request(HttpMethod.GET, "/dir1/file.1", resp -> {
             assertEquals(200, resp.getStatusCode());
             testComplete();
         });
+        await();
     }
 
     @Test
@@ -27,10 +29,11 @@ public class StaticTest extends VertxTestBase {
         Yoke yoke = new Yoke(vertx);
         yoke.use(new Static("target/test-classes/static"));
 
-        new YokeTester(yoke).request("GET", "/dir1/file.2", resp -> {
+        new YokeTester(yoke).request(HttpMethod.GET, "/dir1/file.2", resp -> {
             assertEquals(404, resp.getStatusCode());
             testComplete();
         });
+        await();
     }
 
     @Test
@@ -40,9 +43,10 @@ public class StaticTest extends VertxTestBase {
         Yoke yoke = new Yoke(vertx);
         yoke.use(new Static("target/test-classes/static"));
 
-        new YokeTester(yoke).request("GET", "/dir1/new%20file.1", resp -> {
+        new YokeTester(yoke).request(HttpMethod.GET, "/dir1/new%20file.1", resp -> {
             assertEquals(200, resp.getStatusCode());
             testComplete();
         });
+        await();
     }
 }

@@ -9,6 +9,8 @@ import io.vertx.core.Handler;
 
 import java.util.UUID;
 
+import static io.vertx.core.http.HttpMethod.*;
+
 /**
  * # Csrf
  *
@@ -113,7 +115,7 @@ public class Csrf implements Middleware {
         }
 
         // ignore these methods
-        if ("GET".equals(request.method()) || "HEAD".equals(request.method()) || "OPTIONS".equals(request.method())) {
+        if (GET == request.method() || HEAD == request.method() || OPTIONS == request.method()) {
             next.handle(null);
             return;
         }

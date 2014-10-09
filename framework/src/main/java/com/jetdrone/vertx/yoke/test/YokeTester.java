@@ -39,15 +39,15 @@ public class YokeTester {
         this(yoke, false);
     }
 
-    public void request(final String method, final String url, final Handler<Response> handler) {
+    public void request(final HttpMethod method, final String url, final Handler<Response> handler) {
         request(method, url, new CaseInsensitiveHeaders(), Buffer.buffer(0), handler);
     }
 
-    public void request(final String method, final String url, final MultiMap headers, final Handler<Response> handler) {
+    public void request(final HttpMethod method, final String url, final MultiMap headers, final Handler<Response> handler) {
         request(method, url, headers, Buffer.buffer(0), handler);
     }
 
-    public void request(final String method, final String url, final MultiMap headers, final Buffer body, final Handler<Response> handler) {
+    public void request(final HttpMethod method, final String url, final MultiMap headers, final Buffer body, final Handler<Response> handler) {
         try {
             final URI uri = new URI(url);
             final boolean urlEncoded = "application/x-www-form-urlencoded".equalsIgnoreCase(headers.get("content-type"));
@@ -183,13 +183,13 @@ public class YokeTester {
                 };
 
                 @Override
-                public String version() {
-                    return "1.1";
+                public HttpVersion version() {
+                    return HttpVersion.HTTP_1_1;
                 }
 
                 @Override
-                public String method() {
-                    return method.toUpperCase();
+                public HttpMethod method() {
+                    return method;
                 }
 
                 @Override
