@@ -6,21 +6,19 @@ import com.jetdrone.vertx.yoke.middleware.ErrorHandler;
 import com.jetdrone.vertx.yoke.middleware.YokeRequest;
 import com.jetdrone.vertx.yoke.test.Response;
 import com.jetdrone.vertx.yoke.test.YokeTester;
+import io.vertx.core.http.HttpMethod;
+import io.vertx.test.core.VertxTestBase;
 import org.jetbrains.annotations.NotNull;
 import org.junit.Test;
-import org.vertx.java.core.Handler;
-import org.vertx.testtools.TestVerticle;
+import io.vertx.core.Handler;
 
-import static org.vertx.testtools.VertxAssert.assertEquals;
-import static org.vertx.testtools.VertxAssert.testComplete;
-
-public class Issue88Test extends TestVerticle {
+public class Issue88Test extends VertxTestBase {
 
     @Test
     public void testIssue88() {
-        Yoke yoke = new Yoke(this)
+        Yoke yoke = new Yoke(vertx)
                 .set("title", "Yoke 1.0.7: Issue #88")
-                .engine("hbs", new HandlebarsEngine("issue88/"))
+                .engine("hbs", new HandlebarsEngine("target/test-classes/issue88/"))
                 .use(new ErrorHandler(true))
                 .use("/$", new Middleware() {
                             @Override
@@ -38,10 +36,11 @@ public class Issue88Test extends TestVerticle {
                 .listen(8080);
 
 
-        new YokeTester(yoke).request("GET", "/$", resp -> {
+        new YokeTester(yoke).request(HttpMethod.GET, "/$", resp -> {
             assertEquals(200, resp.getStatusCode());
             System.out.println(resp.body.toString());
             testComplete();
         });
+        await();
     }
 }

@@ -4,23 +4,23 @@ import com.jetdrone.vertx.yoke.Middleware;
 import com.jetdrone.vertx.yoke.Yoke;
 import com.jetdrone.vertx.yoke.middleware.TooBusy;
 import com.jetdrone.vertx.yoke.middleware.YokeRequest;
-import com.jetdrone.vertx.yoke.test.Response;
 import com.jetdrone.vertx.yoke.test.YokeTester;
+import io.vertx.core.http.HttpMethod;
+import io.vertx.test.core.VertxTestBase;
 import org.jetbrains.annotations.NotNull;
+import org.junit.Ignore;
 import org.junit.Test;
-import org.vertx.java.core.Handler;
-import org.vertx.testtools.TestVerticle;
+import io.vertx.core.Handler;
 
 import java.security.SecureRandom;
 
-import static org.vertx.testtools.VertxAssert.*;
-
-public class TooBusyTest extends TestVerticle {
+public class TooBusyTest extends VertxTestBase {
 
     @Test
+    @Ignore("vert.x3 does have some safety checks against blocking the main loop")
     public void testIsTooBusy() throws Exception {
 
-        final Yoke yoke = new Yoke(this);
+        final Yoke yoke = new Yoke(vertx);
         final TooBusy tooBusy = new TooBusy();
         yoke.use(tooBusy);
         yoke.use(new Middleware() {
@@ -46,7 +46,7 @@ public class TooBusyTest extends TestVerticle {
 
             @Override
             public void handle(Long event) {
-                tester.request("GET", "/", response -> {
+                tester.request(HttpMethod.GET, "/", response -> {
                     if (response.getStatusCode() == 200) {
                         some200++;
                     }
@@ -63,5 +63,6 @@ public class TooBusyTest extends TestVerticle {
                 }
             }
         });
+        await();
     }
 }

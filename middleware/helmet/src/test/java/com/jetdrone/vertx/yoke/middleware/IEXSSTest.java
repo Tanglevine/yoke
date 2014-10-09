@@ -3,6 +3,7 @@ package com.jetdrone.vertx.yoke.middleware;
 import com.jetdrone.vertx.yoke.Yoke;
 import com.jetdrone.vertx.yoke.test.YokeTester;
 import io.vertx.core.http.CaseInsensitiveHeaders;
+import io.vertx.core.http.HttpMethod;
 import io.vertx.test.core.VertxTestBase;
 import org.junit.Test;
 import io.vertx.core.Handler;
@@ -29,7 +30,7 @@ public class IEXSSTest extends VertxTestBase {
         MultiMap headers = new CaseInsensitiveHeaders();
         headers.add("User-Agent", FIREFOX_23);
 
-        new YokeTester(app).request("GET", "/", headers, response -> {
+        new YokeTester(app).request(HttpMethod.GET, "/", headers, response -> {
             assertEquals(response.headers().get("X-XSS-Protection"), "1; mode=block");
             testComplete();
         });
@@ -49,7 +50,7 @@ public class IEXSSTest extends VertxTestBase {
         MultiMap headers = new CaseInsensitiveHeaders();
         headers.add("User-Agent", IE_9);
 
-        new YokeTester(app).request("GET", "/", headers, response -> {
+        new YokeTester(app).request(HttpMethod.GET, "/", headers, response -> {
             assertEquals(response.headers().get("X-XSS-Protection"), "1; mode=block");
             testComplete();
         });
@@ -69,7 +70,7 @@ public class IEXSSTest extends VertxTestBase {
         MultiMap headers = new CaseInsensitiveHeaders();
         headers.add("User-Agent", IE_8);
 
-        new YokeTester(app).request("GET", "/", headers, response -> {
+        new YokeTester(app).request(HttpMethod.GET, "/", headers, response -> {
             assertEquals(response.headers().get("X-XSS-Protection"), "0");
             testComplete();
         });
@@ -89,7 +90,7 @@ public class IEXSSTest extends VertxTestBase {
         MultiMap headers = new CaseInsensitiveHeaders();
         headers.add("User-Agent", IE_7);
 
-        new YokeTester(app).request("GET", "/", headers, response -> {
+        new YokeTester(app).request(HttpMethod.GET, "/", headers, response -> {
             assertEquals(response.headers().get("X-XSS-Protection"), "0");
             testComplete();
         });
@@ -109,7 +110,7 @@ public class IEXSSTest extends VertxTestBase {
         MultiMap headers = new CaseInsensitiveHeaders();
         headers.add("User-Agent", IE_8);
 
-        new YokeTester(app).request("GET", "/", headers, response -> {
+        new YokeTester(app).request(HttpMethod.GET, "/", headers, response -> {
             assertEquals(response.headers().get("X-XSS-Protection"), "1; mode=block");
             testComplete();
         });

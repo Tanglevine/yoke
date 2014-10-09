@@ -7,11 +7,9 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.jetbrains.annotations.NotNull;
-import org.vertx.java.core.Handler;
+import io.vertx.core.Handler;
 
 import com.jetdrone.vertx.yoke.Middleware;
-import com.jetdrone.vertx.yoke.middleware.YokeRequest;
-import com.jetdrone.vertx.yoke.middleware.YokeResponse;
 
 /**
  * A simple {@link Middleware} that allows adding custom response headers to all

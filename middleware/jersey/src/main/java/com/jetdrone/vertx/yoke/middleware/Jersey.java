@@ -1,7 +1,7 @@
 
 package com.jetdrone.vertx.yoke.middleware;
 
-import static org.vertx.java.core.http.HttpHeaders.CONTENT_LENGTH;
+import static io.vertx.core.http.HttpHeaders.CONTENT_LENGTH;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -19,7 +19,6 @@ import javax.inject.Inject;
 import javax.inject.Provider;
 import javax.ws.rs.core.SecurityContext;
 
-import com.jetdrone.vertx.yoke.middleware.AbstractMiddleware;
 import org.glassfish.hk2.api.ServiceLocator;
 import org.glassfish.hk2.api.TypeLiteral;
 import org.glassfish.hk2.utilities.binding.AbstractBinder;
@@ -38,29 +37,24 @@ import org.glassfish.jersey.server.spi.ContainerLifecycleListener;
 import org.glassfish.jersey.server.spi.ContainerResponseWriter;
 import org.glassfish.jersey.server.spi.RequestScopedInitializer;
 import org.jetbrains.annotations.NotNull;
-import org.vertx.java.core.Handler;
-import org.vertx.java.core.Vertx;
-import org.vertx.java.core.buffer.Buffer;
-import org.vertx.java.core.http.HttpHeaders;
-import org.vertx.java.core.logging.Logger;
-import org.vertx.java.core.logging.impl.LoggerFactory;
+import io.vertx.core.Handler;
+import io.vertx.core.Vertx;
+import io.vertx.core.buffer.Buffer;
+import io.vertx.core.http.HttpHeaders;
+import io.vertx.core.logging.Logger;
+import io.vertx.core.logging.impl.LoggerFactory;
 
 import com.jetdrone.vertx.yoke.Middleware;
 import com.jetdrone.vertx.yoke.Yoke;
-import com.jetdrone.vertx.yoke.middleware.YokeRequest;
-import com.jetdrone.vertx.yoke.middleware.YokeResponse;
 
 /**
- * <p>
+ *
  * A middleware that can forward requests to JAX-RS annotated resources.
- * </p>
- * <p>
+ *
  * <b>Use it as the last middleware and do not use it with a body consuming middleware!</b>
- * </p>
- * <p>
+ *
  * <b>Don't forget to add Jersey to your project's classpath!</b> For Maven, this would be done with
  * this addition to the POM:
- * </p>
  *
  * <pre>
  * {@code
@@ -71,9 +65,8 @@ import com.jetdrone.vertx.yoke.middleware.YokeResponse;
  * </dependency>
  * }
  * </pre>
- * <p>
+ *
  * Example usage:
- * </p>
  *
  * <pre>
  * {@code
@@ -87,22 +80,18 @@ import com.jetdrone.vertx.yoke.middleware.YokeResponse;
  *              .withInjectables(dependency1, dependency2));
  * }
  * </pre>
- * <p>
+ *
  * The context classes available in the JAX-RS resources are: {@link YokeRequest},
- * {@link YokeResponse}, {@link Vertx} and {@link org.vertx.java.platform.Container} (only if
- * provided with {@link #withVertxContainer(org.vertx.java.platform.Container)}).
- * </p>
- * <p>
+ * {@link YokeResponse}, {@link Vertx}.
+ *
  * Any object provided with {@link #withInjectables(Object...)} will be available via a standard
  * {@link javax.inject.Inject} annotation.
- * </p>
- * <p>
+ *
  * Implementation inspired by <a href=
  * "https://github.com/jersey/jersey/blob/master/containers/simple-http/src/main/java/org/glassfish/jersey/simple/SimpleContainer.java"
  * >Jersey's SimpleContainer</a> and <a href=
  * "https://github.com/englishtown/vertx-mod-jersey/blob/develop/vertx-mod-jersey/src/main/java/com/englishtown/vertx/jersey/impl/DefaultJerseyHandler.java"
  * >Englishtown's Jersey Mod</a>.
- * </p>
  */
 public class Jersey extends AbstractMiddleware implements Container {
 
@@ -110,7 +99,7 @@ public class Jersey extends AbstractMiddleware implements Container {
 
     private static class YokeOutputStream extends OutputStream {
         final YokeResponse response;
-        Buffer buffer = new Buffer();
+        Buffer buffer = Buffer.buffer();
         boolean isClosed;
 
         private YokeOutputStream(final YokeResponse response) {
@@ -145,7 +134,7 @@ public class Jersey extends AbstractMiddleware implements Container {
             // Only flush to underlying very.x response if the content-length has been set
             if (buffer.length() > 0 && response.headers().contains(CONTENT_LENGTH)) {
                 response.write(buffer);
-                buffer = new Buffer();
+                buffer = Buffer.buffer();
             }
         }
 
@@ -181,7 +170,7 @@ public class Jersey extends AbstractMiddleware implements Container {
         @Override
         public void write(final int b) throws IOException {
             checkState();
-            final Buffer buffer = new Buffer();
+            final Buffer buffer = Buffer.buffer();
             buffer.appendByte((byte) b);
             response.write(buffer);
         }
@@ -189,13 +178,13 @@ public class Jersey extends AbstractMiddleware implements Container {
         @Override
         public void write(final byte[] b) throws IOException {
             checkState();
-            response.write(new Buffer(b));
+            response.write(Buffer.buffer(b));
         }
 
         @Override
         public void write(final byte[] b, final int off, final int len) throws IOException {
             checkState();
-            final Buffer buffer = new Buffer();
+            final Buffer buffer = Buffer.buffer();
             if (off == 0 && len == b.length) {
                 buffer.appendBytes(b);
             } else {
@@ -264,9 +253,6 @@ public class Jersey extends AbstractMiddleware implements Container {
     private static final Type VERTX_TYPE = (new TypeLiteral<Ref<Vertx>>() {
     }).getType();
 
-    private static final Type CONTAINER_TYPE = (new TypeLiteral<Ref<org.vertx.java.platform.Container>>() {
-    }).getType();
-
     private static class YokeRequestReferencingFactory extends ReferencingFactory<YokeRequest> {
         @Inject
         public YokeRequestReferencingFactory(final Provider<Ref<YokeRequest>> referenceFactory) {
@@ -288,10 +274,9 @@ public class Jersey extends AbstractMiddleware implements Container {
         }
     }
 
-    private static class ContainerReferencingFactory extends
-            ReferencingFactory<org.vertx.java.platform.Container> {
+    private static class ContainerReferencingFactory extends ReferencingFactory<Vertx> {
         @Inject
-        public ContainerReferencingFactory(final Provider<Ref<org.vertx.java.platform.Container>> referenceFactory) {
+        public ContainerReferencingFactory(final Provider<Ref<Vertx>> referenceFactory) {
             super(referenceFactory);
         }
     }
@@ -319,12 +304,12 @@ public class Jersey extends AbstractMiddleware implements Container {
                     .in(RequestScoped.class);
             bindFactory(ReferencingFactory.<Vertx>referenceFactory()).to(new TypeLiteral<Ref<Vertx>>() {
             }).in(RequestScoped.class);
-            bindFactory(ContainerReferencingFactory.class).to(org.vertx.java.platform.Container.class)
+            bindFactory(ContainerReferencingFactory.class).to(Vertx.class)
                     .proxy(true)
                     .proxyForSameScope(false)
                     .in(RequestScoped.class);
-            bindFactory(ReferencingFactory.<org.vertx.java.platform.Container>referenceFactory()).to(
-                    new TypeLiteral<Ref<org.vertx.java.platform.Container>>() {
+            bindFactory(ReferencingFactory.<Vertx>referenceFactory()).to(
+                    new TypeLiteral<Ref<Vertx>>() {
                     }).in(RequestScoped.class);
         }
     }
@@ -442,17 +427,11 @@ public class Jersey extends AbstractMiddleware implements Container {
 
     private final ResourceConfig resourceConfig;
 
-    private org.vertx.java.platform.Container vertxContainer;
     private ApplicationHandler applicationHandler;
     private ContainerLifecycleListener containerListener;
 
     public Jersey() {
         resourceConfig = new ResourceConfig();
-    }
-
-    public Jersey withVertxContainer(final org.vertx.java.platform.Container vertxContainer) {
-        this.vertxContainer = vertxContainer;
-        return this;
     }
 
     public Jersey withPackages(final String... packages) {
@@ -545,8 +524,8 @@ public class Jersey extends AbstractMiddleware implements Container {
         final URI baseUri = getBaseUri(request);
 
         try {
-            final ContainerRequest requestContext = new ContainerRequest(baseUri, request.absoluteURI(),
-                    request.method(), getSecurityContext(request), new MapPropertiesDelegate());
+            final ContainerRequest requestContext = new ContainerRequest(baseUri, new URI(request.absoluteURI()),
+                    request.method().name(), getSecurityContext(request), new MapPropertiesDelegate());
 
             for (final String headerName : request.headers().names()) {
                 requestContext.headers(headerName, request.headers().get(headerName));
@@ -558,8 +537,6 @@ public class Jersey extends AbstractMiddleware implements Container {
                     locator.<Ref<YokeRequest>>getService(YOKE_REQUEST_TYPE).set(request);
                     locator.<Ref<YokeResponse>>getService(YOKE_RESPONSE_TYPE).set(response);
                     locator.<Ref<Vertx>>getService(VERTX_TYPE).set(vertx());
-                    locator.<Ref<org.vertx.java.platform.Container>>getService(CONTAINER_TYPE).set(
-                            vertxContainer);
                 }
             });
 
@@ -582,7 +559,7 @@ public class Jersey extends AbstractMiddleware implements Container {
 
     private static URI getBaseUri(final YokeRequest request) {
         try {
-            final URI uri = request.absoluteURI();
+            final URI uri = new URI(request.absoluteURI());
             return new URI(uri.getScheme(), null, uri.getHost(), uri.getPort(), "/", null, null);
         } catch (final URISyntaxException ex) {
             throw new IllegalArgumentException(ex);

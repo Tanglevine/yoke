@@ -86,7 +86,7 @@ public class VertxWebContext implements WebContext {
 
     @Override
     public String getRequestMethod() {
-        return request.method();
+        return request.method().name();
     }
 
     @Override

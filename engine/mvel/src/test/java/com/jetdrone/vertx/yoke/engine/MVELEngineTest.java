@@ -5,10 +5,11 @@ import com.jetdrone.vertx.yoke.Yoke;
 import com.jetdrone.vertx.yoke.middleware.YokeRequest;
 import com.jetdrone.vertx.yoke.test.Response;
 import com.jetdrone.vertx.yoke.test.YokeTester;
+import io.vertx.core.http.HttpMethod;
+import io.vertx.test.core.VertxTestBase;
 import org.jetbrains.annotations.NotNull;
 import org.junit.Test;
-import org.vertx.java.core.Handler;
-import org.vertx.testtools.TestVerticle;
+import io.vertx.core.Handler;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -17,9 +18,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static org.vertx.testtools.VertxAssert.*;
-
-public class MVELEngineTest extends TestVerticle {
+public class MVELEngineTest extends VertxTestBase {
 
     @Test
     public void testBasicObjectAccess() {
@@ -31,7 +30,7 @@ public class MVELEngineTest extends TestVerticle {
             out.close();
             final String location = temp.getAbsolutePath();
 
-            Yoke yoke = new Yoke(this);
+            Yoke yoke = new Yoke(vertx);
             yoke.engine("mvel", new MVELEngine(""));
             yoke.use(new Middleware() {
                 @Override
@@ -41,7 +40,7 @@ public class MVELEngineTest extends TestVerticle {
                 }
             });
 
-            new YokeTester(yoke).request("GET", "/", resp -> {
+            new YokeTester(yoke).request(HttpMethod.GET, "/", resp -> {
                 assertEquals(200, resp.getStatusCode());
                 assertEquals("<h1>Paulo</h1>", resp.body.toString());
                 testComplete();
@@ -61,7 +60,7 @@ public class MVELEngineTest extends TestVerticle {
             out.close();
             final String location = temp.getAbsolutePath();
 
-            Yoke yoke = new Yoke(this);
+            Yoke yoke = new Yoke(vertx);
             yoke.engine("mvel", new MVELEngine(""));
             yoke.use(new Middleware() {
                 @Override
@@ -82,7 +81,7 @@ public class MVELEngineTest extends TestVerticle {
                 }
             });
 
-            new YokeTester(yoke).request("GET", "/", resp -> {
+            new YokeTester(yoke).request(HttpMethod.GET, "/", resp -> {
                 assertEquals(200, resp.getStatusCode());
                 assertEquals("<p><a href=\"a\">b</a><a href=\"c\">d</a></p>", resp.body.toString());
                 testComplete();

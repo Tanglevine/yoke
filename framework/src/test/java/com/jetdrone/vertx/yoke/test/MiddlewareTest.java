@@ -29,6 +29,7 @@ public class MiddlewareTest extends VertxTestBase {
         });
 
         new YokeTester(yoke).request(HttpMethod.GET, "/", null);
+        await();
     }
 
     @Test
@@ -64,7 +65,5 @@ public class MiddlewareTest extends VertxTestBase {
 
         String xml = Utils.jsonToXml(json, "Customers");
         assertNotNull(xml);
-
-        testComplete();
     }
 }

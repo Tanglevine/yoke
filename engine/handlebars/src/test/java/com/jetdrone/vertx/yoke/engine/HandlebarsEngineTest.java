@@ -1,34 +1,30 @@
 package com.jetdrone.vertx.yoke.engine;
 
-import static org.vertx.testtools.VertxAssert.assertEquals;
-import static org.vertx.testtools.VertxAssert.fail;
-import static org.vertx.testtools.VertxAssert.testComplete;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import io.vertx.core.http.HttpMethod;
+import io.vertx.test.core.VertxTestBase;
 import org.jetbrains.annotations.NotNull;
 import org.junit.Test;
-import org.vertx.java.core.Handler;
-import org.vertx.testtools.TestVerticle;
+import io.vertx.core.Handler;
 
 import com.jetdrone.vertx.yoke.Middleware;
 import com.jetdrone.vertx.yoke.Yoke;
 import com.jetdrone.vertx.yoke.middleware.YokeRequest;
-import com.jetdrone.vertx.yoke.test.Response;
 import com.jetdrone.vertx.yoke.test.YokeTester;
 
-public class HandlebarsEngineTest extends TestVerticle {
+public class HandlebarsEngineTest extends VertxTestBase {
 	
 		private static final String NEWLINE = System.getProperty("line.separator");
 
     @Test
     public void testEngine() {
         try {
-            Yoke yoke = new Yoke(this);
-            yoke.engine("hbs", new HandlebarsEngine("views"));
+            Yoke yoke = new Yoke(vertx);
+            yoke.engine("hbs", new HandlebarsEngine("target/test-classes/views"));
             yoke.use(new Middleware() {
                 @Override
                 public void handle(@NotNull YokeRequest request, @NotNull Handler<Object> next) {
@@ -37,7 +33,7 @@ public class HandlebarsEngineTest extends TestVerticle {
                 }
             });
 
-            new YokeTester(yoke).request("GET", "/", resp -> {
+            new YokeTester(yoke).request(HttpMethod.GET, "/", resp -> {
                 assertEquals(200, resp.getStatusCode());
                 assertEquals("Hello Paulo!", resp.body.toString());
                 testComplete();
@@ -45,13 +41,14 @@ public class HandlebarsEngineTest extends TestVerticle {
         } catch (Exception e) {
             fail(e.getMessage());
         }
+        await();
     }
 
     @Test
     public void testEngine2() {
         try {
-            Yoke yoke = new Yoke(this);
-            yoke.engine("hbs", new HandlebarsEngine("views"));
+            Yoke yoke = new Yoke(vertx);
+            yoke.engine("hbs", new HandlebarsEngine("target/test-classes/views"));
             yoke.use(new Middleware() {
                 @Override
                 public void handle(@NotNull YokeRequest request, @NotNull Handler<Object> next) {
@@ -73,7 +70,7 @@ public class HandlebarsEngineTest extends TestVerticle {
                 }
             });
 
-            new YokeTester(yoke).request("GET", "/", resp -> {
+            new YokeTester(yoke).request(HttpMethod.GET, "/", resp -> {
                 assertEquals(200, resp.getStatusCode());
                 assertEquals("<html><body><ul><li>Handlebars.java</li><li>Handlebars.js</li><li>Mustache</li></ul></body></html>", resp.body.toString());
                 testComplete();
@@ -81,12 +78,13 @@ public class HandlebarsEngineTest extends TestVerticle {
         } catch (Exception e) {
             fail(e.getMessage());
         }
+        await();
     }
 
     @Test
     public void testReuse() {
-        Yoke yoke = new Yoke(this);
-        yoke.engine("hbs", new HandlebarsEngine(""));
+        Yoke yoke = new Yoke(vertx);
+        yoke.engine("hbs", new HandlebarsEngine("target/test-classes"));
         yoke.use(new Middleware() {
             @Override
             public void handle(@NotNull YokeRequest request, @NotNull Handler<Object> next) {
@@ -94,19 +92,20 @@ public class HandlebarsEngineTest extends TestVerticle {
             }
         });
 
-        new YokeTester(yoke).request("GET", "/", resp -> {
+        new YokeTester(yoke).request(HttpMethod.GET, "/", resp -> {
             assertEquals(200, resp.getStatusCode());
             assertEquals("<h1>Yoke</h1>" + NEWLINE +
                     "<p>Home page</p>" + NEWLINE +
                     "<span>Powered by Handlebars.java</span>", resp.body.toString());
             testComplete();
         });
+        await();
     }
 
     @Test
     public void testPartials() {
-        Yoke yoke = new Yoke(this);
-        yoke.engine("hbs", new HandlebarsEngine(""));
+        Yoke yoke = new Yoke(vertx);
+        yoke.engine("hbs", new HandlebarsEngine("target/test-classes"));
         yoke.use(new Middleware() {
             @Override
             public void handle(@NotNull YokeRequest request, @NotNull Handler<Object> next) {
@@ -114,7 +113,7 @@ public class HandlebarsEngineTest extends TestVerticle {
             }
         });
 
-        new YokeTester(yoke).request("GET", "/", resp -> {
+        new YokeTester(yoke).request(HttpMethod.GET, "/", resp -> {
             assertEquals(200, resp.getStatusCode());
             assertEquals(NEWLINE +
                             NEWLINE +
@@ -127,5 +126,6 @@ public class HandlebarsEngineTest extends TestVerticle {
                     "<span>Powered by Handlebars.java</span>", resp.body.toString());
             testComplete();
         });
+        await();
     }
 }

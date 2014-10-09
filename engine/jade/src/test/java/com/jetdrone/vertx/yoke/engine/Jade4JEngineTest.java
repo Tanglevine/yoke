@@ -5,19 +5,18 @@ import com.jetdrone.vertx.yoke.Yoke;
 import com.jetdrone.vertx.yoke.middleware.YokeRequest;
 import com.jetdrone.vertx.yoke.test.Response;
 import com.jetdrone.vertx.yoke.test.YokeTester;
+import io.vertx.core.http.HttpMethod;
+import io.vertx.test.core.VertxTestBase;
 import org.jetbrains.annotations.NotNull;
 import org.junit.Test;
-import org.vertx.java.core.Handler;
-import org.vertx.testtools.TestVerticle;
+import io.vertx.core.Handler;
 
-import static org.vertx.testtools.VertxAssert.*;
-
-public class Jade4JEngineTest extends TestVerticle {
+public class Jade4JEngineTest extends VertxTestBase {
 
     @Test
     public void testEngine() {
-        Yoke yoke = new Yoke(this);
-        yoke.engine("jade", new Jade4JEngine("views"));
+        Yoke yoke = new Yoke(vertx);
+        yoke.engine("jade", new Jade4JEngine("target/test-classes/views"));
         yoke.use(new Middleware() {
             @Override
             public void handle(@NotNull YokeRequest request, @NotNull Handler<Object> next) {
@@ -25,17 +24,18 @@ public class Jade4JEngineTest extends TestVerticle {
             }
         });
 
-        new YokeTester(yoke).request("GET", "/", resp -> {
+        new YokeTester(yoke).request(HttpMethod.GET, "/", resp -> {
             assertEquals(200, resp.getStatusCode());
             assertEquals("<!DOCTYPE html><html><head></head><body></body></html>", resp.body.toString());
             testComplete();
         });
+        await();
     }
 
     @Test
     public void testEngine2() {
-        Yoke yoke = new Yoke(this);
-        yoke.engine("jade", new Jade4JEngine("views"));
+        Yoke yoke = new Yoke(vertx);
+        yoke.engine("jade", new Jade4JEngine("target/test-classes/views"));
         yoke.use(new Middleware() {
             @Override
             public void handle(@NotNull YokeRequest request, @NotNull Handler<Object> next) {
@@ -44,10 +44,11 @@ public class Jade4JEngineTest extends TestVerticle {
             }
         });
 
-        new YokeTester(yoke).request("GET", "/", resp -> {
+        new YokeTester(yoke).request(HttpMethod.GET, "/", resp -> {
             assertEquals(200, resp.getStatusCode());
 //                assertEquals("<!DOCTYPE html><html><head><title>Vert.X Test</title><script src=\"static/sockjs-min-0.3.4.js\" type=\"text/javascript\"></script><script src=\"static/vertxbus.js\" type=\"text/javascript\"></script><script src=\"static/main.js\" type=\"text/javascript\"></script><link rel=\"stylesheet\" type=\"text/css\" href=\"static/main.css\"></head><body><h1>Vert.X Test</h1></body></html>", resp.body.toString());
             testComplete();
         });
+        await();
     }
 }

@@ -4,6 +4,7 @@ import com.jetdrone.vertx.yoke.Yoke;
 import com.jetdrone.vertx.yoke.test.Response;
 import com.jetdrone.vertx.yoke.test.YokeTester;
 import io.vertx.core.http.CaseInsensitiveHeaders;
+import io.vertx.core.http.HttpMethod;
 import io.vertx.test.core.VertxTestBase;
 import org.junit.Test;
 import io.vertx.core.Handler;
@@ -22,7 +23,7 @@ public class HelmetTest extends VertxTestBase {
             }
         });
 
-        new YokeTester(app).request("GET", "/", response -> {
+        new YokeTester(app).request(HttpMethod.GET, "/", response -> {
             assertEquals(response.headers().get("Cache-Control"), "no-store, no-cache");
             testComplete();
         });
@@ -39,7 +40,7 @@ public class HelmetTest extends VertxTestBase {
             }
         });
 
-        new YokeTester(app).request("GET", "/", response -> {
+        new YokeTester(app).request(HttpMethod.GET, "/", response -> {
             assertEquals(response.headers().get("X-Content-Type-Options"), "nosniff");
             testComplete();
         });
@@ -58,10 +59,10 @@ public class HelmetTest extends VertxTestBase {
 
         final YokeTester tester = new YokeTester(app);
 
-        tester.request("GET", "/", response -> {
+        tester.request(HttpMethod.GET, "/", response -> {
             assertEquals(response.body.toString(), "hello");
 
-            tester.request("GET", "/crossdomain.xml", new Handler<Response>() {
+            tester.request(HttpMethod.GET, "/crossdomain.xml", new Handler<Response>() {
                 @Override
                 public void handle(Response response) {
                     assertEquals(response.headers().get("Content-Type"), "text/x-cross-domain-policy");
@@ -89,7 +90,7 @@ public class HelmetTest extends VertxTestBase {
             }
         });
 
-        new YokeTester(app).request("GET", "/", response -> {
+        new YokeTester(app).request(HttpMethod.GET, "/", response -> {
             assertEquals(response.headers().get("X-Download-Options"), "noopen");
             testComplete();
         });
@@ -109,7 +110,7 @@ public class HelmetTest extends VertxTestBase {
         MultiMap headers = new CaseInsensitiveHeaders();
         headers.add("x-forwarded-proto", "https");
 
-        new YokeTester(app).request("GET", "/", headers, response -> {
+        new YokeTester(app).request(HttpMethod.GET, "/", headers, response -> {
             assertEquals(response.headers().get("Strict-Transport-Security"), "max-age=15768000");
             testComplete();
         });
@@ -130,7 +131,7 @@ public class HelmetTest extends VertxTestBase {
         MultiMap headers = new CaseInsensitiveHeaders();
         headers.add("x-forwarded-proto", "https");
 
-        new YokeTester(app).request("GET", "/", headers, response -> {
+        new YokeTester(app).request(HttpMethod.GET, "/", headers, response -> {
             assertEquals(response.headers().get("Strict-Transport-Security"), "max-age=1234; includeSubdomains");
             testComplete();
         });
