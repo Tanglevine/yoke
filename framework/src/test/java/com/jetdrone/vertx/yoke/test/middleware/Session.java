@@ -25,25 +25,14 @@ public class Session extends VertxTestBase {
         yoke.use(new CookieParser(hmac));
         yoke.use(new com.jetdrone.vertx.yoke.middleware.Session(hmac));
         yoke.use(new Router() {{
-            get("/", new Handler<YokeRequest>() {
-                @Override
-                public void handle(YokeRequest request) {
-                    request.response().end();
-                }
+            get("/", request -> request.response().end());
+            get("/new", request -> {
+                request.createSession();
+                request.response().end();
             });
-            get("/new", new Handler<YokeRequest>() {
-                @Override
-                public void handle(YokeRequest request) {
-                    request.createSession();
-                    request.response().end();
-                }
-            });
-            get("/delete", new Handler<YokeRequest>() {
-                @Override
-                public void handle(YokeRequest request) {
-                    request.destroySession();
-                    request.response().end();
-                }
+            get("/delete", request -> {
+                request.destroySession();
+                request.response().end();
             });
         }});
 

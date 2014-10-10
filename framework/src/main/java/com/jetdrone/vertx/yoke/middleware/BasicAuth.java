@@ -42,15 +42,12 @@ public class BasicAuth implements Middleware {
      */
     public BasicAuth(@NotNull final String username, @NotNull final String password, @NotNull String realm) {
         this.realm = realm;
-        authHandler = new AuthHandler() {
-            @Override
-            public void handle(String _username, String _password, Handler<JsonObject> result) {
-                boolean success = username.equals(_username) && password.equals(_password);
-                if (success) {
-                    result.handle(new JsonObject().putString("username", _username));
-                } else {
-                    result.handle(null);
-                }
+        authHandler = (_username, _password, result) -> {
+            boolean success = username.equals(_username) && password.equals(_password);
+            if (success) {
+                result.handle(new JsonObject().putString("username", _username));
+            } else {
+                result.handle(null);
             }
         };
     }

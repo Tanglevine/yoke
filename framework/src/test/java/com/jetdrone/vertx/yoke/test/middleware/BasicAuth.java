@@ -20,12 +20,7 @@ public class BasicAuth extends VertxTestBase {
     public void testBasicAuth() {
         final Yoke yoke = new Yoke(vertx);
         yoke.use(new com.jetdrone.vertx.yoke.middleware.BasicAuth("Aladdin", "open sesame"));
-        yoke.use(new Middleware() {
-            @Override
-            public void handle(@NotNull YokeRequest request, @NotNull Handler<Object> next) {
-                request.response().end();
-            }
-        });
+        yoke.use((request, next) -> request.response().end());
 
         final YokeTester yokeAssert = new YokeTester(yoke);
 
@@ -49,24 +44,16 @@ public class BasicAuth extends VertxTestBase {
     @Test
     public void testEmptyPassword() {
         final Yoke yoke = new Yoke(vertx);
-        yoke.use(new com.jetdrone.vertx.yoke.middleware.BasicAuth(new AuthHandler() {
-            @Override
-            public void handle(String username, String password, Handler<JsonObject> result) {
-                boolean success = username.equals("Aladdin") && password == null;
-                if (success) {
-                    result.handle(new JsonObject().putString("username", username));
-                } else {
-                    result.handle(null);
-                }
+        yoke.use(new com.jetdrone.vertx.yoke.middleware.BasicAuth((username, password, result) -> {
+            boolean success = username.equals("Aladdin") && password == null;
+            if (success) {
+                result.handle(new JsonObject().putString("username", username));
+            } else {
+                result.handle(null);
             }
         }));
 
-        yoke.use(new Middleware() {
-            @Override
-            public void handle(@NotNull YokeRequest request, @NotNull Handler<Object> next) {
-                request.response().end();
-            }
-        });
+        yoke.use((request, next) -> request.response().end());
 
         final YokeTester yokeAssert = new YokeTester(yoke);
 

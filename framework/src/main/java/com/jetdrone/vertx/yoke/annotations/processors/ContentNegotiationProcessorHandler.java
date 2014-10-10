@@ -79,43 +79,40 @@ public class ContentNegotiationProcessorHandler extends AbstractAnnotationHandle
     }
 
     private static Middleware wrap(final String[] consumes, final String[] produces) {
-        return new Middleware() {
-            @Override
-            public void handle(@NotNull YokeRequest request, @NotNull Handler<Object> next) {
-                // we only know how to process certain media types
-                if (consumes != null) {
-                    boolean canConsume = false;
-                    for (String c : consumes) {
-                        if (request.is(c)) {
-                            canConsume = true;
-                            break;
-                        }
-                    }
-
-                    if (!canConsume) {
-                        // 415 Unsupported Media Type (we don't know how to handle this media)
-                        next.handle(415);
-                        return;
+        return (request, next) -> {
+            // we only know how to process certain media types
+            if (consumes != null) {
+                boolean canConsume = false;
+                for (String c : consumes) {
+                    if (request.is(c)) {
+                        canConsume = true;
+                        break;
                     }
                 }
 
-                // the object was marked with a specific content type
-                if (produces != null) {
-                    String bestContentType = request.accepts(produces);
-
-                    // the client does not know how to handle our content type, return 406
-                    if (bestContentType == null) {
-                        next.handle(406);
-                        return;
-                    }
-
-                    // mark the response with the correct content type (which allows middleware to know it later on)
-                    request.response().setContentType(bestContentType);
+                if (!canConsume) {
+                    // 415 Unsupported Media Type (we don't know how to handle this media)
+                    next.handle(415);
+                    return;
                 }
-
-                // the request can be handled, it does respect the content negotiation
-                next.handle(null);
             }
+
+            // the object was marked with a specific content type
+            if (produces != null) {
+                String bestContentType = request.accepts(produces);
+
+                // the client does not know how to handle our content type, return 406
+                if (bestContentType == null) {
+                    next.handle(406);
+                    return;
+                }
+
+                // mark the response with the correct content type (which allows middleware to know it later on)
+                request.response().setContentType(bestContentType);
+            }
+
+            // the request can be handled, it does respect the content negotiation
+            next.handle(null);
         };
     }
 }

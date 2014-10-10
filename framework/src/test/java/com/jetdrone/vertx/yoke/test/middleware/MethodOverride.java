@@ -19,12 +19,9 @@ public class MethodOverride extends VertxTestBase {
 
         Yoke yoke = new Yoke(vertx);
         yoke.use(new com.jetdrone.vertx.yoke.middleware.MethodOverride());
-        yoke.use(new Handler<YokeRequest>() {
-            @Override
-            public void handle(YokeRequest request) {
-                assertEquals("DELETE", request.method());
-                request.response().end();
-            }
+        yoke.use(request -> {
+            assertEquals("DELETE", request.method());
+            request.response().end();
         });
 
         MultiMap headers = new CaseInsensitiveHeaders();
@@ -42,12 +39,9 @@ public class MethodOverride extends VertxTestBase {
         Yoke yoke = new Yoke(vertx);
         yoke.use(new com.jetdrone.vertx.yoke.middleware.BodyParser());
         yoke.use(new com.jetdrone.vertx.yoke.middleware.MethodOverride());
-        yoke.use(new Handler<YokeRequest>() {
-            @Override
-            public void handle(YokeRequest request) {
-                assertEquals("DELETE", request.method());
-                request.response().end();
-            }
+        yoke.use(request -> {
+            assertEquals("DELETE", request.method());
+            request.response().end();
         });
 
         Buffer body = Buffer.buffer("_method=delete");
@@ -70,12 +64,9 @@ public class MethodOverride extends VertxTestBase {
         Yoke yoke = new Yoke(vertx);
         yoke.use(new com.jetdrone.vertx.yoke.middleware.BodyParser());
         yoke.use(new com.jetdrone.vertx.yoke.middleware.MethodOverride());
-        yoke.use(new Handler<YokeRequest>() {
-            @Override
-            public void handle(YokeRequest request) {
-                assertEquals("DELETE", request.method());
-                request.response().end();
-            }
+        yoke.use(request -> {
+            assertEquals("DELETE", request.method());
+            request.response().end();
         });
 
         Buffer body = Buffer.buffer(json.encode());

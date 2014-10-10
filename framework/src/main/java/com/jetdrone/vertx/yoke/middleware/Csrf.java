@@ -44,19 +44,16 @@ public class Csrf implements Middleware {
      */
     public Csrf(@NotNull final String key) {
         this.key = key;
-        valueHandler = new ValueHandler() {
-            @Override
-            public String handle(YokeRequest request) {
-                String token = request.formAttributes().get(key);
+        valueHandler = request -> {
+            String token = request.formAttributes().get(key);
+            if (token == null) {
+                token = request.params().get(key);
                 if (token == null) {
-                    token = request.params().get(key);
-                    if (token == null) {
-                        token = request.headers().get("x-csrf-token");
-                    }
+                    token = request.headers().get("x-csrf-token");
                 }
-
-                return token;
             }
+
+            return token;
         };
     }
 

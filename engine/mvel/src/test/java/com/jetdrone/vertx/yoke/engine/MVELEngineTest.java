@@ -3,7 +3,6 @@ package com.jetdrone.vertx.yoke.engine;
 import com.jetdrone.vertx.yoke.Middleware;
 import com.jetdrone.vertx.yoke.Yoke;
 import com.jetdrone.vertx.yoke.middleware.YokeRequest;
-import com.jetdrone.vertx.yoke.test.Response;
 import com.jetdrone.vertx.yoke.test.YokeTester;
 import io.vertx.core.http.HttpMethod;
 import io.vertx.test.core.VertxTestBase;
@@ -32,12 +31,9 @@ public class MVELEngineTest extends VertxTestBase {
 
             Yoke yoke = new Yoke(vertx);
             yoke.engine("mvel", new MVELEngine(""));
-            yoke.use(new Middleware() {
-                @Override
-                public void handle(@NotNull YokeRequest request, @NotNull Handler<Object> next) {
-                    request.put("name", "Paulo");
-                    request.response().render(location, next);
-                }
+            yoke.use((request, next) -> {
+                request.put("name", "Paulo");
+                request.response().render(location, next);
             });
 
             new YokeTester(yoke).request(HttpMethod.GET, "/", resp -> {
@@ -62,23 +58,20 @@ public class MVELEngineTest extends VertxTestBase {
 
             Yoke yoke = new Yoke(vertx);
             yoke.engine("mvel", new MVELEngine(""));
-            yoke.use(new Middleware() {
-                @Override
-                public void handle(@NotNull YokeRequest request, @NotNull Handler<Object> next) {
-                    List<Map<String, String>> list = new ArrayList<>();
-                    Map<String, String> item = new HashMap<>();
-                    item.put("uri", "a");
-                    item.put("description", "b");
-                    list.add(item);
+            yoke.use((request, next) -> {
+                List<Map<String, String>> list = new ArrayList<>();
+                Map<String, String> item = new HashMap<>();
+                item.put("uri", "a");
+                item.put("description", "b");
+                list.add(item);
 
-                    item = new HashMap<>();
-                    item.put("uri", "c");
-                    item.put("description", "d");
-                    list.add(item);
+                item = new HashMap<>();
+                item.put("uri", "c");
+                item.put("description", "d");
+                list.add(item);
 
-                    request.put("alphabetical", list);
-                    request.response().render(location, next);
-                }
+                request.put("alphabetical", list);
+                request.response().render(location, next);
             });
 
             new YokeTester(yoke).request(HttpMethod.GET, "/", resp -> {

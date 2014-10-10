@@ -11,7 +11,6 @@ import io.vertx.core.file.FileSystem;
 import io.vertx.core.http.HttpServerFileUpload;
 
 import java.io.File;
-import java.nio.charset.Charset;
 import java.util.UUID;
 
 /**
@@ -130,10 +129,7 @@ public class YokeFileUpload {
     }
 
     public void delete() {
-        this.delete(new Handler<Throwable>() {
-            @Override
-            public void handle(Throwable result) {
-            }
+        this.delete(result -> {
         });
     }
 }

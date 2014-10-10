@@ -25,36 +25,30 @@ public class Validator extends VertxTestBase {
     public void testParam() {
         final Yoke yoke = new Yoke(vertx);
 
-        yoke.use(new Router().get("/search/:from/:to", new Middleware() {
-            @Override
-            public void handle(@NotNull YokeRequest request, @NotNull Handler<Object> next) {
-                com.jetdrone.vertx.yoke.util.Validator validator = new com.jetdrone.vertx.yoke.util.Validator(
-                    that("param:from").is(Type.DateTime),
-                    that("param:to").is(Type.DateTime)
-                );
+        yoke.use(new Router().get("/search/:from/:to", (request, next) -> {
+            com.jetdrone.vertx.yoke.util.Validator validator = new com.jetdrone.vertx.yoke.util.Validator(
+                that("param:from").is(Type.DateTime),
+                that("param:to").is(Type.DateTime)
+            );
 
-                if (!validator.isValid(request)) {
-                    next.handle(400);
-                    return;
-                }
-
-                request.response().end();
+            if (!validator.isValid(request)) {
+                next.handle(400);
+                return;
             }
+
+            request.response().end();
         }));
 
-        new YokeTester(yoke).request(HttpMethod.GET, "/search/2012-07-14T00:00:00Z/2013-07-14T00:00:00Z", new Handler<Response>() {
-            @Override
-            public void handle(Response resp) {
-                assertEquals(200, resp.getStatusCode());
+        new YokeTester(yoke).request(HttpMethod.GET, "/search/2012-07-14T00:00:00Z/2013-07-14T00:00:00Z", resp -> {
+            assertEquals(200, resp.getStatusCode());
 
-                new YokeTester(yoke).request(HttpMethod.GET, "/search/from/to", new Handler<Response>() {
-                    @Override
-                    public void handle(Response resp) {
-                        assertEquals(400, resp.getStatusCode());
-                        testComplete();
-                    }
-                });
-            }
+            new YokeTester(yoke).request(HttpMethod.GET, "/search/from/to", new Handler<Response>() {
+                @Override
+                public void handle(Response resp) {
+                    assertEquals(400, resp.getStatusCode());
+                    testComplete();
+                }
+            });
         });
         await();
     }
@@ -66,25 +60,22 @@ public class Validator extends VertxTestBase {
 
         Yoke yoke = new Yoke(vertx);
         yoke.use(new com.jetdrone.vertx.yoke.middleware.BodyParser());
-        yoke.use(new Router().post("/search/:from/:to", new Middleware() {
-            @Override
-            public void handle(@NotNull YokeRequest request, @NotNull Handler<Object> next) {
-                com.jetdrone.vertx.yoke.util.Validator validator = new com.jetdrone.vertx.yoke.util.Validator(
-                    that("param:from").is(Type.DateTime),
-                    that("param:to").is(Type.DateTime),
-                    that("body:user.login").exists(),
-                    that("body:user.login").is(Type.String),
-                    that("body:user.password").exists(),
-                    that("body:user.password").is(Type.String)
-                );
+        yoke.use(new Router().post("/search/:from/:to", (request, next) -> {
+            com.jetdrone.vertx.yoke.util.Validator validator = new com.jetdrone.vertx.yoke.util.Validator(
+                that("param:from").is(Type.DateTime),
+                that("param:to").is(Type.DateTime),
+                that("body:user.login").exists(),
+                that("body:user.login").is(Type.String),
+                that("body:user.password").exists(),
+                that("body:user.password").is(Type.String)
+            );
 
-                if (!validator.isValid(request)) {
-                    next.handle(400);
-                    return;
-                }
-
-                request.response().end();
+            if (!validator.isValid(request)) {
+                next.handle(400);
+                return;
             }
+
+            request.response().end();
         }));
 
         Buffer body = Buffer.buffer(json.encode());
@@ -107,21 +98,18 @@ public class Validator extends VertxTestBase {
 
         Yoke yoke = new Yoke(vertx);
         yoke.use(new com.jetdrone.vertx.yoke.middleware.BodyParser());
-        yoke.use(new Middleware() {
-            @Override
-            public void handle(@NotNull YokeRequest request, @NotNull Handler<Object> next) {
+        yoke.use((request, next) -> {
 
-                com.jetdrone.vertx.yoke.util.Validator validator = new com.jetdrone.vertx.yoke.util.Validator(
-                    that("body:user.?login").is(Type.String)
-                );
+            com.jetdrone.vertx.yoke.util.Validator validator = new com.jetdrone.vertx.yoke.util.Validator(
+                that("body:user.?login").is(Type.String)
+            );
 
-                if (!validator.isValid(request)) {
-                    next.handle(400);
-                    return;
-                }
-
-                request.response().end();
+            if (!validator.isValid(request)) {
+                next.handle(400);
+                return;
             }
+
+            request.response().end();
         });
 
         Buffer body = Buffer.buffer(json.encode());
@@ -144,20 +132,17 @@ public class Validator extends VertxTestBase {
 
         Yoke yoke = new Yoke(vertx);
         yoke.use(new com.jetdrone.vertx.yoke.middleware.BodyParser());
-        yoke.use(new Middleware() {
-            @Override
-            public void handle(@NotNull YokeRequest request, @NotNull Handler<Object> next) {
-                com.jetdrone.vertx.yoke.util.Validator validator = new com.jetdrone.vertx.yoke.util.Validator(
-                    that("body:user.?login").is(Type.String)
-                );
+        yoke.use((request, next) -> {
+            com.jetdrone.vertx.yoke.util.Validator validator = new com.jetdrone.vertx.yoke.util.Validator(
+                that("body:user.?login").is(Type.String)
+            );
 
-                if (!validator.isValid(request)) {
-                    next.handle(400);
-                    return;
-                }
-
-                request.response().end();
+            if (!validator.isValid(request)) {
+                next.handle(400);
+                return;
             }
+
+            request.response().end();
         });
 
         Buffer body = Buffer.buffer(json.encode());

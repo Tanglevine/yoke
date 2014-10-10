@@ -6,6 +6,7 @@ package com.jetdrone.vertx.yoke.core;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 /** # Context
  *
@@ -108,10 +109,8 @@ public final class Context implements Map<String, Object> {
     public @NotNull Set<String> keySet() {
         if (rw != null) {
             Set<String> keys = new HashSet<>(ro.keySet());
-            for (String entry : rw.keySet()) {
-                // if already present replace
-                keys.add(entry);
-            }
+            // if already present replace
+            keys.addAll(rw.keySet().stream().collect(Collectors.toList()));
             return keys;
         }
 
@@ -121,11 +120,7 @@ public final class Context implements Map<String, Object> {
     @Override
     public @NotNull Collection<Object> values() {
         if (rw != null) {
-            Collection<Object> values = new LinkedList<>();
-            for (String key : keySet()) {
-                values.add(get(key));
-            }
-            return values;
+            return keySet().stream().map(this::get).collect(Collectors.toCollection(LinkedList::new));
         }
 
         return ro.values();

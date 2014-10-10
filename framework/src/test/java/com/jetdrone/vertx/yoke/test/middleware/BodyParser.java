@@ -24,13 +24,10 @@ public class BodyParser extends VertxTestBase {
 
         Yoke yoke = new Yoke(vertx);
         yoke.use(new com.jetdrone.vertx.yoke.middleware.BodyParser());
-        yoke.use(new Handler<YokeRequest>() {
-            @Override
-            public void handle(YokeRequest request) {
-                assertNotNull(request.body());
-                assertEquals(((JsonObject) request.body()).encode(), json.encode());
-                request.response().end();
-            }
+        yoke.use(request -> {
+            assertNotNull(request.body());
+            assertEquals(((JsonObject) request.body()).encode(), json.encode());
+            request.response().end();
         });
 
         Buffer body = Buffer.buffer(json.encode());
@@ -39,13 +36,10 @@ public class BodyParser extends VertxTestBase {
         headers.add("content-type", "application/json");
         headers.add("content-length", Integer.toString(body.length()));
 
-        new YokeTester(yoke).request(HttpMethod.POST, "/upload", headers, body, new Handler<Response>() {
-            @Override
-            public void handle(Response resp) {
-                assertEquals(200, resp.getStatusCode());
-                assertNotNull(resp.body);
-                testComplete();
-            }
+        new YokeTester(yoke).request(HttpMethod.POST, "/upload", headers, body, resp -> {
+            assertEquals(200, resp.getStatusCode());
+            assertNotNull(resp.body);
+            testComplete();
         });
         await();
     }
@@ -54,13 +48,10 @@ public class BodyParser extends VertxTestBase {
     public void testMapBodyParser() {
 
         Yoke yoke = new Yoke(vertx);
-        yoke.use(new Handler<YokeRequest>() {
-            @Override
-            public void handle(YokeRequest request) {
-                MultiMap body = request.formAttributes();
-                assertEquals("value", body.get("param"));
-                request.response().end();
-            }
+        yoke.use(request -> {
+            MultiMap body = request.formAttributes();
+            assertEquals("value", body.get("param"));
+            request.response().end();
         });
 
         Buffer body = Buffer.buffer("param=value");
@@ -69,13 +60,10 @@ public class BodyParser extends VertxTestBase {
         headers.add("content-type", "application/x-www-form-urlencoded");
         headers.add("content-length", Integer.toString(body.length()));
 
-        new YokeTester(yoke).request(HttpMethod.POST, "/upload", headers, body, new Handler<Response>() {
-            @Override
-            public void handle(Response resp) {
-                assertEquals(200, resp.getStatusCode());
-                assertNotNull(resp.body);
-                testComplete();
-            }
+        new YokeTester(yoke).request(HttpMethod.POST, "/upload", headers, body, resp -> {
+            assertEquals(200, resp.getStatusCode());
+            assertNotNull(resp.body);
+            testComplete();
         });
         await();
     }
@@ -85,13 +73,10 @@ public class BodyParser extends VertxTestBase {
 
         Yoke yoke = new Yoke(vertx);
         yoke.use(new com.jetdrone.vertx.yoke.middleware.BodyParser());
-        yoke.use(new Handler<YokeRequest>() {
-            @Override
-            public void handle(YokeRequest request) {
-                Buffer body = request.body();
-                assertEquals("hello-world", body.toString());
-                request.response().end();
-            }
+        yoke.use(request -> {
+            Buffer body = request.body();
+            assertEquals("hello-world", body.toString());
+            request.response().end();
         });
 
         Buffer body = Buffer.buffer("hello-world");
@@ -99,13 +84,10 @@ public class BodyParser extends VertxTestBase {
         MultiMap headers = new CaseInsensitiveHeaders();
         headers.add("content-length", Integer.toString(body.length()));
 
-        new YokeTester(yoke).request(HttpMethod.POST, "/upload", headers, body, new Handler<Response>() {
-            @Override
-            public void handle(Response resp) {
-                assertEquals(200, resp.getStatusCode());
-                assertNotNull(resp.body);
-                testComplete();
-            }
+        new YokeTester(yoke).request(HttpMethod.POST, "/upload", headers, body, resp -> {
+            assertEquals(200, resp.getStatusCode());
+            assertNotNull(resp.body);
+            testComplete();
         });
         await();
     }
@@ -114,12 +96,7 @@ public class BodyParser extends VertxTestBase {
     public void testBodyParserWithEmptyBody() {
 
         Yoke yoke = new Yoke(vertx);
-        yoke.use(new Handler<YokeRequest>() {
-            @Override
-            public void handle(YokeRequest request) {
-                request.response().end();
-            }
-        });
+        yoke.use(request -> request.response().end());
 
         new YokeTester(yoke).request(HttpMethod.DELETE, "/upload", resp -> {
             assertEquals(200, resp.getStatusCode());
@@ -134,12 +111,7 @@ public class BodyParser extends VertxTestBase {
         Yoke yoke = new Yoke(vertx);
         yoke.use(new Limit(5L));
         yoke.use(new com.jetdrone.vertx.yoke.middleware.BodyParser());
-        yoke.use(new Handler<YokeRequest>() {
-            @Override
-            public void handle(YokeRequest request) {
-                fail("Body should have been too long");
-            }
-        });
+        yoke.use(request -> fail("Body should have been too long"));
 
         Buffer body = Buffer.buffer("[1,2,3,4,5]");
 
@@ -160,12 +132,7 @@ public class BodyParser extends VertxTestBase {
         Yoke yoke = new Yoke(vertx);
         yoke.use(new Limit(5L));
         yoke.use(new com.jetdrone.vertx.yoke.middleware.BodyParser());
-        yoke.use(new Handler<YokeRequest>() {
-            @Override
-            public void handle(YokeRequest request) {
-                fail("Body should have been too long");
-            }
-        });
+        yoke.use(request -> fail("Body should have been too long"));
 
         Buffer body = Buffer.buffer("hello world");
 
@@ -186,12 +153,7 @@ public class BodyParser extends VertxTestBase {
         Yoke yoke = new Yoke(vertx);
         yoke.use(new Limit(5L));
         yoke.use(new com.jetdrone.vertx.yoke.middleware.BodyParser());
-        yoke.use(new Handler<YokeRequest>() {
-            @Override
-            public void handle(YokeRequest request) {
-                fail("Body should have been too long");
-            }
-        });
+        yoke.use(request -> fail("Body should have been too long"));
 
         Buffer body = Buffer.buffer("hello=world");
 
@@ -211,12 +173,9 @@ public class BodyParser extends VertxTestBase {
 
         Yoke yoke = new Yoke(vertx);
         yoke.use(new com.jetdrone.vertx.yoke.middleware.BodyParser());
-        yoke.use(new Handler<YokeRequest>() {
-            @Override
-            public void handle(YokeRequest request) {
-                request.response().setStatusCode(204);
-                request.response().end("");
-            }
+        yoke.use(request -> {
+            request.response().setStatusCode(204);
+            request.response().end("");
         });
 
         MultiMap headers = new CaseInsensitiveHeaders();

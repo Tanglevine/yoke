@@ -12,9 +12,7 @@ public final class BooleanValidator {
             instance = schema.get("default");
         }
 
-        final Boolean bool = (Boolean) instance;
-
-        return true;
+        return instance instanceof Boolean;
     }
 
     private static boolean isBoolean(Object value) {

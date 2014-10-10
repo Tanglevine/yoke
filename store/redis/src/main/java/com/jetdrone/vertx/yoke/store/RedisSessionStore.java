@@ -110,14 +110,11 @@ public class RedisSessionStore implements SessionStore {
                         @Override
                         public void handle(Object key) {
                             if (hasNext()) {
-                                redis.del(new JsonArray().add(key), new Handler<AsyncResult<Long>>() {
-                                    @Override
-                                    public void handle(AsyncResult<Long> reply) {
-                                        if (reply.succeeded()) {
-                                            next();
-                                        } else {
-                                            next.handle(reply.cause());
-                                        }
+                                redis.del(new JsonArray().add(key), reply1 -> {
+                                    if (reply1.succeeded()) {
+                                        next();
+                                    } else {
+                                        next.handle(reply1.cause());
                                     }
                                 });
                             } else {

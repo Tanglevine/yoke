@@ -88,36 +88,25 @@ public class BodyParser extends AbstractMiddleware {
             request.setExpectMultipart(true);
 
             if (isMULTIPART) {
-                request.uploadHandler(new Handler<HttpServerFileUpload>() {
-                    @Override
-                    public void handle(final HttpServerFileUpload fileUpload) {
-                        if (request.files() == null) {
-                            request.setFiles(new HashMap<String, YokeFileUpload>());
-                        }
-                        final YokeFileUpload upload = new YokeFileUpload(vertx(), fileUpload, uploadDir);
-
-                        // setup callbacks
-                        fileUpload.exceptionHandler(new Handler<Throwable>() {
-                            @Override
-                            public void handle(Throwable throwable) {
-                                next.handle(throwable);
-                            }
-                        });
-
-                        // stream to the generated path
-                        fileUpload.streamToFileSystem(upload.path());
-                        // store a reference in the request
-                        request.files().put(fileUpload.name(), upload);
-                        // set up a callback to remove the file from the file system when the request completes
-                        request.response().endHandler(new Handler<Void>() {
-                            @Override
-                            public void handle(Void event) {
-                                if (upload.isTransient()) {
-                                    upload.delete();
-                                }
-                            }
-                        });
+                request.uploadHandler(fileUpload -> {
+                    if (request.files() == null) {
+                        request.setFiles(new HashMap<>());
                     }
+                    final YokeFileUpload upload = new YokeFileUpload(vertx(), fileUpload, uploadDir);
+
+                    // setup callbacks
+                    fileUpload.exceptionHandler(next::handle);
+
+                    // stream to the generated path
+                    fileUpload.streamToFileSystem(upload.path());
+                    // store a reference in the request
+                    request.files().put(fileUpload.name(), upload);
+                    // set up a callback to remove the file from the file system when the request completes
+                    request.response().endHandler(event -> {
+                        if (upload.isTransient()) {
+                            upload.delete();
+                        }
+                    });
                 });
             }
 

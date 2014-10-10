@@ -25,12 +25,9 @@ public class HandlebarsEngineTest extends VertxTestBase {
         try {
             Yoke yoke = new Yoke(vertx);
             yoke.engine("hbs", new HandlebarsEngine("target/test-classes/views"));
-            yoke.use(new Middleware() {
-                @Override
-                public void handle(@NotNull YokeRequest request, @NotNull Handler<Object> next) {
-                    request.put("name", "Paulo");
-                    request.response().render("template.hbs", next);
-                }
+            yoke.use((request, next) -> {
+                request.put("name", "Paulo");
+                request.response().render("template.hbs", next);
             });
 
             new YokeTester(yoke).request(HttpMethod.GET, "/", resp -> {
@@ -49,25 +46,22 @@ public class HandlebarsEngineTest extends VertxTestBase {
         try {
             Yoke yoke = new Yoke(vertx);
             yoke.engine("hbs", new HandlebarsEngine("target/test-classes/views"));
-            yoke.use(new Middleware() {
-                @Override
-                public void handle(@NotNull YokeRequest request, @NotNull Handler<Object> next) {
-                    List<Map> blogs = new ArrayList<>();
-                    Map<String, String> blog1 = new HashMap<>();
-                    blog1.put("name", "Handlebars.java");
-                    blogs.add(blog1);
+            yoke.use((request, next) -> {
+                List<Map> blogs = new ArrayList<>();
+                Map<String, String> blog1 = new HashMap<>();
+                blog1.put("name", "Handlebars.java");
+                blogs.add(blog1);
 
-                    Map<String, String> blog2 = new HashMap<>();
-                    blog2.put("name", "Handlebars.js");
-                    blogs.add(blog2);
+                Map<String, String> blog2 = new HashMap<>();
+                blog2.put("name", "Handlebars.js");
+                blogs.add(blog2);
 
-                    Map<String, String> blog3 = new HashMap<>();
-                    blog3.put("name", "Mustache");
-                    blogs.add(blog3);
+                Map<String, String> blog3 = new HashMap<>();
+                blog3.put("name", "Mustache");
+                blogs.add(blog3);
 
-                    request.put("blogs", blogs);
-                    request.response().render("template2.hbs", next);
-                }
+                request.put("blogs", blogs);
+                request.response().render("template2.hbs", next);
             });
 
             new YokeTester(yoke).request(HttpMethod.GET, "/", resp -> {
@@ -85,12 +79,7 @@ public class HandlebarsEngineTest extends VertxTestBase {
     public void testReuse() {
         Yoke yoke = new Yoke(vertx);
         yoke.engine("hbs", new HandlebarsEngine("target/test-classes"));
-        yoke.use(new Middleware() {
-            @Override
-            public void handle(@NotNull YokeRequest request, @NotNull Handler<Object> next) {
-                request.response().render("views/home.hbs");
-            }
-        });
+        yoke.use((request, next) -> request.response().render("views/home.hbs"));
 
         new YokeTester(yoke).request(HttpMethod.GET, "/", resp -> {
             assertEquals(200, resp.getStatusCode());
@@ -106,12 +95,7 @@ public class HandlebarsEngineTest extends VertxTestBase {
     public void testPartials() {
         Yoke yoke = new Yoke(vertx);
         yoke.engine("hbs", new HandlebarsEngine("target/test-classes"));
-        yoke.use(new Middleware() {
-            @Override
-            public void handle(@NotNull YokeRequest request, @NotNull Handler<Object> next) {
-                request.response().render("views/home2.hbs");
-            }
-        });
+        yoke.use((request, next) -> request.response().render("views/home2.hbs"));
 
         new YokeTester(yoke).request(HttpMethod.GET, "/", resp -> {
             assertEquals(200, resp.getStatusCode());

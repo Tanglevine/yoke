@@ -14,6 +14,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import javax.net.ssl.SSLPeerUnverifiedException;
 import javax.security.cert.X509Certificate;
@@ -211,11 +212,7 @@ public class YokeRequest implements HttpServerRequest {
     public List<YokeCookie> getAllCookies(@NotNull final String name) {
         List<YokeCookie> foundCookies = new ArrayList<>();
         if (cookies != null) {
-            for (YokeCookie c : cookies) {
-                if (name.equals(c.getName())) {
-                    foundCookies.add(c);
-                }
-            }
+            foundCookies.addAll(cookies.stream().filter(c -> name.equals(c.getName())).collect(Collectors.toList()));
         }
         return foundCookies;
     }
@@ -326,13 +323,10 @@ public class YokeRequest implements HttpServerRequest {
             return;
         }
 
-        store.destroy(sessionId, new Handler<Object>() {
-            @Override
-            public void handle(Object error) {
-                if (error != null) {
-                    // TODO: better handling of errors
-                    System.err.println(error);
-                }
+        store.destroy(sessionId, error -> {
+            if (error != null) {
+                // TODO: better handling of errors
+                System.err.println(error);
             }
         });
     }
@@ -354,24 +348,18 @@ public class YokeRequest implements HttpServerRequest {
                     put("session", new SessionObject(session));
                 }
 
-                response().headersHandler(new Handler<Void>() {
-                    @Override
-                    public void handle(Void event) {
-                        int responseStatus = response().getStatusCode();
-                        // Only save on success and redirect status codes
-                        if (responseStatus >= 200 && responseStatus < 400) {
-                        	SessionObject session = get("session");
-                            if (session != null && session.isChanged()) {
-                                store.set(sessionId, session.jsonObject(), new Handler<Object>() {
-                                    @Override
-                                    public void handle(Object error) {
-                                        if (error != null) {
-                                            // TODO: better handling of errors
-                                            System.err.println(error);
-                                        }
-                                    }
-                                });
-                            }
+                response().headersHandler(event -> {
+                    int responseStatus = response().getStatusCode();
+                    // Only save on success and redirect status codes
+                    if (responseStatus >= 200 && responseStatus < 400) {
+                        SessionObject session1 = get("session");
+                        if (session1 != null && session1.isChanged()) {
+                            store.set(sessionId, session1.jsonObject(), error -> {
+                                if (error != null) {
+                                    // TODO: better handling of errors
+                                    System.err.println(error);
+                                }
+                            });
                         }
                     }
                 });
@@ -405,24 +393,18 @@ public class YokeRequest implements HttpServerRequest {
 
         put("session", new SessionObject(session, true));
 
-        response().headersHandler(new Handler<Void>() {
-            @Override
-            public void handle(Void event) {
-                int responseStatus = response().getStatusCode();
-                // Only save on success and redirect status codes
-                if (responseStatus >= 200 && responseStatus < 400) {
-                	SessionObject session = get("session");
-                    if (session != null && session.isChanged()) {
-                        store.set(sessionId, session.jsonObject(), new Handler<Object>() {
-                            @Override
-                            public void handle(Object error) {
-                                if (error != null) {
-                                    // TODO: better handling of errors
-                                    System.err.println(error);
-                                }
-                            }
-                        });
-                    }
+        response().headersHandler(event -> {
+            int responseStatus = response().getStatusCode();
+            // Only save on success and redirect status codes
+            if (responseStatus >= 200 && responseStatus < 400) {
+                SessionObject session1 = get("session");
+                if (session1 != null && session1.isChanged()) {
+                    store.set(sessionId, session1.jsonObject(), error -> {
+                        if (error != null) {
+                            // TODO: better handling of errors
+                            System.err.println(error);
+                        }
+                    });
                 }
             }
         });

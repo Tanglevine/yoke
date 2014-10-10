@@ -14,11 +14,8 @@ public class JMXNameTest {
     public void issue121() {
         //route everything start with hello
         Pattern p = Pattern.compile("^/hello(/|$).*");
-        new com.jetdrone.vertx.yoke.middleware.Router().get(p, new Middleware() {
-            @Override
-            public void handle(@NotNull YokeRequest request, @NotNull Handler<Object> next) {
+        new com.jetdrone.vertx.yoke.middleware.Router().get(p, (request, next) -> {
 
-            }
         });
     }
 }

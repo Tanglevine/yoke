@@ -136,7 +136,7 @@ public class ErrorHandler extends AbstractMiddleware implements ErrorMiddleware 
 
             response.setContentType("text/html");
             response.end(
-                    errorTemplate.replace("{title}", (String) request.get("title"))
+                    errorTemplate.replace("{title}", request.get("title"))
                             .replace("{errorCode}", Integer.toString(errorCode))
                             .replace("{errorMessage}", errorMessage)
                             .replace("{stackTrace}", stack.toString())
@@ -149,9 +149,7 @@ public class ErrorHandler extends AbstractMiddleware implements ErrorMiddleware 
             jsonError.putObject("error", new JsonObject().putNumber("code", errorCode).putString("message", errorMessage));
             if (!stackTrace.isEmpty()) {
                 JsonArray stack = new JsonArray();
-                for (String t : stackTrace) {
-                    stack.addString(t);
-                }
+                stackTrace.forEach(stack::addString);
                 jsonError.putArray("stack", stack);
             }
             response.setContentType("application/json", "UTF-8");

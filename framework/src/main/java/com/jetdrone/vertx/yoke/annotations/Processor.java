@@ -65,21 +65,17 @@ public final class Processor {
         final Class<?> clazz = instance.getClass();
 
         for (final Field field : clazz.getFields()) {
-            for (AnnotationHandler<?> handler : handlers) {
-                if (handler.isFor(context.getClass())) {
-                    final AnnotationHandler<T> _handler = (AnnotationHandler<T>) handler;
-                    _handler.process(context, instance, clazz, field);
-                }
-            }
+            handlers.stream().filter(handler -> handler.isFor(context.getClass())).forEach(handler -> {
+                final AnnotationHandler<T> _handler = (AnnotationHandler<T>) handler;
+                _handler.process(context, instance, clazz, field);
+            });
         }
 
         for (final Method method : clazz.getMethods()) {
-            for (AnnotationHandler<?> handler : handlers) {
-                if (handler.isFor(context.getClass())) {
-                    final AnnotationHandler<T> _handler = (AnnotationHandler<T>) handler;
-                    _handler.process(context, instance, clazz, method);
-                }
-            }
+            handlers.stream().filter(handler -> handler.isFor(context.getClass())).forEach(handler -> {
+                final AnnotationHandler<T> _handler = (AnnotationHandler<T>) handler;
+                _handler.process(context, instance, clazz, method);
+            });
         }
     }
 

@@ -27,7 +27,9 @@ import io.vertx.core.streams.ReadStream;
 
 import java.util.*;
 
-/** # YokeResponse */
+/**
+ * # YokeResponse
+ */
 public class YokeResponse implements HttpServerResponse {
     // the original request
     private final HttpServerResponse response;
@@ -109,30 +111,27 @@ public class YokeResponse implements HttpServerResponse {
     }
 
     public void render(final String template) {
-        render(template, new Handler<Object>() {
-            @Override
-            public void handle(Object error) {
-                if (error != null) {
-                    int errorCode;
-                    // if the error was set on the response use it
-                    if (getStatusCode() >= 400) {
-                        errorCode = getStatusCode();
+        render(template, error -> {
+            if (error != null) {
+                int errorCode;
+                // if the error was set on the response use it
+                if (getStatusCode() >= 400) {
+                    errorCode = getStatusCode();
+                } else {
+                    // if it was set as the error object use it
+                    if (error instanceof Number) {
+                        errorCode = ((Number) error).intValue();
+                    } else if (error instanceof YokeException) {
+                        errorCode = ((YokeException) error).getErrorCode().intValue();
                     } else {
-                        // if it was set as the error object use it
-                        if (error instanceof Number) {
-                            errorCode = ((Number) error).intValue();
-                        } else if (error instanceof YokeException) {
-                            errorCode = ((YokeException) error).getErrorCode().intValue();
-                        } else {
-                            // default error code
-                            errorCode = 500;
-                        }
+                        // default error code
+                        errorCode = 500;
                     }
-
-                    setStatusCode(errorCode);
-                    setStatusMessage(HttpResponseStatus.valueOf(errorCode).reasonPhrase());
-                    end(HttpResponseStatus.valueOf(errorCode).reasonPhrase());
                 }
+
+                setStatusCode(errorCode);
+                setStatusMessage(HttpResponseStatus.valueOf(errorCode).reasonPhrase());
+                end(HttpResponseStatus.valueOf(errorCode).reasonPhrase());
             }
         });
     }
@@ -141,7 +140,7 @@ public class YokeResponse implements HttpServerResponse {
      * Allow getting headers in a generified way.
      *
      * @param name The key to get
-     * @param <R> The type of the return
+     * @param <R>  The type of the return
      * @return The found object
      */
     @SuppressWarnings("unchecked")
@@ -152,9 +151,9 @@ public class YokeResponse implements HttpServerResponse {
     /**
      * Allow getting headers in a generified way and return defaultValue if the key does not exist.
      *
-     * @param name The key to get
+     * @param name         The key to get
      * @param defaultValue value returned when the key does not exist
-     * @param <R> The type of the return
+     * @param <R>          The type of the return
      * @return The found object
      */
     public <R> R getHeader(String name, R defaultValue) {
@@ -247,12 +246,9 @@ public class YokeResponse implements HttpServerResponse {
         filter = null;
         triggerHeadersHandlers();
         Pump.pump(stream, response).start();
-        stream.endHandler(new Handler<Void>() {
-            @Override
-            public void handle(Void event) {
-                response.end();
-                triggerEndHandlers();
-            }
+        stream.endHandler(event -> {
+            response.end();
+            triggerEndHandlers();
         });
     }
 
@@ -305,7 +301,7 @@ public class YokeResponse implements HttpServerResponse {
                 }
             }
             // if there is no content and method is not HEAD delete content-type, content-encoding
-            if (!hasBody && !"HEAD".equals(method)) {
+            if (!hasBody && HttpMethod.HEAD != method) {
                 response.headers().remove("content-encoding");
                 response.headers().remove("content-type");
             }

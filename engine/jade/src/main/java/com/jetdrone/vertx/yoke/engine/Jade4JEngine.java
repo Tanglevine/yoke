@@ -89,7 +89,7 @@ public class Jade4JEngine extends AbstractEngineSync<JadeTemplate> {
             next.handle(new YokeAsyncResult<>(Buffer.buffer(config.renderTemplate(template, context))));
         } catch (Exception ex) {
             ex.printStackTrace();
-            next.handle(new YokeAsyncResult<Buffer>(ex));
+            next.handle(new YokeAsyncResult<>(ex));
         }
     }
 }

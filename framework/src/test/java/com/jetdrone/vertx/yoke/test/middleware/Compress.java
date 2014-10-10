@@ -18,12 +18,7 @@ public class Compress extends VertxTestBase {
     public void testGzipCompress() {
         Yoke yoke = new Yoke(vertx);
         yoke.use(new com.jetdrone.vertx.yoke.middleware.Compress());
-        yoke.use(new Middleware() {
-            @Override
-            public void handle(@NotNull YokeRequest request, @NotNull Handler<Object> next) {
-                request.response().end(new JsonObject().putString("hello", "world"));
-            }
-        });
+        yoke.use((request, next) -> request.response().end(new JsonObject().putString("hello", "world")));
 
         MultiMap headers = new CaseInsensitiveHeaders();
         headers.add("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8");

@@ -34,12 +34,7 @@ public class Timeout extends AbstractMiddleware {
             }
         });
 
-        response.endHandler(new Handler<Void>() {
-            @Override
-            public void handle(Void event) {
-                vertx().cancelTimer(timerId);
-            }
-        });
+        response.endHandler(event -> vertx().cancelTimer(timerId));
 
         next.handle(null);
     }

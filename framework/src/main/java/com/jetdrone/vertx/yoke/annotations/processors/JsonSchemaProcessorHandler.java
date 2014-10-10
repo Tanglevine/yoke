@@ -8,7 +8,6 @@ import com.jetdrone.vertx.yoke.middleware.Router;
 import com.jetdrone.vertx.yoke.middleware.YokeRequest;
 import org.jetbrains.annotations.NotNull;
 import io.vertx.core.Handler;
-import io.vertx.core.json.JsonObject;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -39,17 +38,14 @@ public class JsonSchemaProcessorHandler extends AbstractAnnotationHandler<Router
     }
 
     private static Middleware wrap(final JsonSchemaResolver.Schema schema) {
-        return new Middleware() {
-            @Override
-            public void handle(@NotNull final YokeRequest request, @NotNull final Handler<Object> next) {
-                if (!com.jetdrone.vertx.yoke.json.JsonSchema.conformsSchema(request.body(), schema)) {
-                    next.handle(400);
-                    return;
-                }
-
-                // the request can be handled, it does respect the content negotiation
-                next.handle(null);
+        return (request, next) -> {
+            if (!com.jetdrone.vertx.yoke.json.JsonSchema.conformsSchema(request.body(), schema)) {
+                next.handle(400);
+                return;
             }
+
+            // the request can be handled, it does respect the content negotiation
+            next.handle(null);
         };
     }
 

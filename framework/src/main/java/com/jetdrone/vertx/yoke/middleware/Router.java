@@ -67,11 +67,9 @@ public class Router extends AbstractMiddleware {
 
     private void init(Yoke yoke, String mount, List<PatternBinding> bindings) {
         for (PatternBinding binding : bindings) {
-            for (Middleware m : binding.middleware) {
-                if (m instanceof AbstractMiddleware && !((AbstractMiddleware) m).isInitialized()) {
-                    ((AbstractMiddleware) m).init(yoke, mount);
-                }
-            }
+            binding.middleware.stream().filter(m -> m instanceof AbstractMiddleware && !((AbstractMiddleware) m).isInitialized()).forEach(m -> {
+                ((AbstractMiddleware) m).init(yoke, mount);
+            });
         }
     }
 
@@ -149,12 +147,7 @@ public class Router extends AbstractMiddleware {
      * @param handler The middleware to call
      */
     public Router get(@NotNull final String pattern, @NotNull final Handler<YokeRequest> handler) {
-        return get(pattern, new Middleware() {
-            @Override
-            public void handle(@NotNull YokeRequest request, @NotNull Handler<Object> next) {
-                handler.handle(request);
-            }
-        });
+        return get(pattern, (request, next) -> handler.handle(request));
     }
 
     /**
@@ -173,12 +166,7 @@ public class Router extends AbstractMiddleware {
      * @param handler The middleware to call
      */
     public Router put(@NotNull final String pattern, @NotNull final Handler<YokeRequest> handler) {
-        return put(pattern, new Middleware() {
-            @Override
-            public void handle(@NotNull YokeRequest request, @NotNull Handler<Object> next) {
-                handler.handle(request);
-            }
-        });
+        return put(pattern, (request, next) -> handler.handle(request));
     }
 
     /**
@@ -197,12 +185,7 @@ public class Router extends AbstractMiddleware {
      * @param handler The middleware to call
      */
     public Router post(@NotNull final String pattern, @NotNull final Handler<YokeRequest> handler) {
-        return post(pattern, new Middleware() {
-            @Override
-            public void handle(@NotNull YokeRequest request, @NotNull Handler<Object> next) {
-                handler.handle(request);
-            }
-        });
+        return post(pattern, (request, next) -> handler.handle(request));
     }
 
     /**
@@ -221,12 +204,7 @@ public class Router extends AbstractMiddleware {
      * @param handler The middleware to call
      */
     public Router delete(@NotNull final String pattern, @NotNull final Handler<YokeRequest> handler) {
-        return delete(pattern, new Middleware() {
-            @Override
-            public void handle(@NotNull YokeRequest request, @NotNull Handler<Object> next) {
-                handler.handle(request);
-            }
-        });
+        return delete(pattern, (request, next) -> handler.handle(request));
     }
 
     /**
@@ -245,12 +223,7 @@ public class Router extends AbstractMiddleware {
      * @param handler The middleware to call
      */
     public Router options(@NotNull final String pattern, @NotNull final Handler<YokeRequest> handler) {
-        return options(pattern, new Middleware() {
-            @Override
-            public void handle(@NotNull YokeRequest request, @NotNull Handler<Object> next) {
-                handler.handle(request);
-            }
-        });
+        return options(pattern, (request, next) -> handler.handle(request));
     }
 
     /**
@@ -269,12 +242,7 @@ public class Router extends AbstractMiddleware {
      * @param handler The middleware to call
      */
     public Router head(@NotNull final String pattern, @NotNull final Handler<YokeRequest> handler) {
-        return head(pattern, new Middleware() {
-            @Override
-            public void handle(@NotNull YokeRequest request, @NotNull Handler<Object> next) {
-                handler.handle(request);
-            }
-        });
+        return head(pattern, (request, next) -> handler.handle(request));
     }
 
     /**
@@ -293,12 +261,7 @@ public class Router extends AbstractMiddleware {
      * @param handler The middleware to call
      */
     public Router trace(@NotNull final String pattern, @NotNull final Handler<YokeRequest> handler) {
-        return trace(pattern, new Middleware() {
-            @Override
-            public void handle(@NotNull YokeRequest request, @NotNull Handler<Object> next) {
-                handler.handle(request);
-            }
-        });
+        return trace(pattern, (request, next) -> handler.handle(request));
     }
 
     /**
@@ -317,12 +280,7 @@ public class Router extends AbstractMiddleware {
      * @param handler The middleware to call
      */
     public Router connect(@NotNull final String pattern, @NotNull final Handler<YokeRequest> handler) {
-        return connect(pattern, new Middleware() {
-            @Override
-            public void handle(@NotNull YokeRequest request, @NotNull Handler<Object> next) {
-                handler.handle(request);
-            }
-        });
+        return connect(pattern, (request, next) -> handler.handle(request));
     }
 
     /**
@@ -341,12 +299,7 @@ public class Router extends AbstractMiddleware {
      * @param handler The middleware to call
      */
     public Router patch(@NotNull final String pattern, @NotNull final Handler<YokeRequest> handler) {
-        return patch(pattern, new Middleware() {
-            @Override
-            public void handle(@NotNull YokeRequest request, @NotNull Handler<Object> next) {
-                handler.handle(request);
-            }
-        });
+        return patch(pattern, (request, next) -> handler.handle(request));
     }
 
     /**
@@ -401,12 +354,7 @@ public class Router extends AbstractMiddleware {
      * @param handler The middleware to call
      */
     public Router get(@NotNull final Pattern regex, @NotNull final Handler<YokeRequest> handler) {
-        return get(regex, new Middleware() {
-            @Override
-            public void handle(@NotNull YokeRequest request, @NotNull Handler<Object> next) {
-                handler.handle(request);
-            }
-        });
+        return get(regex, (request, next) -> handler.handle(request));
     }
 
     /**
@@ -425,12 +373,7 @@ public class Router extends AbstractMiddleware {
      * @param handler The middleware to call
      */
     public Router put(@NotNull final Pattern regex, @NotNull final Handler<YokeRequest> handler) {
-        return put(regex, new Middleware() {
-            @Override
-            public void handle(@NotNull YokeRequest request, @NotNull Handler<Object> next) {
-                handler.handle(request);
-            }
-        });
+        return put(regex, (request, next) -> handler.handle(request));
     }
 
     /**
@@ -449,12 +392,7 @@ public class Router extends AbstractMiddleware {
      * @param handler The middleware to call
      */
     public Router post(@NotNull final Pattern regex, @NotNull final Handler<YokeRequest> handler) {
-        return post(regex, new Middleware() {
-            @Override
-            public void handle(@NotNull YokeRequest request, @NotNull Handler<Object> next) {
-                handler.handle(request);
-            }
-        });
+        return post(regex, (request, next) -> handler.handle(request));
     }
 
     /**
@@ -473,12 +411,7 @@ public class Router extends AbstractMiddleware {
      * @param handler The middleware to call
      */
     public Router delete(@NotNull final Pattern regex, @NotNull final Handler<YokeRequest> handler) {
-        return delete(regex, new Middleware() {
-            @Override
-            public void handle(@NotNull YokeRequest request, @NotNull Handler<Object> next) {
-                handler.handle(request);
-            }
-        });
+        return delete(regex, (request, next) -> handler.handle(request));
     }
 
     /**
@@ -497,12 +430,7 @@ public class Router extends AbstractMiddleware {
      * @param handler The middleware to call
      */
     public Router options(@NotNull final Pattern regex, @NotNull final Handler<YokeRequest> handler) {
-        return options(regex, new Middleware() {
-            @Override
-            public void handle(@NotNull YokeRequest request, @NotNull Handler<Object> next) {
-                handler.handle(request);
-            }
-        });
+        return options(regex, (request, next) -> handler.handle(request));
     }
 
     /**
@@ -521,12 +449,7 @@ public class Router extends AbstractMiddleware {
      * @param handler The middleware to call
      */
     public Router head(@NotNull final Pattern regex, @NotNull final Handler<YokeRequest> handler) {
-        return head(regex, new Middleware() {
-            @Override
-            public void handle(@NotNull YokeRequest request, @NotNull Handler<Object> next) {
-                handler.handle(request);
-            }
-        });
+        return head(regex, (request, next) -> handler.handle(request));
     }
 
     /**
@@ -545,12 +468,7 @@ public class Router extends AbstractMiddleware {
      * @param handler The middleware to call
      */
     public Router trace(@NotNull final Pattern regex, @NotNull final Handler<YokeRequest> handler) {
-        return trace(regex, new Middleware() {
-            @Override
-            public void handle(@NotNull YokeRequest request, @NotNull Handler<Object> next) {
-                handler.handle(request);
-            }
-        });
+        return trace(regex, (request, next) -> handler.handle(request));
     }
 
     /**
@@ -569,12 +487,7 @@ public class Router extends AbstractMiddleware {
      * @param handler The middleware to call
      */
     public Router connect(@NotNull final Pattern regex, @NotNull final Handler<YokeRequest> handler) {
-        return connect(regex, new Middleware() {
-            @Override
-            public void handle(@NotNull YokeRequest request, @NotNull Handler<Object> next) {
-                handler.handle(request);
-            }
-        });
+        return connect(regex, (request, next) -> handler.handle(request));
     }
 
     /**
@@ -593,12 +506,7 @@ public class Router extends AbstractMiddleware {
      * @param handler The middleware to call
      */
     public Router patch(@NotNull final Pattern regex, @NotNull final Handler<YokeRequest> handler) {
-        return patch(regex, new Middleware() {
-            @Override
-            public void handle(@NotNull YokeRequest request, @NotNull Handler<Object> next) {
-                handler.handle(request);
-            }
-        });
+        return patch(regex, (request, next) -> handler.handle(request));
     }
 
     /**
@@ -647,17 +555,14 @@ public class Router extends AbstractMiddleware {
     }
 
     public Router param(@NotNull final String paramName, @NotNull final Pattern regex) {
-        return param(paramName, new Middleware() {
-            @Override
-            public void handle(@NotNull final YokeRequest request, @NotNull final Handler<Object> next) {
-                if (!regex.matcher(request.params().get(paramName)).matches()) {
-                    // Bad Request
-                    next.handle(400);
-                    return;
-                }
-
-                next.handle(null);
+        return param(paramName, (request, next) -> {
+            if (!regex.matcher(request.params().get(paramName)).matches()) {
+                // Bad Request
+                next.handle(400);
+                return;
             }
+
+            next.handle(null);
         });
     }
 
@@ -734,14 +639,11 @@ public class Router extends AbstractMiddleware {
             @Override
             public void handle(final PatternBinding binding) {
                 if (hasNext()) {
-                    route(request, binding, new Handler<Object>() {
-                        @Override
-                        public void handle(Object err) {
-                            if (err == null) {
-                                next();
-                            } else {
-                                next.handle(err);
-                            }
+                    route(request, binding, err -> {
+                        if (err == null) {
+                            next();
+                        } else {
+                            next.handle(err);
                         }
                     });
                 } else {
@@ -769,21 +671,13 @@ public class Router extends AbstractMiddleware {
                             final Middleware paramMiddleware = paramProcessors.get(param);
                             if (paramMiddleware != null) {
                                 // do not block main loop
-                                vertx.runOnContext(new Handler<Void>() {
-                                    @Override
-                                    public void handle(Void event) {
-                                        paramMiddleware.handle(request, new Handler<Object>() {
-                                            @Override
-                                            public void handle(Object err) {
-                                                if (err == null) {
-                                                    next();
-                                                } else {
-                                                    next.handle(err);
-                                                }
-                                            }
-                                        });
+                                vertx.runOnContext(event -> paramMiddleware.handle(request, err -> {
+                                    if (err == null) {
+                                        next();
+                                    } else {
+                                        next.handle(err);
                                     }
-                                });
+                                }));
                             } else {
                                 next();
                             }
@@ -794,21 +688,13 @@ public class Router extends AbstractMiddleware {
                                 public void handle(final Middleware middleware) {
                                     if (hasNext()) {
                                         // do not block main loop
-                                        vertx.runOnContext(new Handler<Void>() {
-                                            @Override
-                                            public void handle(Void event) {
-                                                middleware.handle(request, new Handler<Object>() {
-                                                    @Override
-                                                    public void handle(Object err) {
-                                                        if (err == null) {
-                                                            next();
-                                                        } else {
-                                                            next.handle(err);
-                                                        }
-                                                    }
-                                                });
+                                        vertx.runOnContext(event -> middleware.handle(request, err -> {
+                                            if (err == null) {
+                                                next();
+                                            } else {
+                                                next.handle(err);
                                             }
-                                        });
+                                        }));
                                     } else {
                                         next.handle(null);
                                     }
@@ -829,21 +715,13 @@ public class Router extends AbstractMiddleware {
                     public void handle(final Middleware middleware) {
                         if (hasNext()) {
                             // do not block main loop
-                            vertx.runOnContext(new Handler<Void>() {
-                                @Override
-                                public void handle(Void event) {
-                                    middleware.handle(request, new Handler<Object>() {
-                                        @Override
-                                        public void handle(Object err) {
-                                            if (err == null) {
-                                                next();
-                                            } else {
-                                                next.handle(err);
-                                            }
-                                        }
-                                    });
+                            vertx.runOnContext(event -> middleware.handle(request, err -> {
+                                if (err == null) {
+                                    next();
+                                } else {
+                                    next.handle(err);
                                 }
-                            });
+                            }));
                         } else {
                             next.handle(null);
                         }

@@ -29,12 +29,9 @@ public class StringPlaceholderEngine extends VertxTestBase {
 
             Yoke yoke = new Yoke(vertx);
             yoke.engine("shtml", new com.jetdrone.vertx.yoke.engine.StringPlaceholderEngine(""));
-            yoke.use(new Middleware() {
-                @Override
-                public void handle(@NotNull YokeRequest request, @NotNull Handler<Object> next) {
-                    request.put("name", "Paulo");
-                    request.response().render(location, next);
-                }
+            yoke.use((request, next) -> {
+                request.put("name", "Paulo");
+                request.response().render(location, next);
             });
 
             new YokeTester(yoke).request(HttpMethod.GET, "/", resp -> {
@@ -58,19 +55,11 @@ public class StringPlaceholderEngine extends VertxTestBase {
             final String location = temp.getAbsolutePath();
 
             Yoke yoke = new Yoke(vertx);
-            yoke.set("fnName", new Function() {
-                @Override
-                public String exec(Map<String, Object> context, Object... args) {
-                    return "Paulo " + args[0];
-                }
-            });
+            yoke.set("fnName", (Function) (context, args) -> "Paulo " + args[0]);
             yoke.engine("shtml", new com.jetdrone.vertx.yoke.engine.StringPlaceholderEngine(""));
-            yoke.use(new Middleware() {
-                @Override
-                public void handle(@NotNull YokeRequest request, @NotNull Handler<Object> next) {
-                    request.put("name", "Paulo");
-                    request.response().render(location, next);
-                }
+            yoke.use((request, next) -> {
+                request.put("name", "Paulo");
+                request.response().render(location, next);
             });
 
             new YokeTester(yoke).request(HttpMethod.GET, "/", resp -> {

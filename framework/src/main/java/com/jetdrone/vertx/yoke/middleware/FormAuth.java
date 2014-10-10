@@ -67,7 +67,7 @@ public class FormAuth extends AbstractMiddleware {
                     // render internal login
                     request.response().setContentType("text/html");
                     request.response().end(
-                            loginTemplate.replace("{title}", (String) request.get("title"))
+                            loginTemplate.replace("{title}", request.get("title"))
                                     .replace("{action}", loginURI + "?redirect_url=" + Utils.encodeURIComponent(request.getParameter("redirect_url", "/")))
                                     .replace("{message}", ""));
                 } else {
@@ -100,7 +100,7 @@ public class FormAuth extends AbstractMiddleware {
                                 request.response().setContentType("text/html");
                                 request.response().setStatusCode(401);
                                 request.response().end(
-                                        loginTemplate.replace("{title}", (String) request.get("title"))
+                                        loginTemplate.replace("{title}", request.get("title"))
                                                 .replace("{action}", loginURI + "?redirect_url=" + Utils.encodeURIComponent(request.getParameter("redirect_url", "/")))
                                                 .replace("{message}", "Invalid username and/or password, please try again."));
                             } else {

@@ -20,12 +20,7 @@ public class IEXSSTest extends VertxTestBase {
     public void setsHeaderForFirefox23() {
         final Yoke app = new Yoke(vertx);
         app.use(new IEXSS());
-        app.use(new Handler<YokeRequest>() {
-            @Override
-            public void handle(YokeRequest request) {
-                request.response().end("hello");
-            }
-        });
+        app.use(request -> request.response().end("hello"));
 
         MultiMap headers = new CaseInsensitiveHeaders();
         headers.add("User-Agent", FIREFOX_23);
@@ -40,12 +35,7 @@ public class IEXSSTest extends VertxTestBase {
     public void setsHeaderForIE9() {
         final Yoke app = new Yoke(vertx);
         app.use(new IEXSS());
-        app.use(new Handler<YokeRequest>() {
-            @Override
-            public void handle(YokeRequest request) {
-                request.response().end("hello");
-            }
-        });
+        app.use(request -> request.response().end("hello"));
 
         MultiMap headers = new CaseInsensitiveHeaders();
         headers.add("User-Agent", IE_9);
@@ -60,12 +50,7 @@ public class IEXSSTest extends VertxTestBase {
     public void setsHeaderTo0ForIE8() {
         final Yoke app = new Yoke(vertx);
         app.use(new IEXSS());
-        app.use(new Handler<YokeRequest>() {
-            @Override
-            public void handle(YokeRequest request) {
-                request.response().end("hello");
-            }
-        });
+        app.use(request -> request.response().end("hello"));
 
         MultiMap headers = new CaseInsensitiveHeaders();
         headers.add("User-Agent", IE_8);
@@ -80,12 +65,7 @@ public class IEXSSTest extends VertxTestBase {
     public void setsHeaderTo0ForIE7() {
         final Yoke app = new Yoke(vertx);
         app.use(new IEXSS());
-        app.use(new Handler<YokeRequest>() {
-            @Override
-            public void handle(YokeRequest request) {
-                request.response().end("hello");
-            }
-        });
+        app.use(request -> request.response().end("hello"));
 
         MultiMap headers = new CaseInsensitiveHeaders();
         headers.add("User-Agent", IE_7);
@@ -100,12 +80,7 @@ public class IEXSSTest extends VertxTestBase {
     public void allowsYouToSetTheHeaderForOldIE() {
         final Yoke app = new Yoke(vertx);
         app.use(new IEXSS(true));
-        app.use(new Handler<YokeRequest>() {
-            @Override
-            public void handle(YokeRequest request) {
-                request.response().end("hello");
-            }
-        });
+        app.use(request -> request.response().end("hello"));
 
         MultiMap headers = new CaseInsensitiveHeaders();
         headers.add("User-Agent", IE_8);

@@ -4,7 +4,6 @@
 package com.jetdrone.vertx.yoke.store;
 
 import io.vertx.core.Handler;
-import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
 
 /** # SessionStore */

@@ -24,7 +24,7 @@ public class SessionStoreExample extends AbstractVerticle {
         MongoService mongo = MongoService.create(vertx, config);
         mongo.start();
 
-        final Yoke app = new Yoke(SessionStoreExample.this);
+        final Yoke app = new Yoke(vertx);
         app.secretSecurity("keyboard cat");
 
         app.store(new MongoDBSessionStore(mongo, "sessions"));
@@ -37,36 +37,27 @@ public class SessionStoreExample extends AbstractVerticle {
 
 
         app.use(new Router() {{
-            get("/", new Handler<YokeRequest>() {
-                @Override
-                public void handle(YokeRequest request) {
-                    JsonObject session = request.get("session");
-                    if (session == null) {
-                        request.response().setStatusCode(404);
-                        request.response().end();
-                    } else {
-                        request.response().end(session);
-                    }
+            get("/", request -> {
+                JsonObject session = request.get("session");
+                if (session == null) {
+                    request.response().setStatusCode(404);
+                    request.response().end();
+                } else {
+                    request.response().end(session);
                 }
             });
 
-            get("/new", new Handler<YokeRequest>() {
-                @Override
-                public void handle(YokeRequest request) {
-                    JsonObject session = request.createSession();
+            get("/new", request -> {
+                JsonObject session = request.createSession();
 
-                    session.putString("key", "value");
+                session.putString("key", "value");
 
-                    request.response().end();
-                }
+                request.response().end();
             });
 
-            get("/delete", new Handler<YokeRequest>() {
-                @Override
-                public void handle(YokeRequest request) {
-                    request.destroySession();
-                    request.response().end();
-                }
+            get("/delete", request -> {
+                request.destroySession();
+                request.response().end();
             });
         }});
 

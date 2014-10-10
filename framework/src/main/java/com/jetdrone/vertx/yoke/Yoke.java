@@ -88,28 +88,6 @@ public class Yoke {
     /**
      * Creates a Yoke instance.
      *
-     * This constructor should be called from a verticle and pass a valid Vertx instance. This instance will be shared
-     * with all registered middleware. The reason behind this is to allow middleware to use Vertx features such as file
-     * system and timers.
-     *
-     * <pre>
-     * public class MyVerticle extends Verticle {
-     *   public void start() {
-     *     final Yoke yoke = new Yoke(this);
-     *     ...
-     *   }
-     * }
-     * </pre>
-     *
-     * @param verticle the main verticle
-     */
-    public Yoke(@NotNull Verticle verticle) {
-        this(verticle.getVertx(), new DefaultRequestWrapper());
-    }
-
-    /**
-     * Creates a Yoke instance.
-     *
      * This constructor should be called from a verticle and pass a valid Vertx instance and a Logger. This instance
      * will be shared with all registered middleware. The reason behind this is to allow middleware to use Vertx
      * features such as file system and timers.
@@ -251,12 +229,7 @@ public class Yoke {
      * @param handler The Handler to add
      */
     public Yoke use(@NotNull String route, final @NotNull Handler<YokeRequest> handler) {
-        middlewareList.add(new MountedMiddleware(route, new Middleware() {
-            @Override
-            public void handle(@NotNull YokeRequest request, @NotNull Handler<Object> next) {
-                handler.handle(request);
-            }
-        }));
+        middlewareList.add(new MountedMiddleware(route, (request, next) -> handler.handle(request)));
         return this;
     }
 
@@ -494,7 +467,7 @@ public class Yoke {
                                 response.setStatusCode(404);
                                 response.setStatusMessage(HttpResponseStatus.valueOf(404).reasonPhrase());
                                 if (errorHandler != null) {
-                                    errorHandler.handle(request, null);
+                                    errorHandler.handle(request);
                                 } else {
                                     response.end(HttpResponseStatus.valueOf(404).reasonPhrase());
                                 }
@@ -502,7 +475,7 @@ public class Yoke {
                         } else {
                             request.put("error", error);
                             if (errorHandler != null) {
-                                errorHandler.handle(request, null);
+                                errorHandler.handle(request);
                             } else {
                                 HttpServerResponse response = request.response();
 

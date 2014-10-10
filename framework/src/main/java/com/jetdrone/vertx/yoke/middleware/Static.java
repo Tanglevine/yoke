@@ -233,7 +233,7 @@ public class Static extends AbstractMiddleware {
 
                         request.response().setContentType("text/html");
                         request.response().end(
-                                directoryTemplate.replace("{title}", (String) request.get("title")).replace("{directory}", normalizedDir)
+                                directoryTemplate.replace("{title}", request.get("title")).replace("{directory}", normalizedDir)
                                         .replace("{linked-path}", directory.toString())
                                         .replace("{files}", files.toString()));
                     } else if (accept.contains("json")) {

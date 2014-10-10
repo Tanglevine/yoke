@@ -256,32 +256,29 @@ public class Swagger {
         final Resource resource = new Resource(path, description);
         resources.add(resource);
 
-        router.get(prefix + path, new Middleware() {
-            @Override
-            public void handle(@NotNull YokeRequest request, @NotNull Handler<Object> next) {
-                JsonObject result = new JsonObject()
-                        .putString("apiVersion", apiVersion)
-                        .putString("swaggerVersion", "1.2")
-                        .putString("basePath", "/")
-                        .putString("resourcePath", path);
+        router.get(prefix + path, (request, next) -> {
+            JsonObject result = new JsonObject()
+                    .putString("apiVersion", apiVersion)
+                    .putString("swaggerVersion", "1.2")
+                    .putString("basePath", "/")
+                    .putString("resourcePath", path);
 
-                if (resource.produces != null) {
-                    result.putArray("produces", resource.produces);
-                }
-
-                if (resource.consumes != null) {
-                    result.putArray("consumes", resource.consumes);
-                }
-
-                JsonArray apis = new JsonArray();
-                result.putArray("apis", apis);
-
-                for (String key : resource.apis.getFieldNames()) {
-                    apis.addObject(resource.apis.getObject(key));
-                }
-                result.putObject("models", resource.models);
-                request.response().end(result);
+            if (resource.produces != null) {
+                result.putArray("produces", resource.produces);
             }
+
+            if (resource.consumes != null) {
+                result.putArray("consumes", resource.consumes);
+            }
+
+            JsonArray apis = new JsonArray();
+            result.putArray("apis", apis);
+
+            for (String key : resource.apis.getFieldNames()) {
+                apis.addObject(resource.apis.getObject(key));
+            }
+            result.putObject("models", resource.models);
+            request.response().end(result);
         });
 
         return resource;

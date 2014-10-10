@@ -66,23 +66,17 @@ public class Router extends VertxTestBase {
     public void testRouterWithParams() {
         Yoke yoke = new Yoke(vertx);
         yoke.use(new com.jetdrone.vertx.yoke.middleware.Router() {{
-            get("/api/:userId", new Middleware() {
-                @Override
-                public void handle(@NotNull YokeRequest request, @NotNull Handler<Object> next) {
+            get("/api/:userId", (request, next) -> {
 
-                    assertNotNull(request.get("user"));
-                    assertTrue(request.get("user") instanceof JsonObject);
-                    request.response().end("OK");
-                }
+                assertNotNull(request.get("user"));
+                assertTrue(request.get("user") instanceof JsonObject);
+                request.response().end("OK");
             });
-            param("userId", new Middleware() {
-                @Override
-                public void handle(@NotNull YokeRequest request, @NotNull Handler<Object> next) {
-                    assertEquals("1", request.params().get("userId"));
-                    // pretend that we went on some DB and got a json object representing the user
-                    request.put("user", new JsonObject("{\"id\":" + request.params().get("userId") + "}"));
-                    next.handle(null);
-                }
+            param("userId", (request, next) -> {
+                assertEquals("1", request.params().get("userId"));
+                // pretend that we went on some DB and got a json object representing the user
+                request.put("user", new JsonObject("{\"id\":" + request.params().get("userId") + "}"));
+                next.handle(null);
             });
         }});
 
@@ -98,12 +92,7 @@ public class Router extends VertxTestBase {
     public void testRouterWithRegExParamsFail() {
         Yoke yoke = new Yoke(vertx);
         yoke.use(new com.jetdrone.vertx.yoke.middleware.Router() {{
-            get("/api/:userId", new Middleware() {
-                @Override
-                public void handle(@NotNull YokeRequest request, @NotNull Handler<Object> next) {
-                    request.response().end("OK");
-                }
-            });
+            get("/api/:userId", (request, next) -> request.response().end("OK"));
             param("userId", Pattern.compile("[1-9][0-9]"));
         }});
 
@@ -119,12 +108,7 @@ public class Router extends VertxTestBase {
     public void testRouterWithRegExParamsPass() {
         Yoke yoke = new Yoke(vertx);
         yoke.use(new com.jetdrone.vertx.yoke.middleware.Router() {{
-            get("/api/:userId", new Middleware() {
-                @Override
-                public void handle(@NotNull YokeRequest request, @NotNull Handler<Object> next) {
-                    request.response().end("OK");
-                }
-            });
+            get("/api/:userId", (request, next) -> request.response().end("OK"));
             param("userId", Pattern.compile("[1-9][0-9]"));
         }});
 
@@ -140,12 +124,7 @@ public class Router extends VertxTestBase {
     public void testTrailingSlashes() {
         final Yoke yoke = new Yoke(vertx);
         yoke.use(new com.jetdrone.vertx.yoke.middleware.Router() {{
-            get("/api", new Middleware() {
-                @Override
-                public void handle(@NotNull YokeRequest request, @NotNull Handler<Object> next) {
-                    request.response().end("OK");
-                }
-            });
+            get("/api", (request, next) -> request.response().end("OK"));
         }});
 
         final YokeTester yokeAssert = new YokeTester(yoke);
@@ -153,12 +132,9 @@ public class Router extends VertxTestBase {
         yokeAssert.request(HttpMethod.GET, "/api", resp -> {
             assertEquals(200, resp.getStatusCode());
 
-            yokeAssert.request(HttpMethod.GET, "/api/", new Handler<Response>() {
-                @Override
-                public void handle(Response resp) {
-                    assertEquals(200, resp.getStatusCode());
-                    testComplete();
-                }
+            yokeAssert.request(HttpMethod.GET, "/api/", resp1 -> {
+                assertEquals(200, resp1.getStatusCode());
+                testComplete();
             });
         });
         await();
@@ -168,12 +144,7 @@ public class Router extends VertxTestBase {
     public void testDash() {
         final Yoke yoke = new Yoke(vertx);
         yoke.use(new com.jetdrone.vertx.yoke.middleware.Router() {{
-            get("/api-stable", new Middleware() {
-                @Override
-                public void handle(@NotNull final YokeRequest request, @NotNull final Handler<Object> next) {
-                    request.response().end("OK");
-                }
-            });
+            get("/api-stable", (request, next) -> request.response().end("OK"));
         }});
 
         final YokeTester yokeAssert = new YokeTester(yoke);

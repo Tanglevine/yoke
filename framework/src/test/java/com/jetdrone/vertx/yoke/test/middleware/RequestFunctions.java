@@ -17,12 +17,7 @@ public class RequestFunctions extends VertxTestBase {
     @Test
     public void testAccepts() {
         Yoke yoke = new Yoke(vertx);
-        yoke.use(new Handler<YokeRequest>() {
-            @Override
-            public void handle(YokeRequest request) {
-                request.response().end(request.accepts("text"));
-            }
-        });
+        yoke.use(request -> request.response().end(request.accepts("text")));
 
         // second time send the authorization header
         MultiMap headers = new CaseInsensitiveHeaders();
@@ -44,12 +39,9 @@ public class RequestFunctions extends VertxTestBase {
     @Test
     public void testIp() {
         Yoke yoke = new Yoke(vertx);
-        yoke.use(new Handler<YokeRequest>() {
-            @Override
-            public void handle(YokeRequest request) {
-                assertEquals("123.456.123.456", request.ip());
-                testComplete();
-            }
+        yoke.use(request -> {
+            assertEquals("123.456.123.456", request.ip());
+            testComplete();
         });
 
         // second time send the authorization header
@@ -63,12 +55,9 @@ public class RequestFunctions extends VertxTestBase {
     @Test
     public void testLocale() {
         Yoke yoke = new Yoke(vertx);
-        yoke.use(new Handler<YokeRequest>() {
-            @Override
-            public void handle(YokeRequest request) {
-                assertEquals(new Locale("da", "dk"), request.locale());
-                testComplete();
-            }
+        yoke.use(request -> {
+            assertEquals(new Locale("da", "dk"), request.locale());
+            testComplete();
         });
 
         // second time send the authorization header
@@ -82,12 +71,9 @@ public class RequestFunctions extends VertxTestBase {
     @Test
     public void testLocale2() {
         Yoke yoke = new Yoke(vertx);
-        yoke.use(new Handler<YokeRequest>() {
-            @Override
-            public void handle(YokeRequest request) {
-                assertEquals(new Locale("da"), request.locale());
-                testComplete();
-            }
+        yoke.use(request -> {
+            assertEquals(new Locale("da"), request.locale());
+            testComplete();
         });
 
         // second time send the authorization header
@@ -101,12 +87,9 @@ public class RequestFunctions extends VertxTestBase {
     @Test
     public void testLocale3() {
         Yoke yoke = new Yoke(vertx);
-        yoke.use(new Handler<YokeRequest>() {
-            @Override
-            public void handle(YokeRequest request) {
-                assertEquals(new Locale("en", "gb"), request.locale());
-                testComplete();
-            }
+        yoke.use(request -> {
+            assertEquals(new Locale("en", "gb"), request.locale());
+            testComplete();
         });
 
         // second time send the authorization header

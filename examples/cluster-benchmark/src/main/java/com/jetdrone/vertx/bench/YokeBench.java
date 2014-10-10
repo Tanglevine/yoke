@@ -11,14 +11,9 @@ public class YokeBench extends AbstractVerticle {
     @Override
     public void start() {
 
-        new Yoke(this)
+        new Yoke(vertx)
                 .use(new Router()
-                        .get("/", new Handler<YokeRequest>() {
-                            @Override
-                            public void handle(YokeRequest request) {
-                                request.response().end("Hello World\n");
-                            }
-                        })
+                        .get("/", request -> request.response().end("Hello World\n"))
                 ).listen(8080);
     }
 }

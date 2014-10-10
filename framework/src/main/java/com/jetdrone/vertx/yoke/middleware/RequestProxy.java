@@ -43,39 +43,17 @@ public class RequestProxy extends AbstractMiddleware {
         final String newUri = req.uri().replaceFirst(prefix, "");
         final HttpClient client = vertx().createHttpClient(new HttpClientOptions().setSsl(secure));
 
-        final HttpClientRequest cReq = client.request(req.method(), port, host, newUri, new Handler<HttpClientResponse>() {
-          public void handle(HttpClientResponse cRes) {
-            req.response().setStatusCode(cRes.statusCode());
-            req.response().headers().setAll(cRes.headers());
-            req.response().setChunked(true);
-            cRes.handler(new Handler<Buffer>() {
-                public void handle(Buffer data) {
-                    req.response().write(data);
-                }
-            });
-            cRes.endHandler(new Handler<Void>() {
-              public void handle(Void _void) {
-                req.response().end();
-              }
-            });
-            cRes.exceptionHandler(new Handler<Throwable>() {
-              public void handle(Throwable t) {
-                next.handle(t);
-              }
-            });
-          }
+        final HttpClientRequest cReq = client.request(req.method(), port, host, newUri, cRes -> {
+          req.response().setStatusCode(cRes.statusCode());
+          req.response().headers().setAll(cRes.headers());
+          req.response().setChunked(true);
+          cRes.handler(data -> req.response().write(data));
+          cRes.endHandler(_void -> req.response().end());
+          cRes.exceptionHandler(next::handle);
         });
         cReq.headers().setAll(req.headers());
         cReq.setChunked(true);
-        req.handler(new Handler<Buffer>() {
-          public void handle(Buffer data) {
-            cReq.write(data);
-          }
-        });
-        req.endHandler(new Handler<Void>() {
-          public void handle(Void _void) {
-            cReq.end();
-          }
-        });
+        req.handler(cReq::write);
+        req.endHandler(_void -> cReq.end());
     }
 }

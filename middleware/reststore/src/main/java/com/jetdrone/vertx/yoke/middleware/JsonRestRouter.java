@@ -49,12 +49,7 @@ public class JsonRestRouter extends Router {
 
     private final Store store;
 
-    private static final Middleware NOT_ALLOWED = new Middleware() {
-        @Override
-        public void handle(@NotNull YokeRequest request, @NotNull Handler<Object> next) {
-            next.handle(405);
-        }
-    };
+    private static final Middleware NOT_ALLOWED = (request, next) -> next.handle(405);
 
     public JsonRestRouter(Store store) {
         this.store = store;
@@ -118,154 +113,139 @@ public class JsonRestRouter extends Router {
     }
 
     private Middleware delete(final String idName) {
-        return new Middleware() {
-            @Override
-            public void handle(@NotNull final YokeRequest request, @NotNull final Handler<Object> next) {
-                // get the real id from the params multimap
-                final String id = request.params().get(idName);
+        return (request, next) -> {
+            // get the real id from the params multimap
+            final String id = request.params().get(idName);
 
-                store.delete(idName, id, new AsyncResultHandler<Number>() {
-                    @Override
-                    public void handle(AsyncResult<Number> event) {
-                        if (event.failed()) {
-                            next.handle(event.cause());
-                            return;
-                        }
-
-                        if (event.result().intValue() == 0) {
-                            request.response().setStatusCode(404);
-                            request.response().end();
-                        } else {
-                            request.response().setStatusCode(204);
-                            request.response().end();
-                        }
+            store.delete(idName, id, new AsyncResultHandler<Number>() {
+                @Override
+                public void handle(AsyncResult<Number> event) {
+                    if (event.failed()) {
+                        next.handle(event.cause());
+                        return;
                     }
-                });
-            }
+
+                    if (event.result().intValue() == 0) {
+                        request.response().setStatusCode(404);
+                        request.response().end();
+                    } else {
+                        request.response().setStatusCode(204);
+                        request.response().end();
+                    }
+                }
+            });
         };
     }
 
     private Middleware create(final String idName) {
-        return new Middleware() {
-            @Override
-            public void handle(@NotNull final YokeRequest request, @NotNull final Handler<Object> next) {
-                JsonObject item = request.body();
+        return (request, next) -> {
+            JsonObject item = request.body();
 
-                if (item == null) {
-                    next.handle("Body must be JSON");
-                    return;
-                }
-
-                store.create(idName, item, new AsyncResultHandler<String>() {
-                    @Override
-                    public void handle(AsyncResult<String> event) {
-                        if (event.failed()) {
-                            next.handle(event.cause());
-                            return;
-                        }
-                        request.response().putHeader("location", request.path() + "/" + event.result());
-                        request.response().setStatusCode(201);
-                        request.response().end();
-                    }
-                });
+            if (item == null) {
+                next.handle("Body must be JSON");
+                return;
             }
+
+            store.create(idName, item, new AsyncResultHandler<String>() {
+                @Override
+                public void handle(AsyncResult<String> event) {
+                    if (event.failed()) {
+                        next.handle(event.cause());
+                        return;
+                    }
+                    request.response().putHeader("location", request.path() + "/" + event.result());
+                    request.response().setStatusCode(201);
+                    request.response().end();
+                }
+            });
         };
     }
 
     private Middleware append(final String idName) {
-        return new Middleware() {
-            @Override
-            public void handle(@NotNull final YokeRequest request, @NotNull final Handler<Object> next) {
-                // get the real id from the params multimap
-                final String id = request.params().get(idName);
+        return (request, next) -> {
+            // get the real id from the params multimap
+            final String id = request.params().get(idName);
 
-                store.read(idName, id, new AsyncResultHandler<JsonObject>() {
-                    @Override
-                    public void handle(AsyncResult<JsonObject> event) {
-                        if (event.failed()) {
-                            next.handle(event.cause());
-                            return;
-                        }
-
-                        if (event.result() == null) {
-                            // does not exist, returns 404
-                            request.response().setStatusCode(404);
-                            request.response().end();
-                        } else {
-                            // merge existing json with incoming one
-                            Boolean overwrite = null;
-
-                            if ("*".equals(request.getHeader("if-match"))) {
-                                overwrite = true;
-                            }
-
-                            if ("*".equals(request.getHeader("if-none-match"))) {
-                                overwrite = false;
-                            }
-
-                            // TODO: handle overwrite
-                            final JsonObject obj = event.result();
-                            obj.mergeIn((JsonObject) request.body());
-
-                            // update back to the db
-                            store.update(idName, id, obj, new AsyncResultHandler<Number>() {
-                                @Override
-                                public void handle(AsyncResult<Number> event) {
-                                    if (event.failed()) {
-                                        next.handle(event.cause());
-                                        return;
-                                    }
-
-                                    if (event.result().intValue() == 0) {
-                                        // nothing was updated
-                                        request.response().setStatusCode(404);
-                                        request.response().end();
-                                    } else {
-                                        request.response().setStatusCode(204);
-                                        request.response().end();
-                                    }
-                                }
-                            });
-                        }
+            store.read(idName, id, new AsyncResultHandler<JsonObject>() {
+                @Override
+                public void handle(AsyncResult<JsonObject> event) {
+                    if (event.failed()) {
+                        next.handle(event.cause());
+                        return;
                     }
-                });
-            }
+
+                    if (event.result() == null) {
+                        // does not exist, returns 404
+                        request.response().setStatusCode(404);
+                        request.response().end();
+                    } else {
+                        // merge existing json with incoming one
+                        Boolean overwrite = null;
+
+                        if ("*".equals(request.getHeader("if-match"))) {
+                            overwrite = true;
+                        }
+
+                        if ("*".equals(request.getHeader("if-none-match"))) {
+                            overwrite = false;
+                        }
+
+                        // TODO: handle overwrite
+                        final JsonObject obj = event.result();
+                        obj.mergeIn((JsonObject) request.body());
+
+                        // update back to the db
+                        store.update(idName, id, obj, event1 -> {
+                            if (event1.failed()) {
+                                next.handle(event1.cause());
+                                return;
+                            }
+
+                            if (event1.result().intValue() == 0) {
+                                // nothing was updated
+                                request.response().setStatusCode(404);
+                                request.response().end();
+                            } else {
+                                request.response().setStatusCode(204);
+                                request.response().end();
+                            }
+                        });
+                    }
+                }
+            });
         };
     }
 
     private Middleware update(final String idName) {
-        return new Middleware() {
-            @Override
-            public void handle(@NotNull final YokeRequest request, @NotNull final Handler<Object> next) {
-                JsonObject item = request.body();
+        return (request, next) -> {
+            JsonObject item = request.body();
 
-                if (item == null) {
-                    next.handle("Body must be JSON");
-                    return;
-                }
-
-                // get the real id from the params multimap
-                String id = request.params().get(idName);
-
-                store.update(idName, id, item, new AsyncResultHandler<Number>() {
-                    @Override
-                    public void handle(AsyncResult<Number> event) {
-                        if (event.failed()) {
-                            next.handle(event.cause());
-                            return;
-                        }
-
-                        if (event.result().intValue() == 0) {
-                            // nothing was updated
-                            request.response().setStatusCode(404);
-                            request.response().end();
-                        } else {
-                            request.response().setStatusCode(204);
-                            request.response().end();
-                        }
-                    }
-                });
+            if (item == null) {
+                next.handle("Body must be JSON");
+                return;
             }
+
+            // get the real id from the params multimap
+            String id = request.params().get(idName);
+
+            store.update(idName, id, item, new AsyncResultHandler<Number>() {
+                @Override
+                public void handle(AsyncResult<Number> event) {
+                    if (event.failed()) {
+                        next.handle(event.cause());
+                        return;
+                    }
+
+                    if (event.result().intValue() == 0) {
+                        // nothing was updated
+                        request.response().setStatusCode(404);
+                        request.response().end();
+                    } else {
+                        request.response().setStatusCode(204);
+                        request.response().end();
+                    }
+                }
+            });
         };
     }
 
@@ -281,139 +261,133 @@ public class JsonRestRouter extends Router {
         // range pattern
         final Pattern rangePattern = Pattern.compile("items=(\\d+)-(\\d+)");
 
-        return new Middleware() {
-            @Override
-            public void handle(@NotNull final YokeRequest request, @NotNull final Handler<Object> next) {
-                // content negotiation
-                if (request.accepts("application/json") == null) {
-                    // Not Acceptable (we only talk json)
-                    next.handle(406);
-                    return;
-                }
+        return (request, next) -> {
+            // content negotiation
+            if (request.accepts("application/json") == null) {
+                // Not Acceptable (we only talk json)
+                next.handle(406);
+                return;
+            }
 
-                // parse ranges
-                final String range = request.getHeader("range");
-                final Integer start, end;
-                if (range != null) {
-                    Matcher m = rangePattern.matcher(range);
-                    if (m.matches()) {
-                        start = parseInt(m.group(1));
-                        end = parseInt(m.group(2));
-                    } else {
-                        start = null;
-                        end = null;
-                    }
+            // parse ranges
+            final String range = request.getHeader("range");
+            final Integer start, end;
+            if (range != null) {
+                Matcher m = rangePattern.matcher(range);
+                if (m.matches()) {
+                    start = parseInt(m.group(1));
+                    end = parseInt(m.group(2));
                 } else {
                     start = null;
                     end = null;
                 }
-
-                // parse query
-                final JsonObject dbquery = new JsonObject();
-                final JsonObject dbsort = new JsonObject();
-                for (Map.Entry<String, String> entry : request.params()) {
-                    String[] sortArgs;
-                    // parse sort
-                    if (sortParam == null) {
-                        Matcher sort = sortPattern.matcher(entry.getKey());
-
-                        if (sort.matches()) {
-                            sortArgs = sort.group(1).split(",");
-                            for (String arg : sortArgs) {
-                                if (arg.charAt(0) == '+' || arg.charAt(0) == ' ') {
-                                    dbsort.putNumber(arg.substring(1), 1);
-                                } else if (arg.charAt(0) == '-') {
-                                    dbsort.putNumber(arg.substring(1), -1);
-                                }
-                            }
-                            continue;
-                        }
-                    } else {
-                        if (sortParam.equals(entry.getKey())) {
-                            sortArgs = entry.getValue().split(",");
-                            for (String arg : sortArgs) {
-                                if (arg.charAt(0) == '+' || arg.charAt(0) == ' ') {
-                                    dbsort.putNumber(arg.substring(1), 1);
-                                } else if (arg.charAt(0) == '-') {
-                                    dbsort.putNumber(arg.substring(1), -1);
-                                }
-                            }
-                            continue;
-                        }
-                    }
-                    dbquery.putString(entry.getKey(), entry.getValue());
-                }
-
-                store.query(idName, dbquery, start, end, dbsort, new AsyncResultHandler<JsonArray>() {
-                    @Override
-                    public void handle(final AsyncResult<JsonArray> query) {
-                        if (query.failed()) {
-                            next.handle(query.cause());
-                            return;
-                        }
-
-                        if (range != null) {
-                            // need to send the content-range with totals
-                            store.count(idName, dbquery, new AsyncResultHandler<Number>() {
-                                @Override
-                                public void handle(AsyncResult<Number> count) {
-                                    if (count.failed()) {
-                                        next.handle(count.cause());
-                                        return;
-                                    }
-
-                                    Integer realEnd = end;
-
-                                    if (start != null && end != null) {
-                                        realEnd = start + query.result().size();
-                                    }
-
-                                    request.response().putHeader("content-range", "items " + start + "-" + realEnd + "/" + count.result());
-                                    request.response().end(query.result());
-                                }
-                            });
-                            return;
-                        }
-
-                        request.response().end(query.result());
-                    }
-                });
+            } else {
+                start = null;
+                end = null;
             }
+
+            // parse query
+            final JsonObject dbquery = new JsonObject();
+            final JsonObject dbsort = new JsonObject();
+            for (Map.Entry<String, String> entry : request.params()) {
+                String[] sortArgs;
+                // parse sort
+                if (sortParam == null) {
+                    Matcher sort = sortPattern.matcher(entry.getKey());
+
+                    if (sort.matches()) {
+                        sortArgs = sort.group(1).split(",");
+                        for (String arg : sortArgs) {
+                            if (arg.charAt(0) == '+' || arg.charAt(0) == ' ') {
+                                dbsort.putNumber(arg.substring(1), 1);
+                            } else if (arg.charAt(0) == '-') {
+                                dbsort.putNumber(arg.substring(1), -1);
+                            }
+                        }
+                        continue;
+                    }
+                } else {
+                    if (sortParam.equals(entry.getKey())) {
+                        sortArgs = entry.getValue().split(",");
+                        for (String arg : sortArgs) {
+                            if (arg.charAt(0) == '+' || arg.charAt(0) == ' ') {
+                                dbsort.putNumber(arg.substring(1), 1);
+                            } else if (arg.charAt(0) == '-') {
+                                dbsort.putNumber(arg.substring(1), -1);
+                            }
+                        }
+                        continue;
+                    }
+                }
+                dbquery.putString(entry.getKey(), entry.getValue());
+            }
+
+            store.query(idName, dbquery, start, end, dbsort, new AsyncResultHandler<JsonArray>() {
+                @Override
+                public void handle(final AsyncResult<JsonArray> query) {
+                    if (query.failed()) {
+                        next.handle(query.cause());
+                        return;
+                    }
+
+                    if (range != null) {
+                        // need to send the content-range with totals
+                        store.count(idName, dbquery, new AsyncResultHandler<Number>() {
+                            @Override
+                            public void handle(AsyncResult<Number> count) {
+                                if (count.failed()) {
+                                    next.handle(count.cause());
+                                    return;
+                                }
+
+                                Integer realEnd = end;
+
+                                if (start != null && end != null) {
+                                    realEnd = start + query.result().size();
+                                }
+
+                                request.response().putHeader("content-range", "items " + start + "-" + realEnd + "/" + count.result());
+                                request.response().end(query.result());
+                            }
+                        });
+                        return;
+                    }
+
+                    request.response().end(query.result());
+                }
+            });
         };
     }
 
     private Middleware read(final String idName) {
-        return new Middleware() {
-            @Override
-            public void handle(@NotNull final YokeRequest request, @NotNull final Handler<Object> next) {
-                // content negotiation
-                if (request.accepts("application/json") == null) {
-                    // Not Acceptable (we only talk json)
-                    next.handle(406);
-                    return;
-                }
-
-                // get the real id from the params multimap
-                String id = request.params().get(idName);
-
-                store.read(idName, id, new AsyncResultHandler<JsonObject>() {
-                    @Override
-                    public void handle(AsyncResult<JsonObject> event) {
-                        if (event.failed()) {
-                            next.handle(event.cause());
-                            return;
-                        }
-
-                        if (event.result() == null) {
-                            // does not exist, returns 404
-                            request.response().setStatusCode(404);
-                            request.response().end();
-                        } else {
-                            request.response().end(event.result());
-                        }
-                    }
-                });
+        return (request, next) -> {
+            // content negotiation
+            if (request.accepts("application/json") == null) {
+                // Not Acceptable (we only talk json)
+                next.handle(406);
+                return;
             }
+
+            // get the real id from the params multimap
+            String id = request.params().get(idName);
+
+            store.read(idName, id, new AsyncResultHandler<JsonObject>() {
+                @Override
+                public void handle(AsyncResult<JsonObject> event) {
+                    if (event.failed()) {
+                        next.handle(event.cause());
+                        return;
+                    }
+
+                    if (event.result() == null) {
+                        // does not exist, returns 404
+                        request.response().setStatusCode(404);
+                        request.response().end();
+                    } else {
+                        request.response().end(event.result());
+                    }
+                }
+            });
         };
     }
 }

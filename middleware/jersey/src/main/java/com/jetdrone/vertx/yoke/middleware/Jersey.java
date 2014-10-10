@@ -411,12 +411,7 @@ public class Jersey extends AbstractMiddleware implements Container {
             }
 
             final long ms = timeUnit.toMillis(timeOut);
-            suspendTimerId = vertx.setTimer(ms, new Handler<Long>() {
-                @Override
-                public void handle(final Long $) {
-                    YokeResponseWriter.this.timeoutHandler.onTimeout(YokeResponseWriter.this);
-                }
-            });
+            suspendTimerId = vertx.setTimer(ms, $ -> YokeResponseWriter.this.timeoutHandler.onTimeout(YokeResponseWriter.this));
         }
 
         @Override
@@ -531,23 +526,17 @@ public class Jersey extends AbstractMiddleware implements Container {
                 requestContext.headers(headerName, request.headers().get(headerName));
             }
             requestContext.setWriter(responseWriter);
-            requestContext.setRequestScopedInitializer(new RequestScopedInitializer() {
-                @Override
-                public void initialize(final ServiceLocator locator) {
-                    locator.<Ref<YokeRequest>>getService(YOKE_REQUEST_TYPE).set(request);
-                    locator.<Ref<YokeResponse>>getService(YOKE_RESPONSE_TYPE).set(response);
-                    locator.<Ref<Vertx>>getService(VERTX_TYPE).set(vertx());
-                }
+            requestContext.setRequestScopedInitializer(locator -> {
+                locator.<Ref<YokeRequest>>getService(YOKE_REQUEST_TYPE).set(request);
+                locator.<Ref<YokeResponse>>getService(YOKE_RESPONSE_TYPE).set(response);
+                locator.<Ref<Vertx>>getService(VERTX_TYPE).set(vertx());
             });
 
             if (request.hasBody()) {
-                request.bodyHandler(new Handler<Buffer>() {
-                    @Override
-                    public void handle(final Buffer body) {
-                        // TODO review this to handle large payloads gracefully
-                        requestContext.setEntityStream(new ByteArrayInputStream(body.getBytes()));
-                        applicationHandler.handle(requestContext);
-                    }
+                request.bodyHandler(body -> {
+                    // TODO review this to handle large payloads gracefully
+                    requestContext.setEntityStream(new ByteArrayInputStream(body.getBytes()));
+                    applicationHandler.handle(requestContext);
                 });
             } else {
                 applicationHandler.handle(requestContext);

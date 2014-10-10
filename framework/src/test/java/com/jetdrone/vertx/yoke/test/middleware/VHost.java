@@ -17,19 +17,13 @@ public class VHost extends VertxTestBase {
     @Test
     public void testLimit() {
         Yoke yoke = new Yoke(vertx);
-        yoke.use(new Vhost("*.com", new Handler<HttpServerRequest>() {
-            @Override
-            public void handle(HttpServerRequest request) {
-                request.response().end();
-                testComplete();
-            }
+        yoke.use(new Vhost("*.com", request -> {
+            request.response().end();
+            testComplete();
         }));
-        yoke.use(new Handler<YokeRequest>() {
-            @Override
-            public void handle(YokeRequest request) {
-                request.response().end();
-                fail();
-            }
+        yoke.use(request -> {
+            request.response().end();
+            fail();
         });
 
         MultiMap headers = new CaseInsensitiveHeaders();

@@ -133,7 +133,7 @@ public class HandlebarsEngine extends AbstractEngineSync<Template> {
             next.handle(new YokeAsyncResult<>(Buffer.buffer(template.apply(context))));
         } catch (Exception ex) {
             ex.printStackTrace();
-            next.handle(new YokeAsyncResult<Buffer>(ex));
+            next.handle(new YokeAsyncResult<>(ex));
         }
     }
 

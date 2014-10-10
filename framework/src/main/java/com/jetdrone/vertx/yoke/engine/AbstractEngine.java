@@ -117,16 +117,13 @@ public abstract class AbstractEngine<T> implements Engine {
                     }
                 }
                 // either fresh is false or cachedValue is null
-                loadToCache(filename, new Handler<Throwable>() {
-                    @Override
-                    public void handle(Throwable error) {
-                        if (error != null) {
-                            handler.handle(new YokeAsyncResult<String>(error, null));
-                            return;
-                        }
-                        // no error
-                        handler.handle(new YokeAsyncResult<>(null, getFileFromCache(filename)));
+                loadToCache(filename, error -> {
+                    if (error != null) {
+                        handler.handle(new YokeAsyncResult<>(error, null));
+                        return;
                     }
+                    // no error
+                    handler.handle(new YokeAsyncResult<>(null, getFileFromCache(filename)));
                 });
             }
         });

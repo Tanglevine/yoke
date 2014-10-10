@@ -17,12 +17,9 @@ public class YokeRequestTest extends VertxTestBase {
     @Test
     public void testAccept() {
         final Yoke yoke = new Yoke(vertx);
-        yoke.use(new Middleware() {
-            @Override
-            public void handle(@NotNull YokeRequest request, @NotNull Handler<Object> next) {
-                assertNotNull(request.accepts("application/json"));
-                testComplete();
-            }
+        yoke.use((request, next) -> {
+            assertNotNull(request.accepts("application/json"));
+            testComplete();
         });
 
         // make a new request to / with cookie should return again the same cookie
@@ -36,12 +33,9 @@ public class YokeRequestTest extends VertxTestBase {
     @Test
     public void testNormalizedPath() {
         final Yoke yoke = new Yoke(vertx);
-        yoke.use(new Middleware() {
-            @Override
-            public void handle(@NotNull YokeRequest request, @NotNull Handler<Object> next) {
-                assertEquals("/pom.xml", request.normalizedPath());
-                testComplete();
-            }
+        yoke.use((request, next) -> {
+            assertEquals("/pom.xml", request.normalizedPath());
+            testComplete();
         });
 
         new YokeTester(yoke).request(HttpMethod.GET, "/./me/../pom.xml", null);
@@ -51,12 +45,9 @@ public class YokeRequestTest extends VertxTestBase {
     @Test
     public void testNormalizedPath2() {
         final Yoke yoke = new Yoke(vertx);
-        yoke.use(new Middleware() {
-            @Override
-            public void handle(@NotNull YokeRequest request, @NotNull Handler<Object> next) {
-                assertEquals("/", request.normalizedPath());
-                testComplete();
-            }
+        yoke.use((request, next) -> {
+            assertEquals("/", request.normalizedPath());
+            testComplete();
         });
 
         new YokeTester(yoke).request(HttpMethod.GET, "/", null);
@@ -66,12 +57,9 @@ public class YokeRequestTest extends VertxTestBase {
     @Test
     public void testNormalizedPath3() {
         final Yoke yoke = new Yoke(vertx);
-        yoke.use(new Middleware() {
-            @Override
-            public void handle(@NotNull YokeRequest request, @NotNull Handler<Object> next) {
-                assertNull(request.normalizedPath());
-                testComplete();
-            }
+        yoke.use((request, next) -> {
+            assertNull(request.normalizedPath());
+            testComplete();
         });
 
         new YokeTester(yoke).request(HttpMethod.GET, "/%2e%2e%2f", null);
@@ -81,12 +69,9 @@ public class YokeRequestTest extends VertxTestBase {
     @Test
     public void testNormalizedPath4() {
         final Yoke yoke = new Yoke(vertx);
-        yoke.use(new Middleware() {
-            @Override
-            public void handle(@NotNull YokeRequest request, @NotNull Handler<Object> next) {
-                assertNull(request.normalizedPath());
-                testComplete();
-            }
+        yoke.use((request, next) -> {
+            assertNull(request.normalizedPath());
+            testComplete();
         });
 
         new YokeTester(yoke).request(HttpMethod.GET, "/%2e%2e/", null);
@@ -96,12 +81,9 @@ public class YokeRequestTest extends VertxTestBase {
     @Test
     public void testNormalizedPath5() {
         final Yoke yoke = new Yoke(vertx);
-        yoke.use(new Middleware() {
-            @Override
-            public void handle(@NotNull YokeRequest request, @NotNull Handler<Object> next) {
-                assertNull(request.normalizedPath());
-                testComplete();
-            }
+        yoke.use((request, next) -> {
+            assertNull(request.normalizedPath());
+            testComplete();
         });
 
         new YokeTester(yoke).request(HttpMethod.GET, "/..%2f", null);
