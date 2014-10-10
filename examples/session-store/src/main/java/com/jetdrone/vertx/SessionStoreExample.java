@@ -4,10 +4,9 @@ import com.jetdrone.vertx.yoke.Yoke;
 import com.jetdrone.vertx.yoke.middleware.*;
 import com.jetdrone.vertx.yoke.store.MongoDBSessionStore;
 import io.vertx.core.AbstractVerticle;
-import io.vertx.core.AsyncResult;
-import io.vertx.core.AsyncResultHandler;
 import io.vertx.core.Handler;
 import io.vertx.core.json.JsonObject;
+import io.vertx.ext.mongo.MongoService;
 
 import javax.crypto.Mac;
 
@@ -16,66 +15,61 @@ public class SessionStoreExample extends AbstractVerticle {
     @Override
     public void start() {
         // load the general config object, loaded by using -config on command line
-        JsonObject appConfig = new JsonObject()
-                .putString("db_name", "test");
+        JsonObject config = new JsonObject();
+        config.putString("connection_string", "mongodb://localhost");
+        config.putString("db_name", "yoke3-demo");
 
         // deploy the mongo-persistor module, which we'll use for persistence
-        container.deployModule("io.vertx~mod-mongo-persistor~2.1.0", appConfig, new AsyncResultHandler<String>() {
-            @Override
-            public void handle(AsyncResult<String> deploymentId) {
-                if (deploymentId == null) {
-                    System.err.println("Deployment failed!");
-                    System.exit(1);
+
+        MongoService mongo = MongoService.create(vertx, config);
+        mongo.start();
+
+        final Yoke app = new Yoke(SessionStoreExample.this);
+        app.secretSecurity("keyboard cat");
+
+        app.store(new MongoDBSessionStore(mongo, "sessions"));
+
+        final Mac hmac = app.security().getMac("HmacSHA256");
+
+        app.use(new BodyParser());
+        app.use(new CookieParser(hmac));
+        app.use(new Session(hmac));
+
+
+        app.use(new Router() {{
+            get("/", new Handler<YokeRequest>() {
+                @Override
+                public void handle(YokeRequest request) {
+                    JsonObject session = request.get("session");
+                    if (session == null) {
+                        request.response().setStatusCode(404);
+                        request.response().end();
+                    } else {
+                        request.response().end(session);
+                    }
                 }
+            });
 
-                final Yoke app = new Yoke(SessionStoreExample.this);
-                app.secretSecurity("keyboard cat");
+            get("/new", new Handler<YokeRequest>() {
+                @Override
+                public void handle(YokeRequest request) {
+                    JsonObject session = request.createSession();
 
-                app.store(new MongoDBSessionStore(vertx.eventBus(), "vertx.mongopersistor", "sessions"));
+                    session.putString("key", "value");
 
-                final Mac hmac = app.security().getMac("HmacSHA256");
+                    request.response().end();
+                }
+            });
 
-                app.use(new BodyParser());
-                app.use(new CookieParser(hmac));
-                app.use(new Session(hmac));
+            get("/delete", new Handler<YokeRequest>() {
+                @Override
+                public void handle(YokeRequest request) {
+                    request.destroySession();
+                    request.response().end();
+                }
+            });
+        }});
 
-
-                app.use(new Router() {{
-                    get("/", new Handler<YokeRequest>() {
-                        @Override
-                        public void handle(YokeRequest request) {
-                            JsonObject session = request.get("session");
-                            if (session == null) {
-                                request.response().setStatusCode(404);
-                                request.response().end();
-                            } else {
-                                request.response().end(session);
-                            }
-                        }
-                    });
-
-                    get("/new", new Handler<YokeRequest>() {
-                        @Override
-                        public void handle(YokeRequest request) {
-                            JsonObject session = request.createSession();
-
-                            session.putString("key", "value");
-
-                            request.response().end();
-                        }
-                    });
-
-                    get("/delete", new Handler<YokeRequest>() {
-                        @Override
-                        public void handle(YokeRequest request) {
-                            request.destroySession();
-                            request.response().end();
-                        }
-                    });
-                }});
-
-                app.listen(8000);
-            }
-        });
+        app.listen(8000);
     }
 }

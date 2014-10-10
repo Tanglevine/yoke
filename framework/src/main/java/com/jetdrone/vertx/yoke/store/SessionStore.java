@@ -19,12 +19,6 @@ public interface SessionStore {
     // Destroy the session associated with the given `sid`.
     void destroy(String sid, Handler<Object> callback);
 
-    // Invoke the given callback `fn` with all active sessions.
-    void all(Handler<JsonArray> callback);
-
     // Clear all sessions.
     void clear(Handler<Object> callback);
-
-    // Fetch number of sessions.
-    void length(Handler<Integer> callback);
 }

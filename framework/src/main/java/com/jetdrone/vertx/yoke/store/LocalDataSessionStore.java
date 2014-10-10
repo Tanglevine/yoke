@@ -5,11 +5,8 @@ package com.jetdrone.vertx.yoke.store;
 
 import io.vertx.core.Handler;
 import io.vertx.core.Vertx;
-import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
 import io.vertx.core.shareddata.LocalMap;
-
-import java.util.concurrent.ConcurrentMap;
 
 /** #SharedDataSessionStore */
 public class LocalDataSessionStore implements SessionStore {
@@ -45,18 +42,8 @@ public class LocalDataSessionStore implements SessionStore {
     }
 
     @Override
-    public void all(Handler<JsonArray> callback) {
-        callback.handle(null);
-    }
-
-    @Override
     public void clear(Handler<Object> callback) {
         storage.clear();
         callback.handle(null);
-    }
-
-    @Override
-    public void length(Handler<Integer> callback) {
-        callback.handle(storage.size());
     }
 }
