@@ -16,7 +16,7 @@ public class HelmetTest extends VertxTestBase {
     public void testCacheControl() {
         final Yoke app = new Yoke(vertx);
         app.use(new CacheControl());
-        app.use(request -> request.response().end("hello"));
+        app.use((request, next) -> request.response().end("hello"));
 
         new YokeTester(app).request(HttpMethod.GET, "/", response -> {
             assertEquals(response.headers().get("Cache-Control"), "no-store, no-cache");
@@ -28,7 +28,7 @@ public class HelmetTest extends VertxTestBase {
     public void testContentTypeOptions() {
         final Yoke app = new Yoke(vertx);
         app.use(new ContentTypeOptions());
-        app.use(request -> request.response().end("hello"));
+        app.use((request, next) -> request.response().end("hello"));
 
         new YokeTester(app).request(HttpMethod.GET, "/", response -> {
             assertEquals(response.headers().get("X-Content-Type-Options"), "nosniff");
@@ -40,7 +40,7 @@ public class HelmetTest extends VertxTestBase {
     public void testCrossDomain() {
         final Yoke app = new Yoke(vertx);
         app.use(new CrossDomain());
-        app.use(request -> request.response().end("hello"));
+        app.use((request, next) -> request.response().end("hello"));
 
         final YokeTester tester = new YokeTester(app);
 
@@ -64,7 +64,7 @@ public class HelmetTest extends VertxTestBase {
     public void testIENoOpen() {
         final Yoke app = new Yoke(vertx);
         app.use(new IENoOpen());
-        app.use(request -> {
+        app.use((request, next) -> {
             request.response().putHeader("Content-Disposition", "attachment; filename=somefile.txt");
             request.response().end("hello");
         });
@@ -79,7 +79,7 @@ public class HelmetTest extends VertxTestBase {
     public void testHSTS_1() {
         final Yoke app = new Yoke(vertx);
         app.use(new HSTS());
-        app.use(request -> request.response().end("hello"));
+        app.use((request, next) -> request.response().end("hello"));
 
         MultiMap headers = new CaseInsensitiveHeaders();
         headers.add("x-forwarded-proto", "https");
@@ -95,7 +95,7 @@ public class HelmetTest extends VertxTestBase {
     public void testHSTS_2() {
         final Yoke app = new Yoke(vertx);
         app.use(new HSTS(1234, true));
-        app.use(request -> request.response().end("hello"));
+        app.use((request, next) -> request.response().end("hello"));
 
         MultiMap headers = new CaseInsensitiveHeaders();
         headers.add("x-forwarded-proto", "https");

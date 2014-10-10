@@ -21,7 +21,7 @@ public class VHost extends VertxTestBase {
             request.response().end();
             testComplete();
         }));
-        yoke.use(request -> {
+        yoke.use((request, next) -> {
             request.response().end();
             fail();
         });

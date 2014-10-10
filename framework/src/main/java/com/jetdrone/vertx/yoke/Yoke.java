@@ -209,47 +209,6 @@ public class Yoke {
     }
 
     /**
-     * Adds a Handler to a route. The behaviour is similar to the middleware, however this
-     * will be a terminal point in the execution chain. In this case any middleware added
-     * after will not be executed. However you should care about the route which may lead
-     * to skip this middleware.
-     *
-     * The idea to user a Handler is to keep the API familiar with the rest of the Vert.x
-     * API.
-     *
-     * <pre>
-     * yoke.use("/login", new Handler&lt;YokeRequest&gt;() {
-     *   public void handle(YokeRequest request) {
-     *     request.response.end("Hello");
-     *   }
-     * });
-     * </pre>
-     *
-     * @param route   The route prefix for the middleware
-     * @param handler The Handler to add
-     */
-    public Yoke use(@NotNull String route, final @NotNull Handler<YokeRequest> handler) {
-        middlewareList.add(new MountedMiddleware(route, (request, next) -> handler.handle(request)));
-        return this;
-    }
-
-    /**
-     * Adds a Handler to a route.
-     *
-     * <pre>
-     * yoke.use("/login", new Handler&lt;YokeRequest&gt;() {
-     *   public void handle(YokeRequest request) {
-     *     request.response.end("Hello");
-     *   }
-     * });
-     * </pre>
-     * @param handler The Handler to add
-     */
-    public Yoke use(@NotNull Handler<YokeRequest> handler) {
-        return use("/", handler);
-    }
-
-    /**
      * Adds a Render Engine to the library. Render Engines are Template engines you
      * might want to use to speed the development of your application. Once they are
      * registered you can use the method render in the YokeResponse to
@@ -467,7 +426,7 @@ public class Yoke {
                                 response.setStatusCode(404);
                                 response.setStatusMessage(HttpResponseStatus.valueOf(404).reasonPhrase());
                                 if (errorHandler != null) {
-                                    errorHandler.handle(request);
+                                    errorHandler.handle(request, null);
                                 } else {
                                     response.end(HttpResponseStatus.valueOf(404).reasonPhrase());
                                 }
@@ -475,7 +434,7 @@ public class Yoke {
                         } else {
                             request.put("error", error);
                             if (errorHandler != null) {
-                                errorHandler.handle(request);
+                                errorHandler.handle(request, null);
                             } else {
                                 HttpServerResponse response = request.response();
 

@@ -24,9 +24,9 @@ public class YokeBench extends AbstractVerticle {
                 .use("/middleware", foo)
                 .use("/middleware", foo)
                 .use(new Router()
-                        .get("/", request -> request.response().end("Hello World\n"))
-                        .get("/json", request -> request.response().end(new JsonObject().putString("name", "Tobi").putString("role", "admin")))
-                        .get("/middleware", request -> request.response().end("1234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890"))
+                        .get("/", (request, next) -> request.response().end("Hello World\n"))
+                        .get("/json", (request, next) -> request.response().end(new JsonObject().putString("name", "Tobi").putString("role", "admin")))
+                        .get("/middleware", (request, next) -> request.response().end("1234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890"))
                 ).listen(8080);
     }
 }

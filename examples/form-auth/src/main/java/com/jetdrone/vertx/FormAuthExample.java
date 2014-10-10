@@ -37,7 +37,7 @@ public class FormAuthExample extends AbstractVerticle {
         app.use(formAuth);
 
         app.use(new Router() {{
-            get("/", request -> {
+            get("/", (request, next) -> {
                 JsonObject session = request.get("session");
 
                 if (session != null && session.getString("user") != null) {

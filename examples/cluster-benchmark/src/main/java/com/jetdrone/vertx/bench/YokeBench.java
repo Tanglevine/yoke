@@ -13,7 +13,7 @@ public class YokeBench extends AbstractVerticle {
 
         new Yoke(vertx)
                 .use(new Router()
-                        .get("/", request -> request.response().end("Hello World\n"))
+                        .get("/", (request, next) -> request.response().end("Hello World\n"))
                 ).listen(8080);
     }
 }

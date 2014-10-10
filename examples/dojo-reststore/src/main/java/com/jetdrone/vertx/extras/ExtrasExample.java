@@ -44,9 +44,9 @@ public class ExtrasExample extends AbstractVerticle {
 
         yoke.use(router);
 
-        yoke.use(new Handler<YokeRequest>() {
+        yoke.use(new Middleware() {
             @Override
-            public void handle(YokeRequest request) {
+            public void handle(YokeRequest request, Handler<Object> next) {
 
                 List<Map> users = new ArrayList<>();
                 Map<String, String> user;

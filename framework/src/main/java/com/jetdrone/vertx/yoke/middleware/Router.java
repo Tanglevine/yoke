@@ -142,15 +142,6 @@ public class Router extends AbstractMiddleware {
     }
 
     /**
-     * Specify a middleware that will be called for a matching HTTP GET
-     * @param pattern The simple pattern
-     * @param handler The middleware to call
-     */
-    public Router get(@NotNull final String pattern, @NotNull final Handler<YokeRequest> handler) {
-        return get(pattern, (request, next) -> handler.handle(request));
-    }
-
-    /**
      * Specify a middleware that will be called for a matching HTTP PUT
      * @param pattern The simple pattern
      * @param handlers The middleware to call
@@ -158,15 +149,6 @@ public class Router extends AbstractMiddleware {
     public Router put(@NotNull final String pattern, @NotNull final Middleware... handlers) {
         addPattern("PUT", pattern, handlers, putBindings);
         return this;
-    }
-
-    /**
-     * Specify a middleware that will be called for a matching HTTP PUT
-     * @param pattern The simple pattern
-     * @param handler The middleware to call
-     */
-    public Router put(@NotNull final String pattern, @NotNull final Handler<YokeRequest> handler) {
-        return put(pattern, (request, next) -> handler.handle(request));
     }
 
     /**
@@ -180,15 +162,6 @@ public class Router extends AbstractMiddleware {
     }
 
     /**
-     * Specify a middleware that will be called for a matching HTTP POST
-     * @param pattern The simple pattern
-     * @param handler The middleware to call
-     */
-    public Router post(@NotNull final String pattern, @NotNull final Handler<YokeRequest> handler) {
-        return post(pattern, (request, next) -> handler.handle(request));
-    }
-
-    /**
      * Specify a middleware that will be called for a matching HTTP DELETE
      * @param pattern The simple pattern
      * @param handlers The middleware to call
@@ -196,15 +169,6 @@ public class Router extends AbstractMiddleware {
     public Router delete(@NotNull final String pattern, @NotNull final Middleware... handlers) {
         addPattern("DELETE", pattern, handlers, deleteBindings);
         return this;
-    }
-
-    /**
-     * Specify a middleware that will be called for a matching HTTP DELETE
-     * @param pattern The simple pattern
-     * @param handler The middleware to call
-     */
-    public Router delete(@NotNull final String pattern, @NotNull final Handler<YokeRequest> handler) {
-        return delete(pattern, (request, next) -> handler.handle(request));
     }
 
     /**
@@ -218,15 +182,6 @@ public class Router extends AbstractMiddleware {
     }
 
     /**
-     * Specify a middleware that will be called for a matching HTTP OPTIONS
-     * @param pattern The simple pattern
-     * @param handler The middleware to call
-     */
-    public Router options(@NotNull final String pattern, @NotNull final Handler<YokeRequest> handler) {
-        return options(pattern, (request, next) -> handler.handle(request));
-    }
-
-    /**
      * Specify a middleware that will be called for a matching HTTP HEAD
      * @param pattern The simple pattern
      * @param handlers The middleware to call
@@ -234,15 +189,6 @@ public class Router extends AbstractMiddleware {
     public Router head(@NotNull final String pattern, @NotNull final Middleware... handlers) {
         addPattern("HEAD", pattern, handlers, headBindings);
         return this;
-    }
-
-    /**
-     * Specify a middleware that will be called for a matching HTTP HEAD
-     * @param pattern The simple pattern
-     * @param handler The middleware to call
-     */
-    public Router head(@NotNull final String pattern, @NotNull final Handler<YokeRequest> handler) {
-        return head(pattern, (request, next) -> handler.handle(request));
     }
 
     /**
@@ -256,15 +202,6 @@ public class Router extends AbstractMiddleware {
     }
 
     /**
-     * Specify a middleware that will be called for a matching HTTP TRACE
-     * @param pattern The simple pattern
-     * @param handler The middleware to call
-     */
-    public Router trace(@NotNull final String pattern, @NotNull final Handler<YokeRequest> handler) {
-        return trace(pattern, (request, next) -> handler.handle(request));
-    }
-
-    /**
      * Specify a middleware that will be called for a matching HTTP CONNECT
      * @param pattern The simple pattern
      * @param handlers The middleware to call
@@ -272,15 +209,6 @@ public class Router extends AbstractMiddleware {
     public Router connect(@NotNull final String pattern, @NotNull final Middleware... handlers) {
         addPattern("CONNECT", pattern, handlers, connectBindings);
         return this;
-    }
-
-    /**
-     * Specify a middleware that will be called for a matching HTTP CONNECT
-     * @param pattern The simple pattern
-     * @param handler The middleware to call
-     */
-    public Router connect(@NotNull final String pattern, @NotNull final Handler<YokeRequest> handler) {
-        return connect(pattern, (request, next) -> handler.handle(request));
     }
 
     /**
@@ -294,38 +222,11 @@ public class Router extends AbstractMiddleware {
     }
 
     /**
-     * Specify a middleware that will be called for a matching HTTP PATCH
-     * @param pattern The simple pattern
-     * @param handler The middleware to call
-     */
-    public Router patch(@NotNull final String pattern, @NotNull final Handler<YokeRequest> handler) {
-        return patch(pattern, (request, next) -> handler.handle(request));
-    }
-
-    /**
      * Specify a middleware that will be called for all HTTP methods
      * @param pattern The simple pattern
      * @param handler The middleware to call
      */
     public Router all(@NotNull final String pattern, @NotNull final Middleware... handler) {
-        get(pattern, handler);
-        put(pattern, handler);
-        post(pattern, handler);
-        delete(pattern, handler);
-        options(pattern, handler);
-        head(pattern, handler);
-        trace(pattern, handler);
-        connect(pattern, handler);
-        patch(pattern, handler);
-        return this;
-    }
-
-    /**
-     * Specify a middleware that will be called for all HTTP methods
-     * @param pattern The simple pattern
-     * @param handler The middleware to call
-     */
-    public Router all(@NotNull final String pattern, @NotNull final Handler<YokeRequest> handler) {
         get(pattern, handler);
         put(pattern, handler);
         post(pattern, handler);
@@ -349,15 +250,6 @@ public class Router extends AbstractMiddleware {
     }
 
     /**
-     * Specify a middleware that will be called for a matching HTTP GET
-     * @param regex A regular expression
-     * @param handler The middleware to call
-     */
-    public Router get(@NotNull final Pattern regex, @NotNull final Handler<YokeRequest> handler) {
-        return get(regex, (request, next) -> handler.handle(request));
-    }
-
-    /**
      * Specify a middleware that will be called for a matching HTTP PUT
      * @param regex A regular expression
      * @param handlers The middleware to call
@@ -365,15 +257,6 @@ public class Router extends AbstractMiddleware {
     public Router put(@NotNull final Pattern regex, @NotNull final Middleware... handlers) {
         addRegEx("PUT", regex, handlers, putBindings);
         return this;
-    }
-
-    /**
-     * Specify a middleware that will be called for a matching HTTP PUT
-     * @param regex A regular expression
-     * @param handler The middleware to call
-     */
-    public Router put(@NotNull final Pattern regex, @NotNull final Handler<YokeRequest> handler) {
-        return put(regex, (request, next) -> handler.handle(request));
     }
 
     /**
@@ -387,15 +270,6 @@ public class Router extends AbstractMiddleware {
     }
 
     /**
-     * Specify a middleware that will be called for a matching HTTP POST
-     * @param regex A regular expression
-     * @param handler The middleware to call
-     */
-    public Router post(@NotNull final Pattern regex, @NotNull final Handler<YokeRequest> handler) {
-        return post(regex, (request, next) -> handler.handle(request));
-    }
-
-    /**
      * Specify a middleware that will be called for a matching HTTP DELETE
      * @param regex A regular expression
      * @param handlers The middleware to call
@@ -403,15 +277,6 @@ public class Router extends AbstractMiddleware {
     public Router delete(@NotNull final Pattern regex, @NotNull final Middleware... handlers) {
         addRegEx("DELETE", regex, handlers, deleteBindings);
         return this;
-    }
-
-    /**
-     * Specify a middleware that will be called for a matching HTTP DELETE
-     * @param regex A regular expression
-     * @param handler The middleware to call
-     */
-    public Router delete(@NotNull final Pattern regex, @NotNull final Handler<YokeRequest> handler) {
-        return delete(regex, (request, next) -> handler.handle(request));
     }
 
     /**
@@ -425,15 +290,6 @@ public class Router extends AbstractMiddleware {
     }
 
     /**
-     * Specify a middleware that will be called for a matching HTTP OPTIONS
-     * @param regex A regular expression
-     * @param handler The middleware to call
-     */
-    public Router options(@NotNull final Pattern regex, @NotNull final Handler<YokeRequest> handler) {
-        return options(regex, (request, next) -> handler.handle(request));
-    }
-
-    /**
      * Specify a middleware that will be called for a matching HTTP HEAD
      * @param regex A regular expression
      * @param handlers The middleware to call
@@ -441,15 +297,6 @@ public class Router extends AbstractMiddleware {
     public Router head(@NotNull final Pattern regex, @NotNull final Middleware... handlers) {
         addRegEx("HEAD", regex, handlers, headBindings);
         return this;
-    }
-
-    /**
-     * Specify a middleware that will be called for a matching HTTP HEAD
-     * @param regex A regular expression
-     * @param handler The middleware to call
-     */
-    public Router head(@NotNull final Pattern regex, @NotNull final Handler<YokeRequest> handler) {
-        return head(regex, (request, next) -> handler.handle(request));
     }
 
     /**
@@ -463,15 +310,6 @@ public class Router extends AbstractMiddleware {
     }
 
     /**
-     * Specify a middleware that will be called for a matching HTTP TRACE
-     * @param regex A regular expression
-     * @param handler The middleware to call
-     */
-    public Router trace(@NotNull final Pattern regex, @NotNull final Handler<YokeRequest> handler) {
-        return trace(regex, (request, next) -> handler.handle(request));
-    }
-
-    /**
      * Specify a middleware that will be called for a matching HTTP CONNECT
      * @param regex A regular expression
      * @param handlers The middleware to call
@@ -479,15 +317,6 @@ public class Router extends AbstractMiddleware {
     public Router connect(@NotNull final Pattern regex, @NotNull final Middleware... handlers) {
         addRegEx("CONNECT", regex, handlers, connectBindings);
         return this;
-    }
-
-    /**
-     * Specify a middleware that will be called for a matching HTTP CONNECT
-     * @param regex A regular expression
-     * @param handler The middleware to call
-     */
-    public Router connect(@NotNull final Pattern regex, @NotNull final Handler<YokeRequest> handler) {
-        return connect(regex, (request, next) -> handler.handle(request));
     }
 
     /**
@@ -501,38 +330,11 @@ public class Router extends AbstractMiddleware {
     }
 
     /**
-     * Specify a middleware that will be called for a matching HTTP PATCH
-     * @param regex A regular expression
-     * @param handler The middleware to call
-     */
-    public Router patch(@NotNull final Pattern regex, @NotNull final Handler<YokeRequest> handler) {
-        return patch(regex, (request, next) -> handler.handle(request));
-    }
-
-    /**
      * Specify a middleware that will be called for all HTTP methods
      * @param regex A regular expression
      * @param handler The middleware to call
      */
     public Router all(@NotNull final Pattern regex, @NotNull final Middleware... handler) {
-        get(regex, handler);
-        put(regex, handler);
-        post(regex, handler);
-        delete(regex, handler);
-        options(regex, handler);
-        head(regex, handler);
-        trace(regex, handler);
-        connect(regex, handler);
-        patch(regex, handler);
-        return this;
-    }
-
-    /**
-     * Specify a middleware that will be called for all HTTP methods
-     * @param regex A regular expression
-     * @param handler The middleware to call
-     */
-    public Router all(@NotNull final Pattern regex, @NotNull final Handler<YokeRequest> handler) {
         get(regex, handler);
         put(regex, handler);
         post(regex, handler);

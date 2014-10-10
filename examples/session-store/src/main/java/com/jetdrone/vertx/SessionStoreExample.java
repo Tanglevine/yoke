@@ -37,7 +37,7 @@ public class SessionStoreExample extends AbstractVerticle {
 
 
         app.use(new Router() {{
-            get("/", request -> {
+            get("/", (request, next) -> {
                 JsonObject session = request.get("session");
                 if (session == null) {
                     request.response().setStatusCode(404);
@@ -47,7 +47,7 @@ public class SessionStoreExample extends AbstractVerticle {
                 }
             });
 
-            get("/new", request -> {
+            get("/new", (request, next) -> {
                 JsonObject session = request.createSession();
 
                 session.putString("key", "value");
@@ -55,7 +55,7 @@ public class SessionStoreExample extends AbstractVerticle {
                 request.response().end();
             });
 
-            get("/delete", request -> {
+            get("/delete", (request, next) -> {
                 request.destroySession();
                 request.response().end();
             });

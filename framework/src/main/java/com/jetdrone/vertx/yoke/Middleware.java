@@ -81,8 +81,4 @@ public interface Middleware {
      *                null represents an error and in that case the error handler middleware will be executed.
      */
     void handle(@NotNull final YokeRequest request, @NotNull final Handler<Object> next);
-
-    default void handle(@NotNull final YokeRequest request) {
-        handle(request, null);
-    }
 }

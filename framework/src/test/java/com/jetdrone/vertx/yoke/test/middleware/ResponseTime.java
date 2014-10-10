@@ -14,7 +14,7 @@ public class ResponseTime extends VertxTestBase {
     public void testResponseTime() {
         Yoke yoke = new Yoke(vertx);
         yoke.use(new com.jetdrone.vertx.yoke.middleware.ResponseTime());
-        yoke.use(request -> request.response().end());
+        yoke.use((request, next) -> request.response().end());
 
         new YokeTester(yoke).request(HttpMethod.GET, "/", resp -> {
             assertEquals(200, resp.getStatusCode());

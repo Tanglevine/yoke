@@ -19,7 +19,7 @@ public class MethodOverride extends VertxTestBase {
 
         Yoke yoke = new Yoke(vertx);
         yoke.use(new com.jetdrone.vertx.yoke.middleware.MethodOverride());
-        yoke.use(request -> {
+        yoke.use((request, next) -> {
             assertEquals("DELETE", request.method());
             request.response().end();
         });
@@ -39,7 +39,7 @@ public class MethodOverride extends VertxTestBase {
         Yoke yoke = new Yoke(vertx);
         yoke.use(new com.jetdrone.vertx.yoke.middleware.BodyParser());
         yoke.use(new com.jetdrone.vertx.yoke.middleware.MethodOverride());
-        yoke.use(request -> {
+        yoke.use((request, next) -> {
             assertEquals("DELETE", request.method());
             request.response().end();
         });
@@ -64,7 +64,7 @@ public class MethodOverride extends VertxTestBase {
         Yoke yoke = new Yoke(vertx);
         yoke.use(new com.jetdrone.vertx.yoke.middleware.BodyParser());
         yoke.use(new com.jetdrone.vertx.yoke.middleware.MethodOverride());
-        yoke.use(request -> {
+        yoke.use((request, next) -> {
             assertEquals("DELETE", request.method());
             request.response().end();
         });

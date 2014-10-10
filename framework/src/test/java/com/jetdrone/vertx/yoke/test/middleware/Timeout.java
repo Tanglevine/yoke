@@ -14,7 +14,7 @@ public class Timeout extends VertxTestBase {
     public void testTimeout() {
         Yoke yoke = new Yoke(vertx);
         yoke.use(new com.jetdrone.vertx.yoke.middleware.Timeout(10));
-        yoke.use(request -> {
+        yoke.use((request, next) -> {
             // noop to so the response would never end
         });
 
